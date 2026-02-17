@@ -1,0 +1,3 @@
+name: gregorianum
+include: src
+depend: standard-library
