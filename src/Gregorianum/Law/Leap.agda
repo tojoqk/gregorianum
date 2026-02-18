@@ -8,6 +8,7 @@ data Centennial (y : ℕ) : Set where
   quadricentennial : 400 ∣ y → Centennial y
 
 record Leap (y : ℕ): Set where
+  constructor mkLeap
   field
     quadrennial : 4 ∣ y
     centennial : Centennial y
