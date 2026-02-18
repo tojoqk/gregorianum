@@ -1,20 +1,27 @@
 module Gregorianum.Date where
 
-open import Gregorianum.Year using (Year; YearType; _HasYearType_)
-open import Gregorianum.YearMonth using (YearMonth)
-open import Gregorianum.Month using (Month; _HasDays_; _of_)
-open import Data.Nat using (ℕ)
-open import Data.Fin using (Fin)
-
-Day = Fin
+open import Gregorianum.Year as Y using (Year; YearType; _HasYearType_)
+open import Gregorianum.YearMonth as YM using (YearMonth)
+open import Gregorianum.Month as M using (Month)
+open import Gregorianum.Day using (Day; 1st; suc)
+open import Data.Nat using (ℕ; zero; suc)
 
 record Date : Set where
+  constructor _/_
   field
-    year-month : YearMonth
-    {year-type} : YearType
-    has-year-type : YearMonth.year year-month HasYearType year-type
-    {days} : ℕ
-    has-days : (YearMonth.month year-month of year-type) HasDays days
-    day : Day days
+    {last}     : ℕ
+    year-month : YearMonth last
+    {from-start} : ℕ
+    {from-end} : ℕ
+    day : Day last from-start from-end
 
   open YearMonth year-month
+
+data _⋖_ : Date → Date → Set where
+  step : ∀ {n i j} {ym : YearMonth n}
+       → (d : Day n i (suc j))
+       → (ym / d) ⋖ (ym / suc d)
+  step-last : ∀ {m n} {ym₁ : YearMonth m} {ym₂ : YearMonth n}
+            → (d : Day m m 0)
+            → ym₁ YM.⋖ ym₂
+            → (ym₁ / d) ⋖ (ym₂ / 1st)
