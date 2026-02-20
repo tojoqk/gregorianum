@@ -1,10 +1,9 @@
 module Gregorianum.Date where
 
-open import Gregorianum.Year as Y using (Year; YearType; _HasYearType_)
+open import Gregorianum.Year using (Year)
 open import Gregorianum.YearMonth as YM using (YearMonth)
-open import Gregorianum.Month as M using (Month)
 open import Gregorianum.Day using (Day; 1st; suc)
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; suc)
 
 record Date : Set where
   constructor _/_
