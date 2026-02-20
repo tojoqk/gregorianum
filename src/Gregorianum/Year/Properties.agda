@@ -39,12 +39,6 @@ has-year-type-irrelevant : ∀ {a yt}
 has-year-type-irrelevant (common _) (common _) = refl
 has-year-type-irrelevant (leap p) (leap q) rewrite (is-leap-irrelevant p q) = refl
 
-year-unique : ∀ {yt} ( (a th⟨ p ⟩) (b th⟨ q ⟩) : Year yt)
-            → a ≡ b
-            → (a th⟨ p ⟩) ≡ (b th⟨ q ⟩)
-year-unique (a th⟨ p ⟩) (b th⟨ q ⟩) refl rewrite (has-year-type-irrelevant p q) = refl
-
-
 year-type-unique : ∀ {a yt₁ yt₂}
                    → a HasYearType yt₁
                    → a HasYearType yt₂
