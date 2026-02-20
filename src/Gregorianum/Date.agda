@@ -10,7 +10,7 @@ record Date : Set where
   constructor _/_
   field
     {last}     : ℕ
-    year-month : YearMonth last
+    year-month : YearMonth (suc last) -- suc last ≡ days
     {from-start} : ℕ
     {from-end} : ℕ
     day : Day last from-start from-end
@@ -18,10 +18,10 @@ record Date : Set where
   open YearMonth year-month
 
 data _⋖_ : Date → Date → Set where
-  step : ∀ {n i j} {ym : YearMonth n}
+  step : ∀ {n i j} {ym : YearMonth (suc n)}
        → (d : Day n i (suc j))
        → (ym / d) ⋖ (ym / suc d)
-  step-last : ∀ {m n} {ym₁ : YearMonth m} {ym₂ : YearMonth n}
+  step-last : ∀ {m n} {ym₁ : YearMonth (suc m)} {ym₂ : YearMonth (suc n)}
             → (d : Day m m 0)
             → ym₁ YM.⋖ ym₂
             → (ym₁ / d) ⋖ (ym₂ / 1st)

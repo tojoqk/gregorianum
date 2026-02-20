@@ -10,28 +10,28 @@ record MonthInYearType : Set where
     month : Month
     year-type : YearType
 
-data _HasLast_ : MonthInYearType → ℕ → Set where
-  january         : ∀ {yt} →      (january of yt) HasLast 30
-  february-common :           (february of common) HasLast 27
-  february-leap   :             (february of leap) HasLast 28
-  march           : ∀ {yt} →        (march of yt) HasLast 30
-  april           : ∀ {yt} →        (april of yt) HasLast 29
-  may             : ∀ {yt} →          (may of yt) HasLast 30
-  june            : ∀ {yt} →         (june of yt) HasLast 29
-  july            : ∀ {yt} →         (july of yt) HasLast 30
-  august          : ∀ {yt} →       (august of yt) HasLast 30
-  september       : ∀ {yt} →    (september of yt) HasLast 29
-  october         : ∀ {yt} →      (october of yt) HasLast 30
-  november        : ∀ {yt} →     (november of yt) HasLast 29
-  december        : ∀ {yt} →     (december of yt) HasLast 30
+data _HasDays_ : MonthInYearType → ℕ → Set where
+  january         : ∀ {yt} →      (january of yt) HasDays 31
+  february-common :           (february of common) HasDays 28
+  february-leap   :             (february of leap) HasDays 29
+  march           : ∀ {yt} →        (march of yt) HasDays 31
+  april           : ∀ {yt} →        (april of yt) HasDays 30
+  may             : ∀ {yt} →          (may of yt) HasDays 31
+  june            : ∀ {yt} →         (june of yt) HasDays 30
+  july            : ∀ {yt} →         (july of yt) HasDays 31
+  august          : ∀ {yt} →       (august of yt) HasDays 31
+  september       : ∀ {yt} →    (september of yt) HasDays 30
+  october         : ∀ {yt} →      (october of yt) HasDays 31
+  november        : ∀ {yt} →     (november of yt) HasDays 30
+  december        : ∀ {yt} →     (december of yt) HasDays 31
 
-record YearMonth (last : ℕ): Set where
+record YearMonth (days : ℕ): Set where
   constructor _/_⟨_⟩
   field
     {year-type} : YearType
     year : Year year-type
     month : Month
-    has-last : (month of year-type) HasLast last
+    has-days : (month of year-type) HasDays days
 
 data _⋖_ : ∀ {m n} → YearMonth m → YearMonth n → Set where
   january-feburary-common : ∀ {y : Year common}  → (y / january ⟨ january ⟩)          ⋖ (y / february ⟨ february-common ⟩)
