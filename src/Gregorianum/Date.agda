@@ -8,19 +8,19 @@ open import Data.Nat using (ℕ; suc)
 record Date : Set where
   constructor _/_
   field
-    {last}     : ℕ
-    year-month : YearMonth (suc last) -- suc last ≡ days
-    {from-start} : ℕ
-    {from-end} : ℕ
-    day : Day last from-start from-end
+    {cap}     : ℕ
+    year-month : YearMonth (suc cap) -- suc cap ≡ days
+    {acc} : ℕ
+    {rem} : ℕ
+    day : Day cap acc rem
 
   open YearMonth year-month
 
 data _⋖_ : Date → Date → Set where
-  step : ∀ {n i j} {ym : YearMonth (suc n)}
-       → (d : Day n i (suc j))
+  step : ∀ {cap acc rem} {ym : YearMonth (suc cap)}
+       → (d : Day cap acc (suc rem))
        → (ym / d) ⋖ (ym / suc d)
-  step-last : ∀ {m n} {ym₁ : YearMonth (suc m)} {ym₂ : YearMonth (suc n)}
-            → (d : Day m m 0)
+  step-last : ∀ {cap₁ cap₂} {ym₁ : YearMonth (suc cap₁)} {ym₂ : YearMonth (suc cap₂)}
+            → (d : Day cap₁ cap₁ 0)
             → ym₁ YM.⋖ ym₂
             → (ym₁ / d) ⋖ (ym₂ / 1st)

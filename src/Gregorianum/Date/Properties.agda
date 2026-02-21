@@ -21,6 +21,6 @@ tomorrow-unique (step-last d₂ ym₁⋖ym₂) (step-last d₃ ym₁⋖ym₃)
 
 
 tomorrow-exists : ∀ (d₁ : Date) → ∃[ d₂ ] (d₁ ⋖ d₂ )
-tomorrow-exists (_/_ year-month {from-end = zero} day) with next-year-month-exists year-month | 1st-n≡i day
+tomorrow-exists (_/_ year-month {rem = zero} day) with next-year-month-exists year-month | rem≡0⇒cap≡acc day
 ... | suc n , ym@(y / m ⟨ has-days ⟩ ) , p | refl = (ym / 1st) , step-last day p
-tomorrow-exists (_/_ year-month {from-end = suc _} day) = (year-month / suc day) , step day
+tomorrow-exists (_/_ year-month {rem = suc _} day) = (year-month / suc day) , step day
