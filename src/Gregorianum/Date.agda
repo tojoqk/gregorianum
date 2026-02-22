@@ -16,6 +16,8 @@ record Date : Set where
 
   open YearMonth year-month
 
+pattern _/_⟨_,_⟩ ym d acc rem = _/_ ym {acc} {rem} d
+
 data _⋖_ : Date → Date → Set where
   step : ∀ {cap acc rem} {ym : YearMonth (suc cap)}
        → (d : Day cap acc (suc rem))
