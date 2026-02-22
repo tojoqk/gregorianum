@@ -14,7 +14,7 @@ record Date : Set where
     {rem} : ℕ
     day : Day cap acc rem
 
-  open YearMonth year-month
+  open YearMonth year-month public
 
 pattern _/_⟨_,_⟩ ym d acc rem = _/_ ym {acc} {rem} d
 
