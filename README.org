@@ -89,13 +89,13 @@ By using =injectˡ=, the library derives the end of a month of any length as a s
 ** Installation
 
 1. Clone the repository:
-   #+begin_src shell
-     git clone https://github.com/tojoqk/gregorianum.git
-   #+end_src
+#+begin_src shell
+  git clone https://github.com/tojoqk/gregorianum.git
+#+end_src
 2. Register the library in your =~/.agda/libraries=:
-   #+begin_src text
-     /path/to/gregorianum/gregorianum.agda-lib
-   #+end_src
+#+begin_src text
+  /path/to/gregorianum/gregorianum.agda-lib
+#+end_src
 3. Add =gregorianum= to your project's =.agda-lib= dependencies.
 
 ** Development Environment
