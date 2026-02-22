@@ -6,8 +6,8 @@ open import Gregorianum.Date.Plain using (⟨+_-_-_⟩; ⟨_-_-_⟩ ; toPlain; f
 
 open import Data.Product using (proj₁)
 
-tomorrow : Date → Date
-tomorrow d = proj₁ (tomorrow-exists d)
+nextDay : Date → Date
+nextDay d = proj₁ (next-day-exists d)
 
-yesterday : Date → Date
-yesterday d = proj₁ (yesterday-exists d)
+prevDay : Date → Date
+prevDay d = proj₁ (prev-day-exists d)
