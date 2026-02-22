@@ -41,7 +41,7 @@ fromPlain? (y , m , d) | yes (suc cap , ((y₁ Y.th⟨ yp₁ ⟩ ) YM./ month₁
     h ((((y₂ Y.th⟨ yp₂ ⟩ ) YM./ month₂ ⟨ has-days₂ ⟩) / day) , plain (YM.plain (Y.plain refl) mp₂) dp) with M.month-unique mp₁ mp₂ | Y.year-type-unique yp₁ yp₂
     ... | refl | refl with M.days-unique has-days₁ has-days₂
     ... | refl = ¬q (_ , _ , day , dp)
-fromPlain? (y , m , d) | no ¬p = no λ { ((year-month / _) , plain (YM.plain yp mp) D.1+acc-is-plain) → ¬p (suc _ , year-month , YM.plain yp mp)}
+fromPlain? (y , m , d) | no ¬p = no λ { ((year-month / _) , plain (YM.plain yp mp) D.plain) → ¬p (suc _ , year-month , YM.plain yp mp)}
 
 ⟨_-_-_⟩ : (y : ℤ) → (m d : ℕ) → {True (fromPlain? (y , m , d))} → Date
 ⟨_-_-_⟩ y m d {t} = proj₁ (toWitness t)
