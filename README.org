@@ -1,0 +1,110 @@
+* Gregorianum
+
+*Gregorianum* is a formally verified, correct-by-construction library for the Proleptic Gregorian Calendar, implemented in Agda. 
+
+Unlike traditional libraries that rely on runtime validation, Gregorianum encodes the structural laws of the calendar—such as month lengths, leap years, and era transitions—directly into the type system.
+
+** The Core: Structural Elegance of =Day=
+
+The heart of Gregorianum is the =Day= type. It is not merely a wrapper for an integer; it is a type-level representation of a day's *Successor Capacity*.
+
+*** 1. Successor Capacity and Remainder
+
+A =Day= is indexed by its capacity (=cap=), the number of days already passed (=acc=), and the *remaining successor applications* (=rem=) within a month.
+
+#+begin_src agda
+  data Day (cap : ℕ) : (acc rem : ℕ) → Set where
+    1st : Day cap zero cap
+    suc : ∀ {acc rem} → Day cap acc (suc rem) → Day cap (suc acc) rem
+#+end_src
+
+This indexing makes the *"end-of-month"* a type-level state (=rem ≡ 0=). By identifying this state, the library can distinguish between an internal transition (same month) and a boundary transition (next month) with absolute logical certainty.
+
+*** 2. The Inductive Nature of =last=
+
+The "last day" of any month is not defined by numerical constants, but by a recursive proof using structural induction:
+
+#+begin_src agda
+  last : ∀ {cap} → Day cap cap 0
+  last {zero}  = 1st
+  last {suc _} = injectˡ last
+#+end_src
+
+By using =injectˡ=, the library derives the end of a month of any length as a structural property, ensuring that =prevDay= logic is always grounded in the month's actual capacity.
+
+** Key Features
+
+- *Correct-by-Construction Transitions*: =nextDay= and =prevDay= are derived from existence proofs (=next-day-exists=). They are *total functions* that seamlessly handle month boundaries, leap years, and even the B.C./A.D. bridge (the transition from -1 to 0).
+- *Proof Irrelevance*: Internal witnesses (such as leap year proofs) are proven irrelevant. This ensures that date equality (=_≡_=) behaves intuitively, based only on calendar values, without being hindered by underlying proof structures.
+- *Proleptic Support*: Full support for dates in the deep past and far future using arbitrary-precision integers (=ℤ=).
+- *Decidable Interface*: Conversion from raw integers to verified =Date= types is *decidable*. Using the =True= witness pattern, you can construct verified dates with elegant syntax.
+
+** Usage
+
+#+begin_src agda
+  open import Gregorianum.Date
+
+  -- Compile-time verified dates via decidable predicates
+  today : Date
+  today = ⟨+ 2024 - 2 - 23 ⟩
+
+  -- Leap years are handled automatically; 2024-02-29 is valid
+  leapDay : Date
+  leapDay = ⟨+ 2024 - 2 - 29 ⟩
+
+  -- This would result in a compile-time error:
+  -- invalidDay : Date
+  -- invalidDay = ⟨+ 2025 - 2 - 29 ⟩ 
+
+  open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
+  -- Safe, total transitions guaranteed by existence proofs
+  _ : nextDay today ≡ ⟨+ 2024 - 2 - 24 ⟩
+  _ = refl
+
+  _ : prevDay today ≡ ⟨+ 2024 - 2 - 22 ⟩
+  _ = refl
+
+  _ : nextDay leapDay ≡ ⟨+ 2024 - 3 - 1 ⟩
+  _ = refl
+
+  _ : prevDay ⟨+ 2024 - 3 - 1 ⟩ ≡ leapDay
+  _ = refl
+
+  _ : nextDay ⟨+ 2024 - 12 - 31 ⟩ ≡ ⟨+ 2025 - 1 - 1 ⟩
+  _ = refl
+
+  _ : prevDay ⟨+ 2025 - 1 - 1 ⟩ ≡ ⟨+ 2024 - 12 - 31 ⟩
+  _ = refl
+#+end_src
+
+** Project Structure
+
+- =Gregorianum.Date=: Core verified date types and total transitions.
+- =Gregorianum.Day=: The revolutionary =Day= type indexed by successor capacity.
+- =Gregorianum.YearMonth=: Logic for month capacities and year-type dependencies.
+- =Gregorianum.Law.Leap=: Formal logic and irrelevance proofs for leap years.
+- =Gregorianum.Date.Plain=: Decidable conversion between raw data and verified types.
+
+** Installation
+
+1. Clone the repository:
+   #+begin_src shell
+     git clone https://github.com/tojoqk/gregorianum.git
+   #+end_src
+2. Register the library in your =~/.agda/libraries=:
+   #+begin_src text
+     /path/to/gregorianum/gregorianum.agda-lib
+   #+end_src
+3. Add =gregorianum= to your project's =.agda-lib= dependencies.
+
+** Development Environment
+
+- *Agda*: 2.8.0
+- *standard-library*: v2.3
+
+Older versions of Agda or the standard library may work, but they are currently untested.
+
+** License
+
+MIT
