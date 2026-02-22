@@ -13,8 +13,8 @@ record YearMonth (days : ℕ): Set where
     has-days : (month of year-type) HasDays days
 
 data _⋖_ : ∀ {m n} → YearMonth m → YearMonth n → Set where
-  january-feburary-common : ∀ {y : Year common}  → (y - january ⟨ january ⟩)          ⋖ (y - february ⟨ february-common ⟩)
-  january-feburary-leap   : ∀ {y : Year leap}    → (y - january ⟨ january ⟩)          ⋖ (y - february ⟨ february-leap ⟩)
+  january-february-common : ∀ {y : Year common}  → (y - january ⟨ january ⟩)          ⋖ (y - february ⟨ february-common ⟩)
+  january-february-leap   : ∀ {y : Year leap}    → (y - january ⟨ january ⟩)          ⋖ (y - february ⟨ february-leap ⟩)
   february-common-march   : ∀ {y : Year common}  → (y - february ⟨ february-common ⟩) ⋖ (y - march ⟨ march ⟩)
   february-leap-march     : ∀ {y : Year leap}    → (y - february ⟨ february-leap ⟩)   ⋖ (y - march ⟨ march ⟩)
   march-april             : ∀ {yt} {y : Year yt} → (y - march ⟨ march ⟩)              ⋖ (y - april ⟨ april ⟩)

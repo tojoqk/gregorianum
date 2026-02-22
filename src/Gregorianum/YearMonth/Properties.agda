@@ -16,8 +16,8 @@ next-days-unique : ∀ {n₁ n₂ n₃}
                  → ym₁ ⋖ ym₂
                  → ym₁ ⋖ ym₃
                  → n₂ ≡ n₃
-next-days-unique january-feburary-common january-feburary-common = refl
-next-days-unique january-feburary-leap january-feburary-leap = refl
+next-days-unique january-february-common january-february-common = refl
+next-days-unique january-february-leap january-february-leap = refl
 next-days-unique february-common-march february-common-march = refl
 next-days-unique february-leap-march february-leap-march = refl
 next-days-unique march-april march-april = refl
@@ -38,8 +38,8 @@ prev-days-unique : ∀ {n₁ n₂ n₃}
                  → ym₁ ⋖ ym₃
                  → ym₂ ⋖ ym₃
                  → n₁ ≡ n₂
-prev-days-unique january-feburary-common january-feburary-common = refl
-prev-days-unique january-feburary-leap january-feburary-leap = refl
+prev-days-unique january-february-common january-february-common = refl
+prev-days-unique january-february-leap january-february-leap = refl
 prev-days-unique february-common-march february-common-march = refl
 prev-days-unique february-leap-march february-leap-march = refl
 prev-days-unique march-april march-april = refl
@@ -61,8 +61,8 @@ next-year-month-unique : ∀ {n n'}
                        → ym₁ ⋖ ym₂
                        → ym₁ ⋖ ym₃
                        → ym₂ ≡ ym₃
-next-year-month-unique january-feburary-common january-feburary-common = refl
-next-year-month-unique january-feburary-leap january-feburary-leap = refl
+next-year-month-unique january-february-common january-february-common = refl
+next-year-month-unique january-february-leap january-february-leap = refl
 next-year-month-unique february-common-march february-common-march = refl
 next-year-month-unique february-leap-march february-leap-march = refl
 next-year-month-unique march-april march-april = refl
@@ -86,8 +86,8 @@ prev-year-month-unique : ∀ {n n'}
                        → ym₁ ⋖ ym₃
                        → ym₂ ⋖ ym₃
                        → ym₁ ≡ ym₂
-prev-year-month-unique january-feburary-common january-feburary-common = refl
-prev-year-month-unique january-feburary-leap january-feburary-leap = refl
+prev-year-month-unique january-february-common january-february-common = refl
+prev-year-month-unique january-february-leap january-february-leap = refl
 prev-year-month-unique february-common-march february-common-march = refl
 prev-year-month-unique february-leap-march february-leap-march = refl
 prev-year-month-unique march-april march-april = refl
@@ -116,16 +116,16 @@ next-year-month-exists (year - october ⟨ october ⟩) = 30 , (year - november 
 next-year-month-exists (year - november ⟨ november ⟩) = 31 , (year - december ⟨ december ⟩) , november-december
 next-year-month-exists (year - december ⟨ december ⟩) with next-year-exists year
 ...                                                      | _ , y , p = 31 , (y - january ⟨ january ⟩) , december-january p
-next-year-month-exists ((year ⟨ Y.common x ⟩) - january ⟨ january ⟩) = 28 , (((year ⟨ Y.common x ⟩) - february ⟨ february-common ⟩) , january-feburary-common)
-next-year-month-exists ((year ⟨ Y.leap x ⟩) - january ⟨ january ⟩) = 29 , ((year ⟨ Y.leap x ⟩) - february ⟨ february-leap ⟩) , january-feburary-leap
+next-year-month-exists ((year ⟨ Y.common x ⟩) - january ⟨ january ⟩) = 28 , (((year ⟨ Y.common x ⟩) - february ⟨ february-common ⟩) , january-february-common)
+next-year-month-exists ((year ⟨ Y.leap x ⟩) - january ⟨ january ⟩) = 29 , ((year ⟨ Y.leap x ⟩) - february ⟨ february-leap ⟩) , january-february-leap
 next-year-month-exists (year - february ⟨ february-common ⟩) = 31 , (year - march ⟨ march ⟩) , february-common-march
 next-year-month-exists (year - february ⟨ february-leap ⟩) = 31 , (year - march ⟨ march ⟩) , february-leap-march
 
 prev-year-month-exists : ∀ {n} (ym : YearMonth n) → ∃[ n' ] Σ[ ym' ∈ YearMonth n' ] ym' ⋖ ym
 prev-year-month-exists (year - january ⟨ january ⟩) with prev-year-exists year
 ...                                                    | ym , y , p = 31 , (y - december ⟨ december ⟩) , december-january p
-prev-year-month-exists (year - february ⟨ february-common ⟩) = 31 , ((year - january ⟨ january ⟩) , january-feburary-common)
-prev-year-month-exists (year - february ⟨ february-leap ⟩) = 31 , ((year - january ⟨ january ⟩) , january-feburary-leap)
+prev-year-month-exists (year - february ⟨ february-common ⟩) = 31 , ((year - january ⟨ january ⟩) , january-february-common)
+prev-year-month-exists (year - february ⟨ february-leap ⟩) = 31 , ((year - january ⟨ january ⟩) , january-february-leap)
 prev-year-month-exists (year - april ⟨ april ⟩) = 31 , (year - march ⟨ march ⟩) , march-april
 prev-year-month-exists (year - may ⟨ may ⟩) = 30 , (year - april ⟨ april ⟩) , april-may
 prev-year-month-exists (year - june ⟨ june ⟩) = 31 , (year - may ⟨ may ⟩) , may-june
