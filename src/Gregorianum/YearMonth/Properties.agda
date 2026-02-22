@@ -3,7 +3,7 @@ module Gregorianum.YearMonth.Properties where
 open import Gregorianum.YearMonth.Base
 
 open import Gregorianum.Month.Base
-open import Gregorianum.Year.Base as Y using (_th⟨_⟩)
+open import Gregorianum.Year.Base as Y using (_⟨_⟩)
 open import Gregorianum.Year.Properties using (next-year-unique; prev-year-unique; has-year-type-irrelevant; next-year-exists; prev-year-exists)
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -74,7 +74,7 @@ next-year-month-unique august-september august-september = refl
 next-year-month-unique september-october september-october = refl
 next-year-month-unique october-november october-november = refl
 next-year-month-unique november-december november-december = refl
-next-year-month-unique {ym₂ = ((_ th⟨ p₂ ⟩) / _ ⟨ _ ⟩)} {ym₃ = ((_ th⟨ p₃ ⟩) / _ ⟨ _ ⟩)} (december-january y₁⋖y₂) (december-january y₁⋖y₃)
+next-year-month-unique {ym₂ = ((_ ⟨ p₂ ⟩) - _ ⟨ _ ⟩)} {ym₃ = ((_ ⟨ p₃ ⟩) - _ ⟨ _ ⟩)} (december-january y₁⋖y₂) (december-january y₁⋖y₃)
                        with next-year-unique y₁⋖y₂ y₁⋖y₃
 ...                       | refl , refl with has-year-type-irrelevant p₂ p₃
 ...                                        | refl = refl
@@ -99,41 +99,41 @@ prev-year-month-unique august-september august-september = refl
 prev-year-month-unique september-october september-october = refl
 prev-year-month-unique october-november october-november = refl
 prev-year-month-unique november-december november-december = refl
-prev-year-month-unique {ym₁ = ((_ th⟨ p₁ ⟩) / _ ⟨ _ ⟩)} {ym₂ = ((_ th⟨ p₂ ⟩) / _ ⟨ _ ⟩)} (december-january y₁⋖y₃) (december-january y₂⋖y₃)
+prev-year-month-unique {ym₁ = ((_ ⟨ p₁ ⟩) - _ ⟨ _ ⟩)} {ym₂ = ((_ ⟨ p₂ ⟩) - _ ⟨ _ ⟩)} (december-january y₁⋖y₃) (december-january y₂⋖y₃)
                        with prev-year-unique y₁⋖y₃  y₂⋖y₃
 ...                       | refl , refl with has-year-type-irrelevant p₁ p₂
 ...                                        | refl = refl
 
 next-year-month-exists : ∀ {n} (ym : YearMonth n) → ∃[ n' ] Σ[ ym' ∈ YearMonth n' ] ym ⋖ ym'
-next-year-month-exists (year / march ⟨ march ⟩) = 30 , (year / april ⟨ april ⟩) , march-april
-next-year-month-exists (year / april ⟨ april ⟩) = 31 , (year / may ⟨ may ⟩) , april-may
-next-year-month-exists (year / may ⟨ may ⟩) = 30 , (year / june ⟨ june ⟩) , may-june
-next-year-month-exists (year / june ⟨ june ⟩) = 31 , (year / july ⟨ july ⟩) , june-july
-next-year-month-exists (year / july ⟨ july ⟩) = 31 , (year / august ⟨ august ⟩) , july-august
-next-year-month-exists (year / august ⟨ august ⟩) = 30 , (year / september ⟨ september ⟩) , august-september
-next-year-month-exists (year / september ⟨ september ⟩) = 31 , (year / october ⟨ october ⟩) , september-october
-next-year-month-exists (year / october ⟨ october ⟩) = 30 , (year / november ⟨ november ⟩) , october-november
-next-year-month-exists (year / november ⟨ november ⟩) = 31 , (year / december ⟨ december ⟩) , november-december
-next-year-month-exists (year / december ⟨ december ⟩) with next-year-exists year
-...                                                      | _ , y , p = 31 , (y / january ⟨ january ⟩) , december-january p
-next-year-month-exists ((year th⟨ Y.common x ⟩) / january ⟨ january ⟩) = 28 , (((year th⟨ Y.common x ⟩) / february ⟨ february-common ⟩) , january-feburary-common)
-next-year-month-exists ((year th⟨ Y.leap x ⟩) / january ⟨ january ⟩) = 29 , ((year th⟨ Y.leap x ⟩) / february ⟨ february-leap ⟩) , january-feburary-leap
-next-year-month-exists (year / february ⟨ february-common ⟩) = 31 , (year / march ⟨ march ⟩) , february-common-march
-next-year-month-exists (year / february ⟨ february-leap ⟩) = 31 , (year / march ⟨ march ⟩) , february-leap-march
+next-year-month-exists (year - march ⟨ march ⟩) = 30 , (year - april ⟨ april ⟩) , march-april
+next-year-month-exists (year - april ⟨ april ⟩) = 31 , (year - may ⟨ may ⟩) , april-may
+next-year-month-exists (year - may ⟨ may ⟩) = 30 , (year - june ⟨ june ⟩) , may-june
+next-year-month-exists (year - june ⟨ june ⟩) = 31 , (year - july ⟨ july ⟩) , june-july
+next-year-month-exists (year - july ⟨ july ⟩) = 31 , (year - august ⟨ august ⟩) , july-august
+next-year-month-exists (year - august ⟨ august ⟩) = 30 , (year - september ⟨ september ⟩) , august-september
+next-year-month-exists (year - september ⟨ september ⟩) = 31 , (year - october ⟨ october ⟩) , september-october
+next-year-month-exists (year - october ⟨ october ⟩) = 30 , (year - november ⟨ november ⟩) , october-november
+next-year-month-exists (year - november ⟨ november ⟩) = 31 , (year - december ⟨ december ⟩) , november-december
+next-year-month-exists (year - december ⟨ december ⟩) with next-year-exists year
+...                                                      | _ , y , p = 31 , (y - january ⟨ january ⟩) , december-january p
+next-year-month-exists ((year ⟨ Y.common x ⟩) - january ⟨ january ⟩) = 28 , (((year ⟨ Y.common x ⟩) - february ⟨ february-common ⟩) , january-feburary-common)
+next-year-month-exists ((year ⟨ Y.leap x ⟩) - january ⟨ january ⟩) = 29 , ((year ⟨ Y.leap x ⟩) - february ⟨ february-leap ⟩) , january-feburary-leap
+next-year-month-exists (year - february ⟨ february-common ⟩) = 31 , (year - march ⟨ march ⟩) , february-common-march
+next-year-month-exists (year - february ⟨ february-leap ⟩) = 31 , (year - march ⟨ march ⟩) , february-leap-march
 
 prev-year-month-exists : ∀ {n} (ym : YearMonth n) → ∃[ n' ] Σ[ ym' ∈ YearMonth n' ] ym' ⋖ ym
-prev-year-month-exists (year / january ⟨ january ⟩) with prev-year-exists year
-...                                                    | ym , y , p = 31 , (y / december ⟨ december ⟩) , december-january p
-prev-year-month-exists (year / february ⟨ february-common ⟩) = 31 , ((year / january ⟨ january ⟩) , january-feburary-common)
-prev-year-month-exists (year / february ⟨ february-leap ⟩) = 31 , ((year / january ⟨ january ⟩) , january-feburary-leap)
-prev-year-month-exists (year / april ⟨ april ⟩) = 31 , (year / march ⟨ march ⟩) , march-april
-prev-year-month-exists (year / may ⟨ may ⟩) = 30 , (year / april ⟨ april ⟩) , april-may
-prev-year-month-exists (year / june ⟨ june ⟩) = 31 , (year / may ⟨ may ⟩) , may-june
-prev-year-month-exists (year / july ⟨ july ⟩) = 30 , (year / june ⟨ june ⟩) , june-july
-prev-year-month-exists (year / august ⟨ august ⟩) = 31 , (year / july ⟨ july ⟩) , july-august
-prev-year-month-exists (year / september ⟨ september ⟩) = 31 , (year / august ⟨ august ⟩) , august-september
-prev-year-month-exists (year / october ⟨ october ⟩) = 30 , (year / september ⟨ september ⟩) , september-october
-prev-year-month-exists (year / november ⟨ november ⟩) = 31 , (year / october ⟨ october ⟩) , october-november
-prev-year-month-exists (year / december ⟨ december ⟩) = 30 , (year / november ⟨ november ⟩) , november-december
-prev-year-month-exists ((year th⟨ Y.common ¬p ⟩) / march ⟨ march ⟩) = 28 , ((year th⟨ Y.common ¬p ⟩) / february ⟨ february-common ⟩) , february-common-march
-prev-year-month-exists ((year th⟨ Y.leap p ⟩) / march ⟨ march ⟩) = 29 , ((year th⟨ Y.leap p ⟩) / february ⟨ february-leap ⟩) , february-leap-march
+prev-year-month-exists (year - january ⟨ january ⟩) with prev-year-exists year
+...                                                    | ym , y , p = 31 , (y - december ⟨ december ⟩) , december-january p
+prev-year-month-exists (year - february ⟨ february-common ⟩) = 31 , ((year - january ⟨ january ⟩) , january-feburary-common)
+prev-year-month-exists (year - february ⟨ february-leap ⟩) = 31 , ((year - january ⟨ january ⟩) , january-feburary-leap)
+prev-year-month-exists (year - april ⟨ april ⟩) = 31 , (year - march ⟨ march ⟩) , march-april
+prev-year-month-exists (year - may ⟨ may ⟩) = 30 , (year - april ⟨ april ⟩) , april-may
+prev-year-month-exists (year - june ⟨ june ⟩) = 31 , (year - may ⟨ may ⟩) , may-june
+prev-year-month-exists (year - july ⟨ july ⟩) = 30 , (year - june ⟨ june ⟩) , june-july
+prev-year-month-exists (year - august ⟨ august ⟩) = 31 , (year - july ⟨ july ⟩) , july-august
+prev-year-month-exists (year - september ⟨ september ⟩) = 31 , (year - august ⟨ august ⟩) , august-september
+prev-year-month-exists (year - october ⟨ october ⟩) = 30 , (year - september ⟨ september ⟩) , september-october
+prev-year-month-exists (year - november ⟨ november ⟩) = 31 , (year - october ⟨ october ⟩) , october-november
+prev-year-month-exists (year - december ⟨ december ⟩) = 30 , (year - november ⟨ november ⟩) , november-december
+prev-year-month-exists ((year ⟨ Y.common ¬p ⟩) - march ⟨ march ⟩) = 28 , ((year ⟨ Y.common ¬p ⟩) - february ⟨ february-common ⟩) , february-common-march
+prev-year-month-exists ((year ⟨ Y.leap p ⟩) - march ⟨ march ⟩) = 29 , ((year ⟨ Y.leap p ⟩) - february ⟨ february-leap ⟩) , february-leap-march

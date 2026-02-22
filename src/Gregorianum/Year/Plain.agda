@@ -14,9 +14,9 @@ data _HasPlain_ {yt} (year : Year yt) : ℤ → Set where
         → year HasPlain y
 
 toPlain : ∀ {yt} → Year yt → ℤ
-toPlain (year th⟨ _ ⟩) = year
+toPlain (year ⟨ _ ⟩) = year
 
 fromPlain : (y : ℤ) → ∃[ yt ] Σ[ year ∈ Year yt ] year HasPlain y
 fromPlain y with isLeap? y
-...            | yes p = leap , (y th⟨ leap p ⟩) , plain refl
-...            | no ¬p = common , (y th⟨ (common ¬p) ⟩) , plain refl
+...            | yes p = leap , (y ⟨ leap p ⟩) , plain refl
+...            | no ¬p = common , (y ⟨ (common ¬p) ⟩) , plain refl

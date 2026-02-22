@@ -25,7 +25,7 @@ data _⋖ᶻ_ : ℤ → ℤ → Set where
   step⁻ : ∀ {n} → -[1+ suc n ] ⋖ᶻ -[1+ n ]
 
 record Year (yt : YearType): Set where
-  constructor _th⟨_⟩
+  constructor _⟨_⟩
   field
     year : ℤ
     has-year-type : year HasYearType yt
@@ -35,14 +35,14 @@ data _⋖_ : ∀ {yt₁ yt₂} → Year yt₁ → Year yt₂ → Set where
                 → y₁ ⋖ᶻ y₂
                 → (p : y₁ HasYearType common)
                 → (q : y₂ HasYearType common)
-                → (y₁ th⟨ p ⟩) ⋖ (y₂ th⟨ q ⟩)
+                → (y₁ ⟨ p ⟩) ⋖ (y₂ ⟨ q ⟩)
   common-leap   : ∀ { y₁ y₂ }
                 → y₁ ⋖ᶻ y₂
                 → (p : y₁ HasYearType common)
                 → (q : y₂ HasYearType leap)
-                → (y₁ th⟨ p ⟩) ⋖ (y₂ th⟨ q ⟩)
+                → (y₁ ⟨ p ⟩) ⋖ (y₂ ⟨ q ⟩)
   leap-common   : ∀ { y₁ y₂ }
                 → y₁ ⋖ᶻ y₂
                 → (p : y₁ HasYearType leap)
                 → (q : y₂ HasYearType common)
-                → (y₁ th⟨ p ⟩) ⋖ (y₂ th⟨ q ⟩)
+                → (y₁ ⟨ p ⟩) ⋖ (y₂ ⟨ q ⟩)

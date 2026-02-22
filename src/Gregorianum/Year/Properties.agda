@@ -65,9 +65,9 @@ prev-ℤ-unique step⁰ step⁰ = refl
 prev-ℤ-unique step⁻ step⁻ = refl
 
 next-year-unique : ∀ {yt₁ yt₂ yt₃}
-                      → { y₁@(a₁ th⟨ _ ⟩) : Year yt₁}
-                      → { y₂@(a₂ th⟨ _ ⟩) : Year yt₂}
-                      → { y₃@(a₃ th⟨ _ ⟩) : Year yt₃}
+                      → { y₁@(a₁ ⟨ _ ⟩) : Year yt₁}
+                      → { y₂@(a₂ ⟨ _ ⟩) : Year yt₂}
+                      → { y₃@(a₃ ⟨ _ ⟩) : Year yt₃}
                       → y₁ ⋖ y₂
                       → y₁ ⋖ y₃
                       → yt₂ ≡ yt₃ × a₂ ≡ a₃
@@ -80,9 +80,9 @@ next-year-unique (common-leap a₁⋖a₂ _ (leap q)) (common-common a₁⋖a₃
 next-year-unique (leap-common  a₁⋖a₂ _ _) (leap-common a₁⋖a₃ _ _) = refl , next-ℤ-unique a₁⋖a₂ a₁⋖a₃
 
 prev-year-unique : ∀ {yt₁ yt₂ yt₃}
-                 → { y₁@(a₁ th⟨ _ ⟩) : Year yt₁}
-                 → { y₂@(a₂ th⟨ _ ⟩) : Year yt₂}
-                 → { y₃@(a₃ th⟨ _ ⟩) : Year yt₃}
+                 → { y₁@(a₁ ⟨ _ ⟩) : Year yt₁}
+                 → { y₂@(a₂ ⟨ _ ⟩) : Year yt₂}
+                 → { y₃@(a₃ ⟨ _ ⟩) : Year yt₃}
                  → y₁ ⋖ y₃
                  → y₂ ⋖ y₃
                  → yt₁ ≡ yt₂ × a₁ ≡ a₂
@@ -95,21 +95,21 @@ prev-year-unique (leap-common a₁⋖a₃ (leap p) _) (common-common a₂⋖a₃
 ...                                                                                    | refl = contradiction p ¬p
 
 next-year-exists : ∀ {yt₁} (y₁ : Year yt₁) → ∃[ yt₂ ] Σ[ y₂ ∈ Year yt₂ ] (y₁ ⋖ y₂)
-next-year-exists (a th⟨ common p ⟩) with isLeap? (ℤ.suc a)
-next-year-exists (a th⟨ common p ⟩)    | yes q = leap , (((+ 1 ℤ.+ a) th⟨ leap q ⟩) , common-leap (⋖ᶻ-suc a) (common p) (leap q))
-next-year-exists (a th⟨ common p ⟩)    | no ¬q = common , (((+ 1 ℤ.+ a) th⟨ common ¬q ⟩) , common-common (⋖ᶻ-suc a) (common p) (common ¬q))
-next-year-exists (a th⟨ leap p ⟩)                      with isLeap? (ℤ.suc a)
-next-year-exists (a th⟨ leap p ⟩)                         | no ¬q = common , ((+ 1 ℤ.+ a) th⟨ common ¬q ⟩) , leap-common (⋖ᶻ-suc a) (leap p) (common ¬q)
-next-year-exists ((+ n) th⟨ leap (is-leap⁺ p) ⟩)          | yes (is-leap⁺ q) = contradiction p (leap+1⇒¬leap q)
-next-year-exists (-[1+ zero ] th⟨ leap (is-leap⁻ p) ⟩)    | yes (is-leap⁺ q) = contradiction p ¬leap1
-next-year-exists (-[1+ (suc n) ] th⟨ leap (is-leap⁻ p) ⟩) | yes (is-leap⁻ q) = contradiction p (leap⇒¬leap+1 q)
+next-year-exists (a ⟨ common p ⟩) with isLeap? (ℤ.suc a)
+next-year-exists (a ⟨ common p ⟩)    | yes q = leap , (((+ 1 ℤ.+ a) ⟨ leap q ⟩) , common-leap (⋖ᶻ-suc a) (common p) (leap q))
+next-year-exists (a ⟨ common p ⟩)    | no ¬q = common , (((+ 1 ℤ.+ a) ⟨ common ¬q ⟩) , common-common (⋖ᶻ-suc a) (common p) (common ¬q))
+next-year-exists (a ⟨ leap p ⟩)                      with isLeap? (ℤ.suc a)
+next-year-exists (a ⟨ leap p ⟩)                         | no ¬q = common , ((+ 1 ℤ.+ a) ⟨ common ¬q ⟩) , leap-common (⋖ᶻ-suc a) (leap p) (common ¬q)
+next-year-exists ((+ n) ⟨ leap (is-leap⁺ p) ⟩)          | yes (is-leap⁺ q) = contradiction p (leap+1⇒¬leap q)
+next-year-exists (-[1+ zero ] ⟨ leap (is-leap⁻ p) ⟩)    | yes (is-leap⁺ q) = contradiction p ¬leap1
+next-year-exists (-[1+ (suc n) ] ⟨ leap (is-leap⁻ p) ⟩) | yes (is-leap⁻ q) = contradiction p (leap⇒¬leap+1 q)
 
 prev-year-exists : ∀ {yt₂} (y₂ : Year yt₂) → ∃[ yt₁ ] Σ[ y₁ ∈ Year yt₁ ] (y₁ ⋖ y₂)
-prev-year-exists (a th⟨ common q ⟩) with isLeap? (ℤ.pred a)
-prev-year-exists (a th⟨ common q ⟩)    | yes p = leap , (ℤ.pred a th⟨ leap p ⟩) , leap-common (⋖ᶻ-pred a) (leap p) (common q)
-prev-year-exists (a th⟨ common q ⟩)    | no ¬p = common , (((ℤ.pred a) th⟨ common ¬p ⟩) , common-common (⋖ᶻ-pred a) (common ¬p) (common q))
-prev-year-exists (a th⟨ leap q ⟩)                   with isLeap? (ℤ.pred a)
-prev-year-exists (a th⟨ leap q ⟩)                      | no ¬p = common , (((ℤ.pred a) th⟨ (common ¬p) ⟩) , (common-leap (⋖ᶻ-pred a) (common ¬p) (leap q)))
-prev-year-exists ((+ zero) th⟨ leap _ ⟩)               | yes (is-leap⁻ p) = contradiction p ¬leap1
-prev-year-exists ((+ (suc _)) th⟨ leap (is-leap⁺ q) ⟩) | yes (is-leap⁺ p) = contradiction p (leap+1⇒¬leap q)
-prev-year-exists (-[1+_] _ th⟨ leap (is-leap⁻ q) ⟩)    | yes (is-leap⁻ p) = contradiction p (leap⇒¬leap+1 q)
+prev-year-exists (a ⟨ common q ⟩) with isLeap? (ℤ.pred a)
+prev-year-exists (a ⟨ common q ⟩)    | yes p = leap , (ℤ.pred a ⟨ leap p ⟩) , leap-common (⋖ᶻ-pred a) (leap p) (common q)
+prev-year-exists (a ⟨ common q ⟩)    | no ¬p = common , (((ℤ.pred a) ⟨ common ¬p ⟩) , common-common (⋖ᶻ-pred a) (common ¬p) (common q))
+prev-year-exists (a ⟨ leap q ⟩)                   with isLeap? (ℤ.pred a)
+prev-year-exists (a ⟨ leap q ⟩)                      | no ¬p = common , (((ℤ.pred a) ⟨ (common ¬p) ⟩) , (common-leap (⋖ᶻ-pred a) (common ¬p) (leap q)))
+prev-year-exists ((+ zero) ⟨ leap _ ⟩)               | yes (is-leap⁻ p) = contradiction p ¬leap1
+prev-year-exists ((+ (suc _)) ⟨ leap (is-leap⁺ q) ⟩) | yes (is-leap⁺ p) = contradiction p (leap+1⇒¬leap q)
+prev-year-exists (-[1+_] _ ⟨ leap (is-leap⁻ q) ⟩)    | yes (is-leap⁻ p) = contradiction p (leap⇒¬leap+1 q)

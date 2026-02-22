@@ -31,11 +31,11 @@ prev-day-unique (step-month d₁ ym₁⋖ym₃) (step-month d₂ ym₂⋖ym₃)
 ...            | refl | refl = refl
 
 next-day-exists : ∀ (d₁ : Date) → ∃[ d₂ ] (d₁ ⋖ d₂)
-next-day-exists (year-month / day ⟨ _ , zero ⟩) with next-year-month-exists year-month | rem≡0⇒cap≡acc day
-... | suc n , ym@(y YM./ m ⟨ has-days ⟩ ) , p | refl = (ym / 1st) , step-month day p
-next-day-exists (year-month / day ⟨ _ , suc _ ⟩) = (year-month / suc day) , step day
+next-day-exists (year-month - day ⟨ _ , zero ⟩) with next-year-month-exists year-month | rem≡0⇒cap≡acc day
+... | suc n , ym@(y YM.- m ⟨ has-days ⟩ ) , p | refl = (ym - 1st) , step-month day p
+next-day-exists (year-month - day ⟨ _ , suc _ ⟩) = (year-month - suc day) , step day
 
 prev-day-exists : ∀ (d₂ : Date) → ∃[ d₁ ] (d₁ ⋖ d₂)
-prev-day-exists (year-month / 1st) with prev-year-month-exists year-month
-... | suc n , ym , ym₁⋖ym₂ = (ym / last) , step-month last ym₁⋖ym₂
-prev-day-exists (year-month / suc d) = (year-month / d) , step d
+prev-day-exists (year-month - 1st) with prev-year-month-exists year-month
+... | suc n , ym , ym₁⋖ym₂ = (ym - last) , step-month last ym₁⋖ym₂
+prev-day-exists (year-month - suc d) = (year-month - d) , step d
