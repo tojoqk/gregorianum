@@ -17,6 +17,8 @@ data _HasYearType_ : ℤ → YearType → Set where
   common : ∀ {y} → ¬ IsLeap y → y HasYearType common
   leap   : ∀ {y} → IsLeap y → y HasYearType leap
 
+
+-- Proleptic Gregorian calendar
 data _⋖ᶻ_ : ℤ → ℤ → Set where
   step⁺ : ∀ {n} → (+ n) ⋖ᶻ (+ suc n)
   step⁰ : -[1+ zero ] ⋖ᶻ (+ zero)
