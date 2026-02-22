@@ -22,7 +22,7 @@ data _⋖_ : Date → Date → Set where
   step : ∀ {cap acc rem} {ym : YearMonth (suc cap)}
        → (d : Day cap acc (suc rem))
        → (ym / d) ⋖ (ym / suc d)
-  step-last : ∀ {cap₁ cap₂} {ym₁ : YearMonth (suc cap₁)} {ym₂ : YearMonth (suc cap₂)}
-            → (d : Day cap₁ cap₁ 0)
-            → ym₁ YM.⋖ ym₂
-            → (ym₁ / d) ⋖ (ym₂ / 1st)
+  step-month : ∀ {cap₁ cap₂} {ym₁ : YearMonth (suc cap₁)} {ym₂ : YearMonth (suc cap₂)}
+             → (d : Day cap₁ cap₁ 0)
+             → ym₁ YM.⋖ ym₂
+             → (ym₁ / d) ⋖ (ym₂ / 1st)
