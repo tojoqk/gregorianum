@@ -1,8 +1,9 @@
 module Gregorianum.Year.Properties where
 
-open import Gregorianum.Law.Leap
+open import Gregorianum.Year.Base
+
+open import Gregorianum.Law.Leap.Base
 open import Gregorianum.Law.Leap.Properties using (leap?; leap⇒¬leap+1; leap+1⇒¬leap; ¬leap1; leap-irrelevant)
-open import Gregorianum.Year
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Integer as ℤ using (ℤ; +_; -[1+_])
 open import Data.Product using (∃-syntax; Σ-syntax; Σ; _×_; _,_)

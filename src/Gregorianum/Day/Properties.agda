@@ -1,10 +1,10 @@
 module Gregorianum.Day.Properties where
 
+open import Gregorianum.Day.Base
+
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Nat.Properties as ℕProps
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
-
-open import Gregorianum.Day
 
 day-unique : ∀ {cap acc rem}
            → (d₁ d₂ : Day cap acc rem)

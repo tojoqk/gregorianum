@@ -1,9 +1,9 @@
 module Gregorianum.YearMonth.Properties where
 
-open import Gregorianum.YearMonth
-open import Gregorianum.Month
+open import Gregorianum.YearMonth.Base
 
-open import Gregorianum.Year as Y using (_th⟨_⟩)
+open import Gregorianum.Month.Base
+open import Gregorianum.Year.Base as Y using (_th⟨_⟩)
 open import Gregorianum.Year.Properties using (next-year-unique; prev-year-unique; has-year-type-irrelevant; next-year-exists; prev-year-exists)
 open import Data.Nat using (ℕ)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

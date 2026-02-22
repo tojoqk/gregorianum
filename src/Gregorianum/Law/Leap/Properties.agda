@@ -1,6 +1,7 @@
 module Gregorianum.Law.Leap.Properties where
 
-open import Gregorianum.Law.Leap
+open import Gregorianum.Law.Leap.Base
+
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 open import Data.Nat using (ℕ; zero; suc; _≟_; _%_; _*_; NonZero)
 open import Data.Nat.Properties as ℕProps

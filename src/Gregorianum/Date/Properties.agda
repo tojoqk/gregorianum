@@ -1,13 +1,14 @@
 module Gregorianum.Date.Properties where
 
+open import Gregorianum.Date.Base
+
+open import Gregorianum.Day.Base using (Day; 1st; suc; last)
+open import Gregorianum.Day.Properties using (day-unique; rem≡0⇒cap≡acc)
+import Gregorianum.YearMonth.Base as YM
+open import Gregorianum.YearMonth.Properties using (next-year-month-unique; prev-year-month-unique; next-days-unique; prev-days-unique; next-year-month-exists; prev-year-month-exists)
 open import Data.Product using (∃-syntax; _,_)
-open import Gregorianum.Day using (Day; 1st; suc; last)
-import Gregorianum.YearMonth as YM
-open import Gregorianum.Date as D using (Date; _⋖_; _/_; _/_⟨_,_⟩; step; step-last)
 open import Data.Nat using (ℕ; zero; suc)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
-open import Gregorianum.Day.Properties
-open import Gregorianum.YearMonth.Properties using (next-year-month-unique; prev-year-month-unique; next-days-unique; prev-days-unique; next-year-month-exists; prev-year-month-exists)
 
 tomorrow-unique : ∀ {d₁ d₂ d₃ : Date}
                 → d₁ ⋖ d₂
