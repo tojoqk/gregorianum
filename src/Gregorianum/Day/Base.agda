@@ -1,6 +1,6 @@
 module Gregorianum.Day.Base where
 
-open import Data.Nat using (ℕ; suc; zero)
+open import Data.Nat using (ℕ; suc; zero; _≤_; z≤n; s≤s; _∸_)
 
 data Day (cap : ℕ) : (acc rem : ℕ) → Set where
   1st : Day cap zero cap
@@ -17,3 +17,7 @@ injectʳ (suc d) = suc (injectʳ d)
 last : ∀ {cap} →  Day cap cap 0
 last {zero} = 1st
 last {suc _} = injectˡ last
+
+fromℕ≤ : ∀ {cap n} → n ≤ cap → Day cap n (cap ∸ n)
+fromℕ≤ z≤n = 1st
+fromℕ≤ (s≤s n≤cap) = injectˡ (fromℕ≤ n≤cap)

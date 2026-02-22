@@ -2,6 +2,7 @@ module Gregorianum.Date where
 
 open import Gregorianum.Date.Base public
 open import Gregorianum.Date.Properties
+open import Gregorianum.Date.Plain using (⟨+_-_-_⟩; ⟨_-_-_⟩ ; toPlain; fromPlain?) public
 
 open import Data.Product using (proj₁)
 
