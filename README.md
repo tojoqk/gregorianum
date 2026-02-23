@@ -5,7 +5,7 @@
 Unlike traditional libraries that rely on runtime validation, Gregorianum encodes the structural laws of the calendar—such as month lengths, leap years, and era transitions—directly into the type system.
 
 
-## The Core: Structural Elegance of `Day`
+## Structural Elegance of `Day`
 
 The heart of Gregorianum is the `Day` type. It is not merely a wrapper for an integer; it is a type-level representation of a day's **Successor Capacity**.
 
@@ -35,10 +35,48 @@ last {suc _} = injectˡ last
 
 By using `injectˡ`, the library derives the end of a month of any length as a structural property, ensuring that `prevDay` logic is always grounded in the month's actual capacity.
 
+## The Date Type and Adjacency
+
+Atop the `Day` type lies the `Date` record and a formal adjacency relation `_⋖_`. This relation defines the legal "next day" logic as a type-level specification.
+
+### 1. The `Date` Record
+
+A `Date` is a dependent record where the `YearMonth` dictates the legal capacity of the `Day`.
+
+```agda
+record Date : Set where
+  constructor _-_
+  field
+    {cap}     : ℕ
+    year-month : YearMonth (suc cap) -- suc cap ≡ days
+    {acc} : ℕ
+    {rem} : ℕ
+    day : Day cap acc rem
+
+  open YearMonth year-month public
+```
+
+### 2. Adjacency
+
+We define what it means for one date to succeed another using a data type. This captures the logic of the calendar as a set of logical rules:
+
+```agda
+data _⋖_ : Date → Date → Set where
+  step : ∀ {cap acc rem} {ym : YearMonth (suc cap)}
+       → (d : Day cap acc (suc rem))
+       → (ym - d) ⋖ (ym - suc d)
+  step-month : ∀ {cap₁ cap₂} {ym₁ : YearMonth (suc cap₁)} {ym₂ : YearMonth (suc cap₂)}
+             → (d : Day cap₁ cap₁ 0)
+             → ym₁ YM.⋖ ym₂
+             → (ym₁ - d) ⋖ (ym₂ - 1st)
+```
+
+The `nextDay` function is a projection from an existence proof (`next-day-exists`), ensuring that transitions are total and always land on a valid date.
+
 
 ## Key Features
 
--   **Correct-by-Construction Transitions**: `nextDay` and `prevDay` are derived from existence proofs (`next-day-exists`). They are **total functions** that seamlessly handle month boundaries, leap years, and even the B.C./A.D. bridge (the transition from -1 to 0).
+-   **Correct-by-Construction Transitions**: `nextDay` and `prevDay` are derived from existence proofs (`next-day-exists`). They are **total functions** that seamlessly handle month boundaries, leap years.
 -   **Proof Irrelevance**: Internal witnesses (such as leap year proofs) are proven irrelevant. This ensures that date equality (`_≡_`) behaves intuitively, based only on calendar values, without being hindered by underlying proof structures.
 -   **Proleptic Support**: Full support for dates in the deep past and far future using arbitrary-precision integers (`ℤ`).
 -   **Decidable Interface**: Conversion from raw integers to verified `Date` types is **decidable**. Using the `True` witness pattern, you can construct verified dates with elegant syntax.
@@ -87,7 +125,7 @@ _ = refl
 ## Project Structure
 
 -   `Gregorianum.Date`: Core verified date types and total transitions.
--   `Gregorianum.Day`: The revolutionary `Day` type indexed by successor capacity.
+-   `Gregorianum.Day`: The `Day` type indexed by successor capacity.
 -   `Gregorianum.YearMonth`: Logic for month capacities and year-type dependencies.
 -   `Gregorianum.Law.Leap`: Formal logic and irrelevance proofs for leap years.
 -   `Gregorianum.Date.Plain`: Decidable conversion between raw data and verified types.
