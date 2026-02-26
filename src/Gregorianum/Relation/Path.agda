@@ -4,12 +4,9 @@ module Gregorianum.Relation.Path (A : Set)
                                  (_─[_]→_ : A → ℕ → A → Set)
                                  where
 
-open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl; cong; subst)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Nat using (zero; suc; _+_)
-open import Data.Nat.Properties using (+-identityʳ)
-open import Data.Product using (∃-syntax; _×_; _,_; proj₁)
-open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Data.Product using (∃-syntax; _×_; _,_)
 
 record IsPath : Set where
   field
