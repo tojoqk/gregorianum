@@ -3,9 +3,7 @@ import Gregorianum.Relation.Path as Path
 
 module Gregorianum.Relation.DualLinear (A : Set)
                                        (_≤[_]→_ : A → ℕ → A → Set)
-                                       (≤-isLinear : Path.IsLinear A _≤[_]→_)
                                        (_≥[_]→_ : A → ℕ → A → Set)
-                                       (≥-isLinear : Path.IsLinear A _≥[_]→_)
                                        where
 
 open import Data.Nat using (zero; suc; _+_)
@@ -18,6 +16,8 @@ data Tri (x y : A) : Set where
 
 record IsDualLinear : Set where
   field
+    ≤-isLinear : Path.IsLinear A _≤[_]→_
+    ≥-isLinear : Path.IsLinear A _≥[_]→_
     ≤→⇒≥← : ∀ {x y n} → x ≤[ n ]→ y → y ≥[ n ]→ x
     ≥→⇒≤← : ∀ {x y n} → x ≥[ n ]→ y → y ≤[ n ]→ x
     compare : ∀ x y → Tri x y
