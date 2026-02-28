@@ -34,7 +34,7 @@ record IsLinear : Set where
     acyclic : ∀ {x y m n} → x ─[ m ]→ y → y ─[ n ]→ x → m ≡ 0 × n ≡ 0
     compare : ∀ x y → Tri x y
 
-  open IsPath isPath
+  open IsPath isPath public
 
   unique-length : ∀ {x y m n} → x ─[ m ]→ y → x ─[ n ]→ y → m ≡ n
   unique-length {m = zero} {n = zero} p q = refl
