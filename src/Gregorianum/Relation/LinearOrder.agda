@@ -8,7 +8,6 @@ module Gregorianum.Relation.LinearOrder (A : Set)
 
 open import Gregorianum.Relation.Path A _─[_]→_ renaming (Tri to PathTri)
 open IsLinear isLinear renaming (compare to path-compare)
-open IsPath isPath
 
 open import Data.Nat using (ℕ; zero; suc; NonZero)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
