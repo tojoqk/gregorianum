@@ -1,139 +1,53 @@
 module Gregorianum.YearMonth.Properties where
 
 open import Gregorianum.YearMonth.Base
-
-open import Gregorianum.Month.Base
-open import Gregorianum.Year.Base as Y using (_⟨_⟩)
-open import Gregorianum.Year.Properties using (next-year-unique; prev-year-unique; has-year-type-irrelevant; next-year-exists; prev-year-exists)
-open import Data.Nat using (ℕ)
+import Gregorianum.Year as Y
+import Gregorianum.Year.Properties as Y
+import Gregorianum.Month as M
+import Gregorianum.Month.Properties as M
+open import Gregorianum.Year.Properties using (nextYear-unique; prevYear-unique)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-open import Data.Product using (Σ-syntax; ∃-syntax; _×_; _,_; proj₁; proj₂)
 
-next-days-unique : ∀ {n₁ n₂ n₃}
-                 → { ym₁ : YearMonth n₁}
-                 → { ym₂ : YearMonth n₂}
-                 → { ym₃ : YearMonth n₃}
-                 → ym₁ ⋖ ym₂
-                 → ym₁ ⋖ ym₃
-                 → n₂ ≡ n₃
-next-days-unique january-february-common january-february-common = refl
-next-days-unique january-february-leap january-february-leap = refl
-next-days-unique february-common-march february-common-march = refl
-next-days-unique february-leap-march february-leap-march = refl
-next-days-unique march-april march-april = refl
-next-days-unique april-may april-may = refl
-next-days-unique may-june may-june = refl
-next-days-unique june-july june-july = refl
-next-days-unique july-august july-august = refl
-next-days-unique august-september august-september = refl
-next-days-unique september-october september-october = refl
-next-days-unique october-november october-november = refl
-next-days-unique november-december november-december = refl
-next-days-unique (december-january _) (december-january _) = refl
+nextYearMonth-unique : ∀ {ym₁ ym₂ ym₃}
+                     → ym₁ ⋖ ym₂
+                     → ym₁ ⋖ ym₃
+                     → ym₂ ≡ ym₃
+nextYearMonth-unique stepᵐ stepᵐ = refl
+nextYearMonth-unique (stepʸ p) (stepʸ q) with nextYear-unique p q
+...                                           | refl = refl
 
-prev-days-unique : ∀ {n₁ n₂ n₃}
-                 → { ym₁ : YearMonth n₁}
-                 → { ym₂ : YearMonth n₂}
-                 → { ym₃ : YearMonth n₃}
-                 → ym₁ ⋖ ym₃
-                 → ym₂ ⋖ ym₃
-                 → n₁ ≡ n₂
-prev-days-unique january-february-common january-february-common = refl
-prev-days-unique january-february-leap january-february-leap = refl
-prev-days-unique february-common-march february-common-march = refl
-prev-days-unique february-leap-march february-leap-march = refl
-prev-days-unique march-april march-april = refl
-prev-days-unique april-may april-may = refl
-prev-days-unique may-june may-june = refl
-prev-days-unique june-july june-july = refl
-prev-days-unique july-august july-august = refl
-prev-days-unique august-september august-september = refl
-prev-days-unique september-october september-october = refl
-prev-days-unique october-november october-november = refl
-prev-days-unique november-december november-december = refl
-prev-days-unique (december-january _) (december-january _) = refl
+prevYearMonth-unique : ∀ {ym₁ ym₂ ym₃}
+                     → ym₁ ⋖ ym₃
+                     → ym₂ ⋖ ym₃
+                     → ym₁ ≡ ym₂
+prevYearMonth-unique stepᵐ stepᵐ = refl
+prevYearMonth-unique (stepʸ p) (stepʸ q) with prevYear-unique p q
+...                                           | refl = refl
 
+days-unique : ∀ {ym days₁ days₂}
+               → ym HasDays days₁
+               → ym HasDays days₂
+               → days₁ ≡ days₂
+days-unique (mkHasDays _ M.january-days) (mkHasDays _ M.january-days) = refl
+days-unique (mkHasDays _ M.february-common-days) (mkHasDays _ M.february-common-days) = refl
+days-unique (mkHasDays Y.common M.february-common-days) (mkHasDays () M.february-leap-days)
+days-unique (mkHasDays Y.common₁₀₀ M.february-common-days) (mkHasDays () M.february-leap-days)
+days-unique (mkHasDays _ M.february-leap-days) (mkHasDays _ M.february-leap-days) = refl
+days-unique (mkHasDays () M.february-leap-days) (mkHasDays Y.common M.february-common-days)
+days-unique (mkHasDays () M.february-leap-days) (mkHasDays Y.common₁₀₀ M.february-common-days)
+days-unique (mkHasDays _ M.march-days) (mkHasDays _ M.march-days) = refl
+days-unique (mkHasDays _ M.april-days) (mkHasDays _ M.april-days) = refl
+days-unique (mkHasDays _ M.may-days) (mkHasDays _ M.may-days) = refl
+days-unique (mkHasDays _ M.june-days) (mkHasDays _ M.june-days) = refl
+days-unique (mkHasDays _ M.july-days) (mkHasDays _ M.july-days) = refl
+days-unique (mkHasDays _ M.august-days) (mkHasDays _ M.august-days) = refl
+days-unique (mkHasDays _ M.september-days) (mkHasDays _ M.september-days) = refl
+days-unique (mkHasDays _ M.october-days) (mkHasDays _ M.october-days) = refl
+days-unique (mkHasDays _ M.november-days) (mkHasDays _ M.november-days) = refl
+days-unique (mkHasDays _ M.december-days) (mkHasDays _ M.december-days) = refl
 
-next-year-month-unique : ∀ {n n'}
-                       → { ym₁ : YearMonth n }
-                       → { ym₂ : YearMonth n'}
-                       → { ym₃ : YearMonth n'}
-                       → ym₁ ⋖ ym₂
-                       → ym₁ ⋖ ym₃
-                       → ym₂ ≡ ym₃
-next-year-month-unique january-february-common january-february-common = refl
-next-year-month-unique january-february-leap january-february-leap = refl
-next-year-month-unique february-common-march february-common-march = refl
-next-year-month-unique february-leap-march february-leap-march = refl
-next-year-month-unique march-april march-april = refl
-next-year-month-unique april-may april-may = refl
-next-year-month-unique may-june may-june = refl
-next-year-month-unique june-july june-july = refl
-next-year-month-unique july-august july-august = refl
-next-year-month-unique august-september august-september = refl
-next-year-month-unique september-october september-october = refl
-next-year-month-unique october-november october-november = refl
-next-year-month-unique november-december november-december = refl
-next-year-month-unique {ym₂ = ((_ ⟨ p₂ ⟩) - _ ⟨ _ ⟩)} {ym₃ = ((_ ⟨ p₃ ⟩) - _ ⟨ _ ⟩)} (december-january y₁⋖y₂) (december-january y₁⋖y₃)
-                       with next-year-unique y₁⋖y₂ y₁⋖y₃
-...                       | refl , refl with has-year-type-irrelevant p₂ p₃
-...                                        | refl = refl
+HasDays-irrelevant : ∀ {ym days} → (p q : ym HasDays days) → p ≡ q
+HasDays-irrelevant (mkHasDays hasYearType₁ hasDays₁) (mkHasDays hasYearType₂ hasDays₂) with Y.yearType-unique hasYearType₁ hasYearType₂
+... | refl with Y.HasYearType-irrelevant hasYearType₁ hasYearType₂ | M.HasDays-irrelevant hasDays₁ hasDays₂
+... | refl | refl = refl
 
-prev-year-month-unique : ∀ {n n'}
-                       → { ym₁ : YearMonth n }
-                       → { ym₂ : YearMonth n}
-                       → { ym₃ : YearMonth n'}
-                       → ym₁ ⋖ ym₃
-                       → ym₂ ⋖ ym₃
-                       → ym₁ ≡ ym₂
-prev-year-month-unique january-february-common january-february-common = refl
-prev-year-month-unique january-february-leap january-february-leap = refl
-prev-year-month-unique february-common-march february-common-march = refl
-prev-year-month-unique february-leap-march february-leap-march = refl
-prev-year-month-unique march-april march-april = refl
-prev-year-month-unique april-may april-may = refl
-prev-year-month-unique may-june may-june = refl
-prev-year-month-unique june-july june-july = refl
-prev-year-month-unique july-august july-august = refl
-prev-year-month-unique august-september august-september = refl
-prev-year-month-unique september-october september-october = refl
-prev-year-month-unique october-november october-november = refl
-prev-year-month-unique november-december november-december = refl
-prev-year-month-unique {ym₁ = ((_ ⟨ p₁ ⟩) - _ ⟨ _ ⟩)} {ym₂ = ((_ ⟨ p₂ ⟩) - _ ⟨ _ ⟩)} (december-january y₁⋖y₃) (december-january y₂⋖y₃)
-                       with prev-year-unique y₁⋖y₃  y₂⋖y₃
-...                       | refl , refl with has-year-type-irrelevant p₁ p₂
-...                                        | refl = refl
-
-next-year-month-exists : ∀ {n} (ym : YearMonth n) → ∃[ n' ] Σ[ ym' ∈ YearMonth n' ] ym ⋖ ym'
-next-year-month-exists (year - march ⟨ march ⟩) = 30 , (year - april ⟨ april ⟩) , march-april
-next-year-month-exists (year - april ⟨ april ⟩) = 31 , (year - may ⟨ may ⟩) , april-may
-next-year-month-exists (year - may ⟨ may ⟩) = 30 , (year - june ⟨ june ⟩) , may-june
-next-year-month-exists (year - june ⟨ june ⟩) = 31 , (year - july ⟨ july ⟩) , june-july
-next-year-month-exists (year - july ⟨ july ⟩) = 31 , (year - august ⟨ august ⟩) , july-august
-next-year-month-exists (year - august ⟨ august ⟩) = 30 , (year - september ⟨ september ⟩) , august-september
-next-year-month-exists (year - september ⟨ september ⟩) = 31 , (year - october ⟨ october ⟩) , september-october
-next-year-month-exists (year - october ⟨ october ⟩) = 30 , (year - november ⟨ november ⟩) , october-november
-next-year-month-exists (year - november ⟨ november ⟩) = 31 , (year - december ⟨ december ⟩) , november-december
-next-year-month-exists (year - december ⟨ december ⟩) with next-year-exists year
-...                                                      | _ , y , p = 31 , (y - january ⟨ january ⟩) , december-january p
-next-year-month-exists ((year ⟨ Y.common x ⟩) - january ⟨ january ⟩) = 28 , (((year ⟨ Y.common x ⟩) - february ⟨ february-common ⟩) , january-february-common)
-next-year-month-exists ((year ⟨ Y.leap x ⟩) - january ⟨ january ⟩) = 29 , ((year ⟨ Y.leap x ⟩) - february ⟨ february-leap ⟩) , january-february-leap
-next-year-month-exists (year - february ⟨ february-common ⟩) = 31 , (year - march ⟨ march ⟩) , february-common-march
-next-year-month-exists (year - february ⟨ february-leap ⟩) = 31 , (year - march ⟨ march ⟩) , february-leap-march
-
-prev-year-month-exists : ∀ {n} (ym : YearMonth n) → ∃[ n' ] Σ[ ym' ∈ YearMonth n' ] ym' ⋖ ym
-prev-year-month-exists (year - january ⟨ january ⟩) with prev-year-exists year
-...                                                    | ym , y , p = 31 , (y - december ⟨ december ⟩) , december-january p
-prev-year-month-exists (year - february ⟨ february-common ⟩) = 31 , ((year - january ⟨ january ⟩) , january-february-common)
-prev-year-month-exists (year - february ⟨ february-leap ⟩) = 31 , ((year - january ⟨ january ⟩) , january-february-leap)
-prev-year-month-exists (year - april ⟨ april ⟩) = 31 , (year - march ⟨ march ⟩) , march-april
-prev-year-month-exists (year - may ⟨ may ⟩) = 30 , (year - april ⟨ april ⟩) , april-may
-prev-year-month-exists (year - june ⟨ june ⟩) = 31 , (year - may ⟨ may ⟩) , may-june
-prev-year-month-exists (year - july ⟨ july ⟩) = 30 , (year - june ⟨ june ⟩) , june-july
-prev-year-month-exists (year - august ⟨ august ⟩) = 31 , (year - july ⟨ july ⟩) , july-august
-prev-year-month-exists (year - september ⟨ september ⟩) = 31 , (year - august ⟨ august ⟩) , august-september
-prev-year-month-exists (year - october ⟨ october ⟩) = 30 , (year - september ⟨ september ⟩) , september-october
-prev-year-month-exists (year - november ⟨ november ⟩) = 31 , (year - october ⟨ october ⟩) , october-november
-prev-year-month-exists (year - december ⟨ december ⟩) = 30 , (year - november ⟨ november ⟩) , november-december
-prev-year-month-exists ((year ⟨ Y.common ¬p ⟩) - march ⟨ march ⟩) = 28 , ((year ⟨ Y.common ¬p ⟩) - february ⟨ february-common ⟩) , february-common-march
-prev-year-month-exists ((year ⟨ Y.leap p ⟩) - march ⟨ march ⟩) = 29 , ((year ⟨ Y.leap p ⟩) - february ⟨ february-leap ⟩) , february-leap-march

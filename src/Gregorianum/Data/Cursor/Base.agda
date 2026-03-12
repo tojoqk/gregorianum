@@ -21,3 +21,6 @@ last {suc width} = injectˡ last
 fromℕ≤ : ∀ {width n} → n ≤ width → Cursor width n (width ∸ n)
 fromℕ≤ z≤n = zero
 fromℕ≤ (s≤s n≤width) = injectˡ (fromℕ≤ n≤width)
+
+toℕ : ∀ {width acc rem} → Cursor width acc rem → ℕ
+toℕ {acc} _ = acc

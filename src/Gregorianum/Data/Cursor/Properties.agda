@@ -2,9 +2,9 @@ module Gregorianum.Data.Cursor.Properties where
 
 open import Gregorianum.Data.Cursor.Base
 
-open import Data.Nat using (zero; suc; _+_)
-open import Data.Nat.Properties as ℕProps
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Data.Nat using (zero; suc; _+_; _≤_; z≤n; s≤s)
+open import Data.Nat.Properties as ℕ
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong)
 
 unique : ∀ {width acc rem}
        → (c₁ c₂ : Cursor width acc rem)
@@ -15,7 +15,7 @@ unique {acc = suc _} (suc c₁) (suc c₂) = cong suc (unique c₁ c₂)
 width≡acc+rem : ∀ {width acc rem} → Cursor width acc rem → width ≡ acc + rem
 width≡acc+rem zero = refl
 width≡acc+rem {rem = rem} (suc c) with width≡acc+rem c
-...                                  | refl = ℕProps.+-suc _ rem
+...                                  | refl = ℕ.+-suc _ rem
 
 acc≡0⇒width≡rem : ∀ {width rem}
                 → Cursor width 0 rem
@@ -26,4 +26,11 @@ rem≡0⇒width≡acc : ∀ {width acc}
                 → Cursor width acc 0
                 → width ≡ acc
 rem≡0⇒width≡acc c with width≡acc+rem c
-...                   | refl = ℕProps.+-identityʳ _
+...                   | refl = ℕ.+-identityʳ _
+
+acc≤width : ∀ {width acc rem}
+          → Cursor width acc rem
+          → acc ≤ width
+acc≤width {rem = zero} c = ≤-reflexive (sym (rem≡0⇒width≡acc c))
+acc≤width {rem = suc rem} c with acc≤width {rem = rem} (suc c)
+...                            | s≤s acc≤n = ≤-trans acc≤n (m≤n⇒m≤1+n ≤-refl)
