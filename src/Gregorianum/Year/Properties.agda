@@ -7,6 +7,7 @@ open import Gregorianum.Data.Cursor.Position
 import Gregorianum.Data.Cursor.Properties as Cursor
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Data.Nat using (ℕ; zero; suc)
+open import Relation.Nullary.Negation using (¬_; contradiction)
 
 yearType-unique : ∀ {y yt₁ yt₂}
                 → y HasYearType yt₁
@@ -40,3 +41,10 @@ nextYear-unique step step = refl
 nextYear-unique step₄ step₄ = refl
 nextYear-unique step₁₀₀ step₁₀₀ = refl
 nextYear-unique step₄₀₀ step₄₀₀ = refl
+
+¬IsSuccessor⇒first : ∀ {y} → ¬ (IsSuccessor y) → y ≡ (zero ×₄₀₀+ (mkPos first) ×₁₀₀+ (mkPos first) ×₄+ (mkPos first))
+¬IsSuccessor⇒first {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)} ¬isSuc = contradiction suc₁ ¬isSuc
+¬IsSuccessor⇒first {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} ¬isSuc = contradiction suc₄ ¬isSuc
+¬IsSuccessor⇒first {q ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = contradiction suc₁₀₀ ¬isSuc
+¬IsSuccessor⇒first {suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = contradiction suc₄₀₀ ¬isSuc
+¬IsSuccessor⇒first {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = refl

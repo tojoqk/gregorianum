@@ -7,7 +7,7 @@ open import Gregorianum.Year.Properties
 open import Gregorianum.Data.Cursor
 open import Gregorianum.Data.Cursor.Position
 open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (_,_)
+open import Data.Product using (∃-syntax; _,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 nextYear-epoch : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasEpoch n → y₂ HasEpoch (suc n)
@@ -36,3 +36,9 @@ year-unique {ℕ.zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ m
 
 epoch-unique : ∀ {y n₁ n₂} → y HasEpoch n₁ → y HasEpoch n₂ → n₁ ≡ n₂
 epoch-unique epoch epoch = refl
+
+isSuccessor⇒suc-epoch : ∀ {y} → IsSuccessor y → ∃[ n ] y HasEpoch (suc n)
+isSuccessor⇒suc-epoch suc₁ = _ , epoch
+isSuccessor⇒suc-epoch suc₄ = _ , epoch
+isSuccessor⇒suc-epoch suc₁₀₀ = _ , epoch
+isSuccessor⇒suc-epoch suc₄₀₀ = _ , epoch
