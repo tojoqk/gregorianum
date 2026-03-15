@@ -6,7 +6,7 @@ open import Gregorianum.Year.Epoch.Properties
 
 open import Induction.WellFounded as WF
 open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position
+open import Gregorianum.Data.Cursor.Position hiding (_<_)
 open import Data.Nat as ℕ using (ℕ; zero; suc; _<_; z≤n; s≤s)
 open import Data.Nat.Properties as ℕ using (suc-injective; ≤-refl)
 import Data.Nat.Induction as ℕ
