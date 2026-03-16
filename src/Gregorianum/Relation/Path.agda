@@ -36,15 +36,15 @@ record IsLinear : Set where
 
   open IsPath isPath public
 
-  unique-length : ∀ {x y m n} → x ─[ m ]→ y → x ─[ n ]→ y → m ≡ n
-  unique-length {m = zero} {n = zero} p q = refl
-  unique-length {m = zero} {n = suc n} p q with identity⁻¹ p
+  unique-len : ∀ {x y m n} → x ─[ m ]→ y → x ─[ n ]→ y → m ≡ n
+  unique-len {m = zero} {n = zero} p q = refl
+  unique-len {m = zero} {n = suc n} p q with identity⁻¹ p
   ...                                         | refl with acyclic q q
   ...                                                   | ()
-  unique-length {m = suc m} {n = zero} p q with identity⁻¹ q
+  unique-len {m = suc m} {n = zero} p q with identity⁻¹ q
   ...                                         | refl with acyclic p p
   ...                                                   | ()
-  unique-length {m = suc m} {n = suc n} p q with split 1 m p | split 1 n q
+  unique-len {m = suc m} {n = suc n} p q with split 1 m p | split 1 n q
   ... | a , x→a , a→y | b , x→b , b→y with uniqueʳ x→a x→b
-  ...                                        | refl with unique-length a→y b→y
+  ...                                        | refl with unique-len a→y b→y
   ...                                                  | refl = refl
