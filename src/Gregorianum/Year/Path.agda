@@ -110,7 +110,7 @@ private
 
   ¬circle : ∀ {x len}
           → ¬ (x ─[ suc len ]→ x)
-  ¬circle {x} x→x with first→first⇒len≡zero (h x x→x (⋖-WellFounded x))
+  ¬circle {x} x→x with first→first⇒len≡zero (h x x→x (⋖-wellFounded x))
     where
       h : ∀ {len} → ∀ y → y ─[ len ]→ y → WF.Acc _⋖_ y → year-first ─[ len ]→ year-first
       h y ε (WF.acc rs) = ε
@@ -138,7 +138,7 @@ private
   fromFirst {x} {suc len} p | no ¬isSuc = contradiction (suc-epoch-is-successor p) ¬isSuc
 
 total : ∀ x y → Tri x y
-total x y = total' x y (⋖-WellFounded x)
+total x y = total' x y (⋖-wellFounded x)
   where
     total' : ∀ x y → WF.Acc _⋖_ x → Tri x y
     total' x y wf with isSuccessor? x | isSuccessor? y

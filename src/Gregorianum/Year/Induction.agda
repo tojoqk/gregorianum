@@ -14,6 +14,9 @@ open import Relation.Binary.Construct.On as On
 open import Data.Product using (proj₁; _,_; ∃-syntax; _×_)
 open import Function using (_∘_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong)
+open import Induction using (RecStruct; RecursorBuilder)
+open import Data.Unit.Polymorphic.Base using (⊤)
+open import Level using (Level)
 
 private
   _epoch<_ : Year → Year → Set
@@ -31,5 +34,12 @@ private
   ... | n , ep₁ , ep₂ | n₁ , epoch | n₂ , epoch with epoch-unique ep₁ epoch | epoch-unique ep₂ epoch
   ... | eq₁ | eq₂ rewrite sym eq₂ | sym eq₁ = s≤s ≤-refl
 
-⋖-WellFounded : WellFounded _⋖_
-⋖-WellFounded y = Subrelation.accessible ⋖⇒epoch< (epoch<-WellFounded y)
+⋖-wellFounded : WellFounded _⋖_
+⋖-wellFounded y = Subrelation.accessible ⋖⇒epoch< (epoch<-WellFounded y)
+
+module _ {ℓ : Level} where
+  open WF.All ⋖-wellFounded ℓ public
+    renaming ( wfRecBuilder to ⋖-recBuilder
+             ; wfRec        to ⋖-rec
+             )
+    hiding (wfRec-builder)
