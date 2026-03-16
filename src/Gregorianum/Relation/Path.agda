@@ -23,8 +23,8 @@ record IsPath : Set where
 
 data Tri (x y : A) : Set where
   tri≡ : x ≡ y → Tri x y
-  tri→ : ∀ {n} → x ─[ suc n ]→ y → Tri x y
-  tri← : ∀ {n} → y ─[ suc n ]→ x → Tri x y
+  tri→ : ∀ n → x ─[ suc n ]→ y → Tri x y
+  tri← : ∀ n → y ─[ suc n ]→ x → Tri x y
 
 record IsLinear : Set where
   field

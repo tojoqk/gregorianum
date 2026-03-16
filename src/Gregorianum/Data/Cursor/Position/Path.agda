@@ -118,12 +118,12 @@ acyclic {x} p q = acyclic' p q (<-wellFounded x)
 
 compare : ∀ x y → Tri x y
 compare (mkPos zero) (mkPos zero) = tri≡ refl
-compare (mkPos zero) (mkPos (suc c)) = tri→ (from-first (mkPos (suc c)))
-compare (mkPos (suc c)) (mkPos zero) = tri← (from-first (mkPos (suc c)))
+compare (mkPos zero) (mkPos {acc = suc acc} (suc c)) = tri→ acc (from-first (mkPos (suc c)))
+compare (mkPos {acc = suc acc} (suc c)) (mkPos zero) = tri← acc (from-first (mkPos (suc c)))
 compare (mkPos (suc c₁)) (mkPos (suc c₂)) with compare (mkPos c₁) (mkPos c₂)
 ... | tri≡ refl = tri≡ refl
-... | tri→ (extendʳ x→y) = tri→ (shiftʳ (extendʳ x→y))
-... | tri← (extendʳ y→x) = tri← (shiftʳ (extendʳ y→x))
+... | tri→ n (extendʳ x→y) = tri→ n (shiftʳ (extendʳ x→y))
+... | tri← n (extendʳ y→x) = tri← n (shiftʳ (extendʳ y→x))
 
 isLinear : IsLinear
 isLinear = record

@@ -66,5 +66,5 @@ data Tri (x y : A) : Set where
 compare : ∀ x y → Tri x y
 compare x y with path-compare x y
 ...            | tri≡ x≡y = tri≡ x≡y
-...            | tri→ x→y = tri≺ ≺⟨ x→y ⟩
-...            | tri← y→x = tri≻ ≺⟨ y→x ⟩
+...            | tri→ _ x→y = tri≺ ≺⟨ x→y ⟩
+...            | tri← _ y→x = tri≻ ≺⟨ y→x ⟩

@@ -145,14 +145,14 @@ compare x y = compare' x y (⋖-WellFounded x)
     compare' x y wf | no ¬p | no ¬q with Y.¬IsSuccessor⇒first ¬p | Y.¬IsSuccessor⇒first ¬q
     ... | refl | refl = tri≡ refl
     compare' x y wf | no ¬p | yes _ with Y.¬IsSuccessor⇒first ¬p
-    compare' x y wf | no _ | yes isSuc | refl = tri→ (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
+    compare' x y wf | no _ | yes isSuc | refl = tri→ (isSuccessor⇒suc-epoch isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
     compare' x y wf | yes _ | no ¬q with Y.¬IsSuccessor⇒first ¬q
-    compare' x y wf | yes isSuc | no _ | refl = tri← (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
+    compare' x y wf | yes isSuc | no _ | refl = tri← (isSuccessor⇒suc-epoch isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
     compare' x y (WF.acc rs) | yes isSuc₁ | yes isSuc₂ with prevYear x isSuc₁ | prevYear y isSuc₂
     ... | x' , x'⋖x | y' , y'⋖y with compare' x' y' (rs x'⋖x)
     ... | tri≡ refl = tri≡ (nextYear-unique x'⋖x y'⋖y)
-    ... | tri→ x'→y' = tri→ (shiftʳ x'⋖x y'⋖y x'→y')
-    ... | tri← y'→x' = tri← (shiftʳ y'⋖y x'⋖x y'→x')
+    ... | tri→ n x'→y' = tri→ n (shiftʳ x'⋖x y'⋖y x'→y')
+    ... | tri← n y'→x' = tri← n (shiftʳ y'⋖y x'⋖x y'→x')
 
 isLinear : IsLinear
 isLinear = record

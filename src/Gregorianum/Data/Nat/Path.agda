@@ -94,12 +94,12 @@ module _ where
 
     compare : ∀ x y → Tri x y
     compare zero zero = tri≡ refl
-    compare zero (suc y) = tri→ (from-zero (suc y))
-    compare (suc x) zero = tri← (from-zero (suc x))
+    compare zero (suc y) = tri→ y (from-zero (suc y))
+    compare (suc x) zero = tri← x (from-zero (suc x))
     compare (suc x) (suc y) with compare x y
     ... | tri≡ refl = tri≡ refl
-    ... | tri→ x→y = tri→ (shiftʳ x→y)
-    ... | tri← y→x = tri← (shiftʳ y→x)
+    ... | tri→ n x→y = tri→ n (shiftʳ x→y)
+    ... | tri← n y→x = tri← n (shiftʳ y→x)
 
   isLinear : IsLinear
   isLinear = record
