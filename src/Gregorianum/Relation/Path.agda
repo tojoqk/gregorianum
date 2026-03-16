@@ -32,7 +32,7 @@ record IsLinear : Set where
     uniqueˡ : ∀ {x y z n} → x ─[ n ]→ z → y ─[ n ]→ z → x ≡ y
     uniqueʳ : ∀ {x y z n} → x ─[ n ]→ y → x ─[ n ]→ z → y ≡ z
     acyclic : ∀ {x y m n} → x ─[ m ]→ y → y ─[ n ]→ x → m ≡ 0 × n ≡ 0
-    compare : ∀ x y → Tri x y
+    total : ∀ x y → Tri x y
 
   open IsPath isPath public
 

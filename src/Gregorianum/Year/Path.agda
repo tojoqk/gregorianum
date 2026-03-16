@@ -137,19 +137,19 @@ private
   ... | _ , p' = extendʳ p' (fromFirst (prevYear-epoch p' p))
   fromFirst {x} {suc len} p | no ¬isSuc = contradiction (suc-epoch-is-successor p) ¬isSuc
 
-compare : ∀ x y → Tri x y
-compare x y = compare' x y (⋖-WellFounded x)
+total : ∀ x y → Tri x y
+total x y = total' x y (⋖-WellFounded x)
   where
-    compare' : ∀ x y → WF.Acc _⋖_ x → Tri x y
-    compare' x y wf with isSuccessor? x | isSuccessor? y
-    compare' x y wf | no ¬p | no ¬q with Y.¬IsSuccessor⇒first ¬p | Y.¬IsSuccessor⇒first ¬q
+    total' : ∀ x y → WF.Acc _⋖_ x → Tri x y
+    total' x y wf with isSuccessor? x | isSuccessor? y
+    total' x y wf | no ¬p | no ¬q with Y.¬IsSuccessor⇒first ¬p | Y.¬IsSuccessor⇒first ¬q
     ... | refl | refl = tri≡ refl
-    compare' x y wf | no ¬p | yes _ with Y.¬IsSuccessor⇒first ¬p
-    compare' x y wf | no _ | yes isSuc | refl = tri→ (isSuccessor⇒suc-epoch isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
-    compare' x y wf | yes _ | no ¬q with Y.¬IsSuccessor⇒first ¬q
-    compare' x y wf | yes isSuc | no _ | refl = tri← (isSuccessor⇒suc-epoch isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
-    compare' x y (WF.acc rs) | yes isSuc₁ | yes isSuc₂ with prevYear x isSuc₁ | prevYear y isSuc₂
-    ... | x' , x'⋖x | y' , y'⋖y with compare' x' y' (rs x'⋖x)
+    total' x y wf | no ¬p | yes _ with Y.¬IsSuccessor⇒first ¬p
+    total' x y wf | no _ | yes isSuc | refl = tri→ (isSuccessor⇒suc-epoch isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
+    total' x y wf | yes _ | no ¬q with Y.¬IsSuccessor⇒first ¬q
+    total' x y wf | yes isSuc | no _ | refl = tri← (isSuccessor⇒suc-epoch isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
+    total' x y (WF.acc rs) | yes isSuc₁ | yes isSuc₂ with prevYear x isSuc₁ | prevYear y isSuc₂
+    ... | x' , x'⋖x | y' , y'⋖y with total' x' y' (rs x'⋖x)
     ... | tri≡ refl = tri≡ (nextYear-unique x'⋖x y'⋖y)
     ... | tri→ n x'→y' = tri→ n (shiftʳ x'⋖x y'⋖y x'→y')
     ... | tri← n y'→x' = tri← n (shiftʳ y'⋖y x'⋖x y'→x')
@@ -160,5 +160,5 @@ isLinear = record
              ; uniqueˡ = uniqueˡ
              ; uniqueʳ = uniqueʳ
              ; acyclic = acyclic
-             ; compare = compare
+             ; total = total
              }

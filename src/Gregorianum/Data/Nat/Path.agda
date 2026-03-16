@@ -92,11 +92,11 @@ module _ where
     ...                                            | x→y₁' | x→y₂' with acyclic x→y₁' x→y₂'
     ...                                                                 | ()
 
-    compare : ∀ x y → Tri x y
-    compare zero zero = tri≡ refl
-    compare zero (suc y) = tri→ y (from-zero (suc y))
-    compare (suc x) zero = tri← x (from-zero (suc x))
-    compare (suc x) (suc y) with compare x y
+    total : ∀ x y → Tri x y
+    total zero zero = tri≡ refl
+    total zero (suc y) = tri→ y (from-zero (suc y))
+    total (suc x) zero = tri← x (from-zero (suc x))
+    total (suc x) (suc y) with total x y
     ... | tri≡ refl = tri≡ refl
     ... | tri→ n x→y = tri→ n (shiftʳ x→y)
     ... | tri← n y→x = tri← n (shiftʳ y→x)
@@ -107,5 +107,5 @@ module _ where
               ; uniqueˡ = uniqueˡ
               ; uniqueʳ = uniqueʳ
               ; acyclic = acyclic
-              ; compare = compare
+              ; total = total
               }

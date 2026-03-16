@@ -116,11 +116,11 @@ private
 acyclic : ∀ {x y len₁ len₂} → x ─[ len₁ ]→ y → y ─[ len₂ ]→ x → len₁ ≡ 0 × len₂ ≡ 0
 acyclic {x} p q = acyclic' p q (<-wellFounded x)
 
-compare : ∀ x y → Tri x y
-compare (mkPos zero) (mkPos zero) = tri≡ refl
-compare (mkPos zero) (mkPos {acc = suc acc} (suc c)) = tri→ acc (from-first (mkPos (suc c)))
-compare (mkPos {acc = suc acc} (suc c)) (mkPos zero) = tri← acc (from-first (mkPos (suc c)))
-compare (mkPos (suc c₁)) (mkPos (suc c₂)) with compare (mkPos c₁) (mkPos c₂)
+total : ∀ x y → Tri x y
+total (mkPos zero) (mkPos zero) = tri≡ refl
+total (mkPos zero) (mkPos {acc = suc acc} (suc c)) = tri→ acc (from-first (mkPos (suc c)))
+total (mkPos {acc = suc acc} (suc c)) (mkPos zero) = tri← acc (from-first (mkPos (suc c)))
+total (mkPos (suc c₁)) (mkPos (suc c₂)) with total (mkPos c₁) (mkPos c₂)
 ... | tri≡ refl = tri≡ refl
 ... | tri→ n (extendʳ x→y) = tri→ n (shiftʳ (extendʳ x→y))
 ... | tri← n (extendʳ y→x) = tri← n (shiftʳ (extendʳ y→x))
@@ -131,5 +131,5 @@ isLinear = record
             ; uniqueˡ = uniqueˡ
             ; uniqueʳ = uniqueʳ
             ; acyclic = acyclic
-            ; compare = compare
+            ; total = total
             }

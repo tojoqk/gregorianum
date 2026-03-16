@@ -7,7 +7,7 @@ module Gregorianum.Relation.LinearOrder (A : Set)
                                         where
 
 open import Gregorianum.Relation.Path A _─[_]→_ renaming (Tri to PathTri)
-open IsLinear isLinear renaming (compare to path-compare)
+open IsLinear isLinear renaming (total to path-total)
 
 open import Data.Nat using (ℕ; zero; suc; NonZero)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
@@ -63,8 +63,8 @@ data Tri (x y : A) : Set where
   tri≺ : x ≺ y → Tri x y
   tri≻ : y ≺ x → Tri x y
 
-compare : ∀ x y → Tri x y
-compare x y with path-compare x y
+total : ∀ x y → Tri x y
+total x y with path-total x y
 ...            | tri≡ x≡y = tri≡ x≡y
 ...            | tri→ _ x→y = tri≺ ≺⟨ x→y ⟩
 ...            | tri← _ y→x = tri≻ ≺⟨ y→x ⟩
