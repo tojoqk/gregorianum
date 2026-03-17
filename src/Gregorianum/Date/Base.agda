@@ -1,16 +1,16 @@
 module Gregorianum.Date.Base where
 
-open import Gregorianum.Year using (Year; _HasYearType_; YearType)
+open import Gregorianum.Year as Y using (Year; _HasYearType_; YearType; leap; common)
+open import Gregorianum.Year.Properties as Y
 open import Gregorianum.YearMonth as YM using (YearMonth; _HasDays_)
 import Gregorianum.Month as M
 open import Gregorianum.Day using (Day)
 open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position
+open import Gregorianum.Data.Cursor.Position hiding (_<_)
 import Gregorianum.Data.Cursor.Properties as Cursor
-open import Data.Product using (∃-syntax; _,_)
+open import Data.Product using (∃-syntax; _,_; proj₁)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
-
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat as ℕ using (ℕ; zero; suc; _+_; _*_; NonZero)
 
 record Date : Set where
   constructor mkDate
@@ -64,3 +64,29 @@ prevDate (ym - mkPos {acc = zero} first ⟨ hasDays ⟩) (sucʸᵐ x) with YM.pr
     where
       h : (ym' - mkPos last ⟨ hasDays' ⟩) ⋖ (ym - mkPos first ⟨ hasDays ⟩)
       h = stepʸᵐ ym'⋖ym
+
+data _HasWeight_ (d : Date) : (n : ℕ) → Set where
+  has-leap-weight : ∀ {yl yc ymw}
+                  → (Date.year d) HasYearType Y.leap
+                  → (Date.year d) Y.HasLeapWeight (suc yl)
+                  → (Date.year d) Y.HasCommonWeight yc
+                  → (Y.leap , Date.month d) M.HasDayWeight ymw
+                  → d HasWeight (yl * 366 + yc * 365 + ymw + Position.toℕ (Date.day d))
+  has-common-weight : ∀ {yl yc ymw}
+                  → {{_ : NonZero yl}}
+                  → (Date.year d) HasYearType Y.common
+                  → (Date.year d) Y.HasLeapWeight yl
+                  → (Date.year d) Y.HasCommonWeight (suc yc)
+                  → (Y.common , Date.month d) M.HasDayWeight ymw
+                  → d HasWeight (yl * 366 + yc * 365 + ymw + Position.toℕ (Date.day d))
+
+toWeight : (d : Date) → ∃[ n ] d HasWeight n
+toWeight d with Y.yearType (Date.year d)
+toWeight d | leap , p with M.dayWeight (leap , Date.month d)
+toWeight d | leap , p | w , q = _ , has-leap-weight p Y.has-weight Y.has-weight q
+toWeight d | common , p with M.dayWeight (common , Date.month d)
+... | w , q with Y.is-successor⇒suc-common-weight (Y.common⇒is-successor p)
+... | ycw , q' = _ , has-common-weight p Y.has-weight q' q
+
+_<_ : Date → Date → Set
+d₁ < d₂ = proj₁ (toWeight d₁) ℕ.< proj₁ (toWeight d₂)

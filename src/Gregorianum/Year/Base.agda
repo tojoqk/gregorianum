@@ -109,7 +109,7 @@ data _HasWeight_ (year : Year) : (n : ℕ) → {{NonZero n}} → Set where
   has-weight : year HasWeight (1 + (Position.toℕ (Year.pos₁ year) + (Position.toℕ (Year.pos₄ year) + (Position.toℕ (Year.pos₁₀₀ year) + Year.quadricentennial year * 4) * 25) * 4))
 
 toWeight : (y : Year) → ∃[ n ] y HasWeight (suc n)
-toWeight (q ×₄₀₀+ y₁₀₀ ×₁₀₀+ y₄ ×₄+ y₁) = (Position.toℕ y₁ + (Position.toℕ y₄ + (Position.toℕ y₁₀₀ + q * 4) * 25) * 4) , has-weight
+toWeight (q ×₄₀₀+ y₁₀₀ ×₁₀₀+ y₄ ×₄+ y₁) = _ , has-weight
 
 fromWeight : (n : ℕ) → {{_ : NonZero n}} → ∃[ y ] y HasWeight n
 fromWeight (suc n) with n divMod 4
@@ -126,19 +126,16 @@ fromWeight (suc n) with n divMod 4
               | sym (Position.toℕ∘fromFin≡toℕ r₄) = has-weight
 
 data _HasLeapWeight_ (year : Year) : (n : ℕ) → {{NonZero n}} → Set where
-  has-weight : year HasLeapWeight (suc (Year.quadricentennial year) + (Position.toℕ (Year.pos₄ year) + (Position.toℕ (Year.pos₁₀₀ year) + Year.quadricentennial year * 4) * 24))
-
+  has-weight : year HasLeapWeight (suc (Position.toℕ (Year.pos₄ year)) + Position.toℕ (Year.pos₁₀₀ year) * 24 + Year.quadricentennial year * 97)
+  
 toLeapWeight : (y : Year) → ∃[ n ] y HasLeapWeight (suc n) 
-toLeapWeight y = Year.quadricentennial y + (Position.toℕ (Year.pos₄ y) + (Position.toℕ (Year.pos₁₀₀ y) + Year.quadricentennial y * 4) * 24) , has-weight
+toLeapWeight y = _ , has-weight
 
 data _HasCommonWeight_ (year : Year) : (n : ℕ) → Set where
-  has-weight : year HasCommonWeight (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₁₀₀ year) + (Year.quadricentennial year * 3) + (Position.toℕ (Year.pos₄ year) + (Position.toℕ (Year.pos₁₀₀ year) + Year.quadricentennial year * 4) * 25) * 3)
+  has-weight : year HasCommonWeight (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 3 + Position.toℕ (Year.pos₁₀₀ year) * 76 + Year.quadricentennial year * 303)
 
 toCommonWeight : (y : Year) → ∃[ n ] y HasCommonWeight n 
-toCommonWeight y = Position.toℕ (Year.pos₁ y) + Position.toℕ (Year.pos₁₀₀ y) +
-                    Year.quadricentennial y * 3 +
-                    (Position.toℕ (Year.pos₄ y) + (Position.toℕ (Year.pos₁₀₀ y) + Year.quadricentennial y * 4) * 25) * 3
-                    , has-weight
+toCommonWeight y = _ , has-weight
 
 _<_ : Year → Year → Set
 y₁ < y₂ = proj₁ (toWeight y₁) ℕ.< proj₁ (toWeight y₂)

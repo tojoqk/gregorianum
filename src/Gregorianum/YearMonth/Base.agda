@@ -3,11 +3,11 @@ module Gregorianum.YearMonth.Base where
 open import Gregorianum.Year as Y using (Year; _HasYearType_)
 open import Gregorianum.Month.Base as M hiding (_HasDays_; days)
 open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position
+open import Gregorianum.Data.Cursor.Position hiding (_<_)
 import Gregorianum.Data.Cursor.Properties as Cursor
 
-open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (∃-syntax; _,_)
+open import Data.Nat as ℕ using (ℕ; zero; suc; _+_; _*_; NonZero)
+open import Data.Product using (∃-syntax; _,_; proj₁)
 
 record YearMonth : Set where
   constructor _-_
@@ -46,3 +46,14 @@ prevYearMonth : ∀ ym₂ → IsSuccessor ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
 prevYearMonth (year - mkPos (suc cᵐ)) sucᵐ = (year - mkPos cᵐ) , stepᵐ
 prevYearMonth (year - mkPos first) (sucʸ p) with Y.prevYear year p
 ...                                            | year' , p' = (year' - december) , stepʸ p'
+
+data _HasWeight_ (ym : YearMonth) : (n : ℕ) → Set where
+  has-weight : ∀ {yw}
+             → (YearMonth.year ym) Y.HasWeight (suc yw)
+             → ym HasWeight (yw * 12 + Position.toℕ (YearMonth.month ym))
+
+toWeight : (ym : YearMonth) → ∃[ n ] ym HasWeight n
+toWeight ym = _ , has-weight Y.has-weight
+
+_<_ : YearMonth → YearMonth → Set
+ym₁ < ym₂ = proj₁ (toWeight ym₁) ℕ.< proj₁ (toWeight ym₂)

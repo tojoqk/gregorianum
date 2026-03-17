@@ -1,7 +1,7 @@
 module Gregorianum.Month.Base where
 
 open import Gregorianum.Year using (YearType; common; leap)
-open import Data.Nat using (ℕ)
+open import Data.Nat using (ℕ; _+_)
 
 open import Gregorianum.Data.Cursor
 open import Gregorianum.Data.Cursor.Position
@@ -66,3 +66,55 @@ days (yt , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
 ...                               | ()
 days (common , mkPos second) = 28 , february-common-days
 days (leap , mkPos second) = 29 , february-leap-days
+
+data _HasDayWeight_ : YearType × Month → ℕ → Set where
+  january-weight          : ∀ {yt} →  (yt , january) HasDayWeight 0
+  february-weight         : ∀ {yt} → (yt , february) HasDayWeight 31
+  march-common-weight     :          (common , march) HasDayWeight 59
+  april-common-weight     :          (common , april) HasDayWeight 90
+  may-common-weight       :            (common , may) HasDayWeight 120
+  june-common-weight      :           (common , june) HasDayWeight 151
+  july-common-weight      :           (common , july) HasDayWeight 181
+  august-common-weight    :         (common , august) HasDayWeight 212
+  september-common-weight :      (common , september) HasDayWeight 243
+  october-common-weight   :        (common , october) HasDayWeight 273
+  november-common-weight  :       (common , november) HasDayWeight 304
+  december-common-weight  :       (common , december) HasDayWeight 334
+  march-leap-weight     :              (leap , march) HasDayWeight 60
+  april-leap-weight     :              (leap , april) HasDayWeight 91
+  may-leap-weight       :                (leap , may) HasDayWeight 121
+  june-leap-weight      :               (leap , june) HasDayWeight 152
+  july-leap-weight      :               (leap , july) HasDayWeight 182
+  august-leap-weight    :             (leap , august) HasDayWeight 213
+  september-leap-weight :          (leap , september) HasDayWeight 244
+  october-leap-weight   :            (leap , october) HasDayWeight 274
+  november-leap-weight  :           (leap , november) HasDayWeight 305
+  december-leap-weight  :           (leap , december) HasDayWeight 335
+
+dayWeight : (ytm : YearType × Month) → ∃[ n ] ytm HasDayWeight n
+dayWeight (fst , mkPos first) = 0 , january-weight
+dayWeight (fst , mkPos second) = 31 , february-weight
+dayWeight (common , mkPos third) = 59 , march-common-weight
+dayWeight (common , mkPos fourth) = 90 , april-common-weight
+dayWeight (common , mkPos fifth) = 120 , may-common-weight
+dayWeight (common , mkPos sixth) = 151 , june-common-weight
+dayWeight (common , mkPos seventh) = 181 , july-common-weight
+dayWeight (common , mkPos eighth) = 212 , august-common-weight
+dayWeight (common , mkPos ninth) = 243 , september-common-weight
+dayWeight (common , mkPos tenth) = 273 , october-common-weight
+dayWeight (common , mkPos eleventh) = 304 , november-common-weight
+dayWeight (common , mkPos twelfth) = 334 , december-common-weight
+dayWeight (common , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
+...                                        | ()
+dayWeight (leap , mkPos third) = 60 , march-leap-weight
+dayWeight (leap , mkPos fourth) = 91 , april-leap-weight
+dayWeight (leap , mkPos fifth) = 121 , may-leap-weight
+dayWeight (leap , mkPos sixth) = 152 , june-leap-weight
+dayWeight (leap , mkPos seventh) = 182 , july-leap-weight
+dayWeight (leap , mkPos eighth) = 213 , august-leap-weight
+dayWeight (leap , mkPos ninth) = 244 , september-leap-weight
+dayWeight (leap , mkPos tenth) = 274 , october-leap-weight
+dayWeight (leap , mkPos eleventh) = 305 , november-leap-weight
+dayWeight (leap , mkPos twelfth) = 335 , december-leap-weight
+dayWeight (leap , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
+...                                      | ()

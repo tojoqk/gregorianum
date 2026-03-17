@@ -113,8 +113,18 @@ weight≡leap+common : ∀ {y w l c} {{_ : NonZero w}} {{_ : NonZero l}}
                    → y HasWeight w → y HasLeapWeight l → y HasCommonWeight c → w ≡ l + c
 weight≡leap+common {y} has-weight has-weight has-weight =
   solve 4 (λ a b c q → con 1 :+ (a :+ (b :+ (c :+ q :* con 4) :* con 25) :* con 4)
-                       := (con 1 :+ q) :+ (b :+ (c :+ q :* con 4) :* con 24)
-                          :+ (a :+ c :+ (q :* con 3) :+ (b :+ (c :+ q :* con 4) :* con 25) :* con 3))
+                     := (con 1 :+ b) :+ c :* con 24 :+ q :* con 97
+                     :+ (a :+ b :* con 3 :+ c :* con 76 :+ q :* con 303))
         refl
         (Position.toℕ (Year.pos₁ y)) (Position.toℕ (Year.pos₄ y)) (Position.toℕ (Year.pos₁₀₀ y)) (Year.quadricentennial y)
   where open +-*-Solver
+
+is-successor⇒suc-common-weight : ∀ {y} → IsSuccessor y → ∃[ n ] y HasCommonWeight (suc n)
+is-successor⇒suc-common-weight {(q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor))} suc₁ = _ , has-weight
+is-successor⇒suc-common-weight {(q ×₄₀₀+ mkPos {acc = c} _ ×₁₀₀+ mkPos (suc {acc = b} cursor) ×₄+ mkPos first)} suc₄ = _ , has-weight
+is-successor⇒suc-common-weight {(q ×₄₀₀+ mkPos (suc {acc = n} cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₁₀₀ = _ , has-weight
+is-successor⇒suc-common-weight {(suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₄₀₀ = _ , has-weight
+
+common⇒is-successor : ∀ {y} → y HasYearType common → IsSuccessor y
+common⇒is-successor common = suc₁
+common⇒is-successor common₁₀₀ = suc₁₀₀
