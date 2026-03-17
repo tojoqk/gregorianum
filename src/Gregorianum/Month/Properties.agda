@@ -23,17 +23,17 @@ days-unique october-days october-days = refl
 days-unique november-days november-days = refl
 days-unique december-days december-days = refl
 
-HasDays-irrelevant : ∀ {ym n} → (p q : ym HasDays n) → p ≡ q
-HasDays-irrelevant january-days january-days = refl
-HasDays-irrelevant february-common-days february-common-days = refl
-HasDays-irrelevant february-leap-days february-leap-days = refl
-HasDays-irrelevant march-days march-days = refl
-HasDays-irrelevant april-days april-days = refl
-HasDays-irrelevant may-days may-days = refl
-HasDays-irrelevant june-days june-days = refl
-HasDays-irrelevant july-days july-days = refl
-HasDays-irrelevant august-days august-days = refl
-HasDays-irrelevant september-days september-days = refl
-HasDays-irrelevant october-days october-days = refl
-HasDays-irrelevant november-days november-days = refl
-HasDays-irrelevant december-days december-days = refl
+has-days-irrelevant : ∀ {ym n} → (p q : ym HasDays n) → p ≡ q
+has-days-irrelevant january-days january-days = refl
+has-days-irrelevant february-common-days february-common-days = refl
+has-days-irrelevant february-leap-days february-leap-days = refl
+has-days-irrelevant march-days march-days = refl
+has-days-irrelevant april-days april-days = refl
+has-days-irrelevant may-days may-days = refl
+has-days-irrelevant june-days june-days = refl
+has-days-irrelevant july-days july-days = refl
+has-days-irrelevant august-days august-days = refl
+has-days-irrelevant september-days september-days = refl
+has-days-irrelevant october-days october-days = refl
+has-days-irrelevant november-days november-days = refl
+has-days-irrelevant december-days december-days = refl

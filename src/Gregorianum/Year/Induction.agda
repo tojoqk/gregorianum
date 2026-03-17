@@ -26,7 +26,7 @@ private
   weight<-WellFounded y = accessible (proj₁ ∘ toWeight) (ℕ.<-wellFounded-fast (proj₁ (toWeight y)))
 
   ⋖⇒suc : ∀ {y₁ y₂} → y₁ ⋖ y₂ → ∃[ n ] (y₁ HasWeight n) × (y₂ HasWeight (suc n))
-  ⋖⇒suc {y₁} {y₂} p with nextYear-weight p weight
+  ⋖⇒suc {y₁} {y₂} p with next-year-weight p weight
   ...                  | epₙ = _ , weight , epₙ
 
   ⋖⇒weight< : ∀ {y₁ y₂} → y₁ ⋖ y₂ → y₁ weight< y₂

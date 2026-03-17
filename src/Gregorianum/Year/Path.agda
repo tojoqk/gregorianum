@@ -34,9 +34,9 @@ shiftˡ : ∀ {x y z w len}
        → z ⋖ w
        → y ─[ len ]→ w
        → x ─[ len ]→ z
-shiftˡ x⋖y z⋖w ε with Y.prevYear-unique x⋖y z⋖w
+shiftˡ x⋖y z⋖w ε with Y.prev-year-unique x⋖y z⋖w
 ...                   | refl = ε
-shiftˡ x⋖y z⋖w (extendʳ  w'⋖w y→w) with Y.prevYear-unique z⋖w w'⋖w
+shiftˡ x⋖y z⋖w (extendʳ  w'⋖w y→w) with Y.prev-year-unique z⋖w w'⋖w
 ...                                        | refl = extendˡ x⋖y y→w
 
 shiftʳ : ∀ {x y z w len}
@@ -44,7 +44,7 @@ shiftʳ : ∀ {x y z w len}
        → z ⋖ w
        → x ─[ len ]→ z
        → y ─[ len ]→ w
-shiftʳ x⋖y z⋖w ε with Y.nextYear-unique x⋖y z⋖w
+shiftʳ x⋖y z⋖w ε with Y.next-year-unique x⋖y z⋖w
 ...                   | refl = ε
 shiftʳ x⋖y z⋖w (extendʳ x x→z) = extendʳ z⋖w (shiftʳ x⋖y x x→z)
 
@@ -84,7 +84,7 @@ uniqueˡ : ∀ {x y z len}
         → x ≡ y
 uniqueˡ ε q with identity⁻¹ q
 ...            | refl = refl
-uniqueˡ (extendʳ z₁⋖z p) (extendʳ z₂⋖z q) with prevYear-unique z₁⋖z z₂⋖z
+uniqueˡ (extendʳ z₁⋖z p) (extendʳ z₂⋖z q) with prev-year-unique z₁⋖z z₂⋖z
 ...                                              | refl with  uniqueˡ p q
 ...                                                        | refl = refl
 
@@ -95,7 +95,7 @@ uniqueʳ : ∀ {x y z len}
 uniqueʳ ε q with identity⁻¹ q
 ...            | refl = refl
 uniqueʳ (extendʳ x'⋖y p) (extendʳ x'⋖z q) with uniqueʳ p q
-...                                              | refl with nextYear-unique x'⋖y x'⋖z
+...                                              | refl with next-year-unique x'⋖y x'⋖z
 ...                                                        | refl = refl
 
 open import Gregorianum.Year.Induction
@@ -134,7 +134,7 @@ private
   fromFirst {year-first} {zero} p | no ¬isSuc = ε
   fromFirst {x} {suc len} p with isSuccessor? x
   fromFirst {x} {suc len} p | yes isSuc with prevYear x isSuc
-  ... | _ , p' = extendʳ p' (fromFirst (prevYear-weight p' p))
+  ... | _ , p' = extendʳ p' (fromFirst (prev-year-weight p' p))
   fromFirst {x} {suc len} p | no ¬isSuc = contradiction (suc-weight-is-successor p) ¬isSuc
 
 total : ∀ x y → Tri x y
@@ -145,12 +145,12 @@ total x y = total' x y (⋖-wellFounded x)
     total' x y wf | no ¬p | no ¬q with Y.¬IsSuccessor⇒first ¬p | Y.¬IsSuccessor⇒first ¬q
     ... | refl | refl = tri≡ refl
     total' x y wf | no ¬p | yes _ with Y.¬IsSuccessor⇒first ¬p
-    total' x y wf | no _ | yes isSuc | refl = tri→ (isSuccessor⇒suc-weight isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-weight isSuc)))
+    total' x y wf | no _ | yes isSuc | refl = tri→ (is-successor⇒suc-weight isSuc .proj₁) (fromFirst (proj₂ (is-successor⇒suc-weight isSuc)))
     total' x y wf | yes _ | no ¬q with Y.¬IsSuccessor⇒first ¬q
-    total' x y wf | yes isSuc | no _ | refl = tri← (isSuccessor⇒suc-weight isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-weight isSuc)))
+    total' x y wf | yes isSuc | no _ | refl = tri← (is-successor⇒suc-weight isSuc .proj₁) (fromFirst (proj₂ (is-successor⇒suc-weight isSuc)))
     total' x y (WF.acc rs) | yes isSuc₁ | yes isSuc₂ with prevYear x isSuc₁ | prevYear y isSuc₂
     ... | x' , x'⋖x | y' , y'⋖y with total' x' y' (rs x'⋖x)
-    ... | tri≡ refl = tri≡ (nextYear-unique x'⋖x y'⋖y)
+    ... | tri≡ refl = tri≡ (next-year-unique x'⋖x y'⋖y)
     ... | tri→ n x'→y' = tri→ n (shiftʳ x'⋖x y'⋖y x'→y')
     ... | tri← n y'→x' = tri← n (shiftʳ y'⋖y x'⋖x y'→x')
 
