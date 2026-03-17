@@ -1,8 +1,8 @@
 module Gregorianum.Year.Induction where
 
 open import Gregorianum.Year.Base
-open import Gregorianum.Year.Epoch
-open import Gregorianum.Year.Epoch.Properties
+open import Gregorianum.Year.Weight
+open import Gregorianum.Year.Weight.Properties
 
 open import Induction.WellFounded as WF
 open import Gregorianum.Data.Cursor
@@ -19,23 +19,23 @@ open import Data.Unit.Polymorphic.Base using (⊤)
 open import Level using (Level)
 
 private
-  _epoch<_ : Year → Year → Set
-  _epoch<_ y₁ y₂ = proj₁ (toEpoch y₁) < proj₁ (toEpoch y₂)
+  _weight<_ : Year → Year → Set
+  _weight<_ y₁ y₂ = proj₁ (toWeight y₁) < proj₁ (toWeight y₂)
 
-  epoch<-WellFounded : WF.WellFounded _epoch<_
-  epoch<-WellFounded y = accessible (proj₁ ∘ toEpoch) (ℕ.<-wellFounded-fast (proj₁ (toEpoch y)))
+  weight<-WellFounded : WF.WellFounded _weight<_
+  weight<-WellFounded y = accessible (proj₁ ∘ toWeight) (ℕ.<-wellFounded-fast (proj₁ (toWeight y)))
 
-  ⋖⇒suc : ∀ {y₁ y₂} → y₁ ⋖ y₂ → ∃[ n ] (y₁ HasEpoch n) × (y₂ HasEpoch (suc n))
-  ⋖⇒suc {y₁} {y₂} p with nextYear-epoch p epoch
-  ...                  | epₙ = _ , epoch , epₙ
+  ⋖⇒suc : ∀ {y₁ y₂} → y₁ ⋖ y₂ → ∃[ n ] (y₁ HasWeight n) × (y₂ HasWeight (suc n))
+  ⋖⇒suc {y₁} {y₂} p with nextYear-weight p weight
+  ...                  | epₙ = _ , weight , epₙ
 
-  ⋖⇒epoch< : ∀ {y₁ y₂} → y₁ ⋖ y₂ → y₁ epoch< y₂
-  ⋖⇒epoch< {y₁} {y₂} p with ⋖⇒suc p | toEpoch y₁ | toEpoch y₂
-  ... | n , ep₁ , ep₂ | n₁ , epoch | n₂ , epoch with epoch-unique ep₁ epoch | epoch-unique ep₂ epoch
+  ⋖⇒weight< : ∀ {y₁ y₂} → y₁ ⋖ y₂ → y₁ weight< y₂
+  ⋖⇒weight< {y₁} {y₂} p with ⋖⇒suc p | toWeight y₁ | toWeight y₂
+  ... | n , ep₁ , ep₂ | n₁ , weight | n₂ , weight with weight-unique ep₁ weight | weight-unique ep₂ weight
   ... | eq₁ | eq₂ rewrite sym eq₂ | sym eq₁ = s≤s ≤-refl
 
 ⋖-wellFounded : WellFounded _⋖_
-⋖-wellFounded y = Subrelation.accessible ⋖⇒epoch< (epoch<-WellFounded y)
+⋖-wellFounded y = Subrelation.accessible ⋖⇒weight< (weight<-WellFounded y)
 
 module _ {ℓ : Level} where
   open WF.All ⋖-wellFounded ℓ public

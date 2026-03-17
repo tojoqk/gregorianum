@@ -3,8 +3,8 @@ module Gregorianum.Year.Path where
 open import Gregorianum.Year.Base
 
 open import Gregorianum.Year.Properties as Y
-open import Gregorianum.Year.Epoch as Y
-open import Gregorianum.Year.Epoch.Properties as Y
+open import Gregorianum.Year.Weight as Y
+open import Gregorianum.Year.Weight.Properties as Y
 
 open import Gregorianum.Data.Cursor
 open import Gregorianum.Data.Cursor.Position
@@ -125,7 +125,7 @@ acyclic (extendʳ y'⋖y x→y) (extendʳ x'⋖x y→x) with acyclic x→y (exte
 ...                                                    | ()
 
 private
-  fromFirst : ∀ {x len} → x HasEpoch len → year-first ─[ len ]→ x
+  fromFirst : ∀ {x len} → x HasWeight len → year-first ─[ len ]→ x
   fromFirst {x} {zero} p with isSuccessor? x
   fromFirst {x} {zero} () | yes suc₁
   fromFirst {x} {zero} () | yes suc₄
@@ -134,8 +134,8 @@ private
   fromFirst {year-first} {zero} p | no ¬isSuc = ε
   fromFirst {x} {suc len} p with isSuccessor? x
   fromFirst {x} {suc len} p | yes isSuc with prevYear x isSuc
-  ... | _ , p' = extendʳ p' (fromFirst (prevYear-epoch p' p))
-  fromFirst {x} {suc len} p | no ¬isSuc = contradiction (suc-epoch-is-successor p) ¬isSuc
+  ... | _ , p' = extendʳ p' (fromFirst (prevYear-weight p' p))
+  fromFirst {x} {suc len} p | no ¬isSuc = contradiction (suc-weight-is-successor p) ¬isSuc
 
 total : ∀ x y → Tri x y
 total x y = total' x y (⋖-wellFounded x)
@@ -145,9 +145,9 @@ total x y = total' x y (⋖-wellFounded x)
     total' x y wf | no ¬p | no ¬q with Y.¬IsSuccessor⇒first ¬p | Y.¬IsSuccessor⇒first ¬q
     ... | refl | refl = tri≡ refl
     total' x y wf | no ¬p | yes _ with Y.¬IsSuccessor⇒first ¬p
-    total' x y wf | no _ | yes isSuc | refl = tri→ (isSuccessor⇒suc-epoch isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
+    total' x y wf | no _ | yes isSuc | refl = tri→ (isSuccessor⇒suc-weight isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-weight isSuc)))
     total' x y wf | yes _ | no ¬q with Y.¬IsSuccessor⇒first ¬q
-    total' x y wf | yes isSuc | no _ | refl = tri← (isSuccessor⇒suc-epoch isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-epoch isSuc)))
+    total' x y wf | yes isSuc | no _ | refl = tri← (isSuccessor⇒suc-weight isSuc .proj₁) (fromFirst (proj₂ (isSuccessor⇒suc-weight isSuc)))
     total' x y (WF.acc rs) | yes isSuc₁ | yes isSuc₂ with prevYear x isSuc₁ | prevYear y isSuc₂
     ... | x' , x'⋖x | y' , y'⋖y with total' x' y' (rs x'⋖x)
     ... | tri≡ refl = tri≡ (nextYear-unique x'⋖x y'⋖y)
