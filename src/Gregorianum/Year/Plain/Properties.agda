@@ -3,7 +3,7 @@ module Gregorianum.Year.Plain.Properties where
 open import Gregorianum.Year.Plain.Base
 
 open import Gregorianum.Year.Base
-open import Gregorianum.Year.Properties
+open import Gregorianum.Year.Properties hiding (year-unique)
 open import Gregorianum.Data.Cursor
 open import Gregorianum.Data.Cursor.Position
 open import Data.Nat using (ℕ; zero; suc)

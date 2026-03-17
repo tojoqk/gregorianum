@@ -4,8 +4,6 @@ open import Gregorianum.YearMonth.Base
 
 open import Gregorianum.Year.Base
 open import Gregorianum.Year.Properties as Y
-open import Gregorianum.Year.Weight as Y
-open import Gregorianum.Year.Weight.Properties as Y
 open import Gregorianum.Data.Cursor
 open import Gregorianum.Data.Cursor.Position
 import Gregorianum.Data.Cursor.Properties as Cursor

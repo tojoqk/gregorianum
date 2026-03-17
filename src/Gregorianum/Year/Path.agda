@@ -3,8 +3,6 @@ module Gregorianum.Year.Path where
 open import Gregorianum.Year.Base
 
 open import Gregorianum.Year.Properties as Y
-open import Gregorianum.Year.Weight as Y
-open import Gregorianum.Year.Weight.Properties as Y
 
 open import Gregorianum.Data.Cursor
 open import Gregorianum.Data.Cursor.Position
@@ -98,7 +96,6 @@ uniqueʳ (extendʳ x'⋖y p) (extendʳ x'⋖z q) with uniqueʳ p q
 ...                                              | refl with next-year-unique x'⋖y x'⋖z
 ...                                                        | refl = refl
 
-open import Gregorianum.Year.Induction
 import Induction.WellFounded as WF
 
 private
@@ -125,7 +122,7 @@ acyclic (extendʳ y'⋖y x→y) (extendʳ x'⋖x y→x) with acyclic x→y (exte
 ...                                                    | ()
 
 private
-  fromFirst : ∀ {x len} → x HasWeight len → year-first ─[ len ]→ x
+  fromFirst : ∀ {x len} → x HasWeight (suc len) → year-first ─[ len ]→ x
   fromFirst {x} {zero} p with isSuccessor? x
   fromFirst {x} {zero} () | yes suc₁
   fromFirst {x} {zero} () | yes suc₄
