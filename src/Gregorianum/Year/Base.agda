@@ -105,37 +105,11 @@ isSuccessor? (quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPo
 isSuccessor? (suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = yes suc₄₀₀
 isSuccessor? (zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = no λ ()
 
-data _HasWeight_ (year : Year) : (n : ℕ) → {{NonZero n}} → Set where
-  has-weight : year HasWeight (1 + (Position.toℕ (Year.pos₁ year) + (Position.toℕ (Year.pos₄ year) + (Position.toℕ (Year.pos₁₀₀ year) + Year.quadricentennial year * 4) * 25) * 4))
+data _HasOrdinal_ (year : Year) : (n : ℕ) → Set where
+  has-ordinal : year HasOrdinal (Position.toℕ (Year.pos₁ year) + (Position.toℕ (Year.pos₄ year) + (Position.toℕ (Year.pos₁₀₀ year) + Year.quadricentennial year * 4) * 25) * 4)
 
-toWeight : (y : Year) → ∃[ n ] y HasWeight (suc n)
-toWeight (q ×₄₀₀+ y₁₀₀ ×₁₀₀+ y₄ ×₄+ y₁) = _ , has-weight
-
-fromWeight : (n : ℕ) → {{_ : NonZero n}} → ∃[ y ] y HasWeight n
-fromWeight (suc n) with n divMod 4
-... | result q₄ r₄ p₄ with q₄ divMod 25
-... | result q₁₀₀ r₁₀₀ p₁₀₀ with q₁₀₀ divMod 4
-... | result q₄₀₀ r₄₀₀ p₄₀₀ = (q₄₀₀ ×₄₀₀+ fromFin r₄₀₀ ×₁₀₀+ fromFin r₁₀₀ ×₄+ fromFin r₄) , h
-  where
-    h : (q₄₀₀ ×₄₀₀+ fromFin r₄₀₀ ×₁₀₀+ fromFin r₁₀₀ ×₄+ fromFin r₄) HasWeight (suc n)
-    h rewrite p₄
-              | p₁₀₀
-              | p₄₀₀
-              | sym (Position.toℕ∘fromFin≡toℕ r₄₀₀)
-              | sym (Position.toℕ∘fromFin≡toℕ r₁₀₀)
-              | sym (Position.toℕ∘fromFin≡toℕ r₄) = has-weight
-
-data _HasLeapWeight_ (year : Year) : (n : ℕ) → {{NonZero n}} → Set where
-  has-weight : year HasLeapWeight (suc (Position.toℕ (Year.pos₄ year)) + Position.toℕ (Year.pos₁₀₀ year) * 24 + Year.quadricentennial year * 97)
-  
-toLeapWeight : (y : Year) → ∃[ n ] y HasLeapWeight (suc n) 
-toLeapWeight y = _ , has-weight
-
-data _HasCommonWeight_ (year : Year) : (n : ℕ) → Set where
-  has-weight : year HasCommonWeight (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 3 + Position.toℕ (Year.pos₁₀₀ year) * 76 + Year.quadricentennial year * 303)
-
-toCommonWeight : (y : Year) → ∃[ n ] y HasCommonWeight n 
-toCommonWeight y = _ , has-weight
+toOrdinal : (y : Year) → ∃[ n ] y HasOrdinal n
+toOrdinal y = _ , has-ordinal
 
 _<_ : Year → Year → Set
-y₁ < y₂ = proj₁ (toWeight y₁) ℕ.< proj₁ (toWeight y₂)
+y₁ < y₂ = proj₁ (toOrdinal y₁) ℕ.< proj₁ (toOrdinal y₂)

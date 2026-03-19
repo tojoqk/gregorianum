@@ -1,13 +1,17 @@
 module Gregorianum.YearMonth.Base where
 
 open import Gregorianum.Year as Y using (Year; _HasYearType_)
+import Gregorianum.Year.Properties as Y
+open import Gregorianum.Year.Weight.Base as Y
 open import Gregorianum.Month.Base as M hiding (_HasDays_; days)
 open import Gregorianum.Data.Cursor
 open import Gregorianum.Data.Cursor.Position hiding (_<_)
 import Gregorianum.Data.Cursor.Properties as Cursor
+open import Relation.Nullary.Decidable using (Dec; yes; no)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 open import Data.Nat as ℕ using (ℕ; zero; suc; _+_; _*_; NonZero)
-open import Data.Product using (∃-syntax; _,_; proj₁)
+open import Data.Product using (∃-syntax; _,_; proj₁; proj₂)
 
 record YearMonth : Set where
   constructor _-_
@@ -20,8 +24,16 @@ data _⋖_ : YearMonth → YearMonth → Set where
   stepʸ : ∀ {y₁ y₂} → y₁ Y.⋖ y₂ → (y₁ - december) ⋖ (y₂ - january)
 
 data IsSuccessor : YearMonth → Set where
-  sucᵐ : ∀ {y acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuccessor (y - mkPos c)
-  sucʸ : ∀ {y} → Y.IsSuccessor y → IsSuccessor (y - january)
+  sucᵐ : ∀ {acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuccessor ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c)
+  sucʸ : ∀ {ym} → Y.IsSuccessor (YearMonth.year ym) → IsSuccessor ym
+
+
+isSuccessor? : (ym : YearMonth) → Dec (IsSuccessor ym)
+isSuccessor? (year - month) with Y.isSuccessor? year
+... | yes p = yes (sucʸ p)
+isSuccessor? (year - month) | no p with Y.¬IsSuccessor⇒first p
+isSuccessor? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first) | no ¬p | refl = no λ { (sucʸ p) → ¬p p}
+isSuccessor? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos (suc _)) | no _ | refl = yes sucᵐ
 
 record _HasDays_ (ym : YearMonth) (days : ℕ) : Set where
   constructor mkHasDays
@@ -43,17 +55,17 @@ nextYearMonth (year - mkPos {rem = zero} c₁₂@(suc×₁₂ _)) with Cursor.re
 ...                                                         | ()
 
 prevYearMonth : ∀ ym₂ → IsSuccessor ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
-prevYearMonth (year - mkPos (suc cᵐ)) sucᵐ = (year - mkPos cᵐ) , stepᵐ
-prevYearMonth (year - mkPos first) (sucʸ p) with Y.prevYear year p
-...                                            | year' , p' = (year' - december) , stepʸ p'
+prevYearMonth (_ - mkPos (suc c)) sucᵐ = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c) , stepᵐ
+prevYearMonth (year - mkPos first) (sucʸ x) = (proj₁ (Y.prevYear year x) - december) , stepʸ (proj₂ (Y.prevYear year x))
+prevYearMonth (year - mkPos (suc month)) (sucʸ x) = (year - mkPos month) , stepᵐ
 
-data _HasWeight_ (ym : YearMonth) : (n : ℕ) → Set where
-  has-weight : ∀ {yw}
+data _HasOrdinal_ (ym : YearMonth) : (n : ℕ) → Set where
+  has-ordinal : ∀ {yw}
              → (YearMonth.year ym) Y.HasWeight (suc yw)
-             → ym HasWeight (yw * 12 + Position.toℕ (YearMonth.month ym))
+             → ym HasOrdinal (Position.toℕ (YearMonth.month ym) + yw * 12)
 
-toWeight : (ym : YearMonth) → ∃[ n ] ym HasWeight n
-toWeight ym = _ , has-weight Y.has-weight
+toOrdinal : (ym : YearMonth) → ∃[ n ] ym HasOrdinal n
+toOrdinal ym = _ , has-ordinal Y.has-weight
 
 _<_ : YearMonth → YearMonth → Set
-ym₁ < ym₂ = proj₁ (toWeight ym₁) ℕ.< proj₁ (toWeight ym₂)
+ym₁ < ym₂ = proj₁ (toOrdinal ym₁) ℕ.< proj₁ (toOrdinal ym₂)

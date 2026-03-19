@@ -2,6 +2,8 @@ module Gregorianum.Date.Base where
 
 open import Gregorianum.Year as Y using (Year; _HasYearType_; YearType; leap; common)
 open import Gregorianum.Year.Properties as Y
+open import Gregorianum.Year.Weight.Base as Y
+open import Gregorianum.Year.Weight.Properties as Y
 open import Gregorianum.YearMonth as YM using (YearMonth; _HasDays_)
 import Gregorianum.Month as M
 open import Gregorianum.Day using (Day)
@@ -65,28 +67,28 @@ prevDate (ym - mkPos {acc = zero} first ⟨ hasDays ⟩) (sucʸᵐ x) with YM.pr
       h : (ym' - mkPos last ⟨ hasDays' ⟩) ⋖ (ym - mkPos first ⟨ hasDays ⟩)
       h = stepʸᵐ ym'⋖ym
 
-data _HasWeight_ (d : Date) : (n : ℕ) → Set where
-  has-leap-weight : ∀ {yl yc ymw}
-                  → (Date.year d) HasYearType Y.leap
-                  → (Date.year d) Y.HasLeapWeight (suc yl)
-                  → (Date.year d) Y.HasCommonWeight yc
-                  → (Y.leap , Date.month d) M.HasDayWeight ymw
-                  → d HasWeight (yl * 366 + yc * 365 + ymw + Position.toℕ (Date.day d))
-  has-common-weight : ∀ {yl yc ymw}
-                  → {{_ : NonZero yl}}
-                  → (Date.year d) HasYearType Y.common
-                  → (Date.year d) Y.HasLeapWeight yl
-                  → (Date.year d) Y.HasCommonWeight (suc yc)
-                  → (Y.common , Date.month d) M.HasDayWeight ymw
-                  → d HasWeight (yl * 366 + yc * 365 + ymw + Position.toℕ (Date.day d))
+data _HasOrdinal_ (d : Date) : (n : ℕ) → Set where
+  has-leap-ordinal : ∀ {yl yc ymo}
+                   → (Date.year d) HasYearType Y.leap
+                   → (Date.year d) Y.HasLeapWeight (suc yl)
+                   → (Date.year d) Y.HasCommonWeight yc
+                   → (Y.leap , Date.month d) M.HasDayOrdinal ymo
+                   → d HasOrdinal (yl * 366 + yc * 365 + ymo + Position.toℕ (Date.day d))
+  has-common-ordinal : ∀ {yl yc ymo}
+                     → {{_ : NonZero yl}}
+                     → (Date.year d) HasYearType Y.common
+                     → (Date.year d) Y.HasLeapWeight yl
+                     → (Date.year d) Y.HasCommonWeight (suc yc)
+                     → (Y.common , Date.month d) M.HasDayOrdinal ymo
+                     → d HasOrdinal (yl * 366 + yc * 365 + ymo + Position.toℕ (Date.day d))
 
-toWeight : (d : Date) → ∃[ n ] d HasWeight n
-toWeight d with Y.yearType (Date.year d)
-toWeight d | leap , p with M.dayWeight (leap , Date.month d)
-toWeight d | leap , p | w , q = _ , has-leap-weight p Y.has-weight Y.has-weight q
-toWeight d | common , p with M.dayWeight (common , Date.month d)
+toOrdinal : (d : Date) → ∃[ n ] d HasOrdinal n
+toOrdinal d with Y.yearType (Date.year d)
+toOrdinal d | leap , p with M.dayOrdinal (leap , Date.month d)
+toOrdinal d | leap , p | w , q = _ , has-leap-ordinal p Y.has-weight Y.has-weight q
+toOrdinal d | common , p with M.dayOrdinal (common , Date.month d)
 ... | w , q with Y.is-successor⇒suc-common-weight (Y.common⇒is-successor p)
-... | ycw , q' = _ , has-common-weight p Y.has-weight q' q
+... | ycw , q' = _ , has-common-ordinal p has-weight q' q
 
 _<_ : Date → Date → Set
-d₁ < d₂ = proj₁ (toWeight d₁) ℕ.< proj₁ (toWeight d₂)
+d₁ < d₂ = proj₁ (toOrdinal d₁) ℕ.< proj₁ (toOrdinal d₂)

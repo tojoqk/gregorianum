@@ -67,54 +67,54 @@ days (yt , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
 days (common , mkPos second) = 28 , february-common-days
 days (leap , mkPos second) = 29 , february-leap-days
 
-data _HasDayWeight_ : YearType × Month → ℕ → Set where
-  january-weight          : ∀ {yt} →  (yt , january) HasDayWeight 0
-  february-weight         : ∀ {yt} → (yt , february) HasDayWeight 31
-  march-common-weight     :          (common , march) HasDayWeight 59
-  april-common-weight     :          (common , april) HasDayWeight 90
-  may-common-weight       :            (common , may) HasDayWeight 120
-  june-common-weight      :           (common , june) HasDayWeight 151
-  july-common-weight      :           (common , july) HasDayWeight 181
-  august-common-weight    :         (common , august) HasDayWeight 212
-  september-common-weight :      (common , september) HasDayWeight 243
-  october-common-weight   :        (common , october) HasDayWeight 273
-  november-common-weight  :       (common , november) HasDayWeight 304
-  december-common-weight  :       (common , december) HasDayWeight 334
-  march-leap-weight     :              (leap , march) HasDayWeight 60
-  april-leap-weight     :              (leap , april) HasDayWeight 91
-  may-leap-weight       :                (leap , may) HasDayWeight 121
-  june-leap-weight      :               (leap , june) HasDayWeight 152
-  july-leap-weight      :               (leap , july) HasDayWeight 182
-  august-leap-weight    :             (leap , august) HasDayWeight 213
-  september-leap-weight :          (leap , september) HasDayWeight 244
-  october-leap-weight   :            (leap , october) HasDayWeight 274
-  november-leap-weight  :           (leap , november) HasDayWeight 305
-  december-leap-weight  :           (leap , december) HasDayWeight 335
+data _HasDayOrdinal_ : YearType × Month → ℕ → Set where
+  january-ordinal          : ∀ {yt} →  (yt , january) HasDayOrdinal 0
+  february-ordinal         : ∀ {yt} → (yt , february) HasDayOrdinal 31
+  march-common-ordinal     :          (common , march) HasDayOrdinal 59
+  april-common-ordinal     :          (common , april) HasDayOrdinal 90
+  may-common-ordinal       :            (common , may) HasDayOrdinal 120
+  june-common-ordinal      :           (common , june) HasDayOrdinal 151
+  july-common-ordinal      :           (common , july) HasDayOrdinal 181
+  august-common-ordinal    :         (common , august) HasDayOrdinal 212
+  september-common-ordinal :      (common , september) HasDayOrdinal 243
+  october-common-ordinal   :        (common , october) HasDayOrdinal 273
+  november-common-ordinal  :       (common , november) HasDayOrdinal 304
+  december-common-ordinal  :       (common , december) HasDayOrdinal 334
+  march-leap-ordinal     :              (leap , march) HasDayOrdinal 60
+  april-leap-ordinal     :              (leap , april) HasDayOrdinal 91
+  may-leap-ordinal       :                (leap , may) HasDayOrdinal 121
+  june-leap-ordinal      :               (leap , june) HasDayOrdinal 152
+  july-leap-ordinal      :               (leap , july) HasDayOrdinal 182
+  august-leap-ordinal    :             (leap , august) HasDayOrdinal 213
+  september-leap-ordinal :          (leap , september) HasDayOrdinal 244
+  october-leap-ordinal   :            (leap , october) HasDayOrdinal 274
+  november-leap-ordinal  :           (leap , november) HasDayOrdinal 305
+  december-leap-ordinal  :           (leap , december) HasDayOrdinal 335
 
-dayWeight : (ytm : YearType × Month) → ∃[ n ] ytm HasDayWeight n
-dayWeight (fst , mkPos first) = 0 , january-weight
-dayWeight (fst , mkPos second) = 31 , february-weight
-dayWeight (common , mkPos third) = 59 , march-common-weight
-dayWeight (common , mkPos fourth) = 90 , april-common-weight
-dayWeight (common , mkPos fifth) = 120 , may-common-weight
-dayWeight (common , mkPos sixth) = 151 , june-common-weight
-dayWeight (common , mkPos seventh) = 181 , july-common-weight
-dayWeight (common , mkPos eighth) = 212 , august-common-weight
-dayWeight (common , mkPos ninth) = 243 , september-common-weight
-dayWeight (common , mkPos tenth) = 273 , october-common-weight
-dayWeight (common , mkPos eleventh) = 304 , november-common-weight
-dayWeight (common , mkPos twelfth) = 334 , december-common-weight
-dayWeight (common , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
+dayOrdinal : (ytm : YearType × Month) → ∃[ n ] ytm HasDayOrdinal n
+dayOrdinal (fst , mkPos first) = 0 , january-ordinal
+dayOrdinal (fst , mkPos second) = 31 , february-ordinal
+dayOrdinal (common , mkPos third) = 59 , march-common-ordinal
+dayOrdinal (common , mkPos fourth) = 90 , april-common-ordinal
+dayOrdinal (common , mkPos fifth) = 120 , may-common-ordinal
+dayOrdinal (common , mkPos sixth) = 151 , june-common-ordinal
+dayOrdinal (common , mkPos seventh) = 181 , july-common-ordinal
+dayOrdinal (common , mkPos eighth) = 212 , august-common-ordinal
+dayOrdinal (common , mkPos ninth) = 243 , september-common-ordinal
+dayOrdinal (common , mkPos tenth) = 273 , october-common-ordinal
+dayOrdinal (common , mkPos eleventh) = 304 , november-common-ordinal
+dayOrdinal (common , mkPos twelfth) = 334 , december-common-ordinal
+dayOrdinal (common , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
 ...                                        | ()
-dayWeight (leap , mkPos third) = 60 , march-leap-weight
-dayWeight (leap , mkPos fourth) = 91 , april-leap-weight
-dayWeight (leap , mkPos fifth) = 121 , may-leap-weight
-dayWeight (leap , mkPos sixth) = 152 , june-leap-weight
-dayWeight (leap , mkPos seventh) = 182 , july-leap-weight
-dayWeight (leap , mkPos eighth) = 213 , august-leap-weight
-dayWeight (leap , mkPos ninth) = 244 , september-leap-weight
-dayWeight (leap , mkPos tenth) = 274 , october-leap-weight
-dayWeight (leap , mkPos eleventh) = 305 , november-leap-weight
-dayWeight (leap , mkPos twelfth) = 335 , december-leap-weight
-dayWeight (leap , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
+dayOrdinal (leap , mkPos third) = 60 , march-leap-ordinal
+dayOrdinal (leap , mkPos fourth) = 91 , april-leap-ordinal
+dayOrdinal (leap , mkPos fifth) = 121 , may-leap-ordinal
+dayOrdinal (leap , mkPos sixth) = 152 , june-leap-ordinal
+dayOrdinal (leap , mkPos seventh) = 182 , july-leap-ordinal
+dayOrdinal (leap , mkPos eighth) = 213 , august-leap-ordinal
+dayOrdinal (leap , mkPos ninth) = 244 , september-leap-ordinal
+dayOrdinal (leap , mkPos tenth) = 274 , october-leap-ordinal
+dayOrdinal (leap , mkPos eleventh) = 305 , november-leap-ordinal
+dayOrdinal (leap , mkPos twelfth) = 335 , december-leap-ordinal
+dayOrdinal (leap , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
 ...                                      | ()

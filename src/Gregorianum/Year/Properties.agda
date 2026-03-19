@@ -52,29 +52,29 @@ next-year-unique step₄₀₀ step₄₀₀ = refl
 ¬IsSuccessor⇒first {suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = contradiction suc₄₀₀ ¬isSuc
 ¬IsSuccessor⇒first {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = refl
 
-next-year-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₁ HasWeight n → y₂ HasWeight (suc n)
-next-year-weight step has-weight = has-weight
-next-year-weight step₄ has-weight = has-weight
-next-year-weight step₁₀₀ has-weight = has-weight
-next-year-weight step₄₀₀ has-weight = has-weight
+next-year-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasOrdinal n → y₂ HasOrdinal (suc n)
+next-year-ordinal step has-ordinal = has-ordinal
+next-year-ordinal step₄ has-ordinal = has-ordinal
+next-year-ordinal step₁₀₀ has-ordinal = has-ordinal
+next-year-ordinal step₄₀₀ has-ordinal = has-ordinal
 
-prev-year-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₂ HasWeight (suc n) → y₁ HasWeight n
-prev-year-weight step has-weight = has-weight
-prev-year-weight step₄ has-weight = has-weight
-prev-year-weight step₁₀₀ has-weight = has-weight
-prev-year-weight step₄₀₀ has-weight = has-weight
+prev-year-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₂ HasOrdinal (suc n) → y₁ HasOrdinal n
+prev-year-ordinal step has-ordinal = has-ordinal
+prev-year-ordinal step₄ has-ordinal = has-ordinal
+prev-year-ordinal step₁₀₀ has-ordinal = has-ordinal
+prev-year-ordinal step₄₀₀ has-ordinal = has-ordinal
 
-suc-weight-is-successor : ∀ {y n} → {{_ : NonZero n}} → y HasWeight (suc n) → IsSuccessor y
-suc-weight-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos cursor ×₄+ mkPos (suc cursor₁)} {n = _} has-weight = suc₁
-suc-weight-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} {n = _} has-weight = suc₄
-suc-weight-is-successor {quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-weight = suc₁₀₀
-suc-weight-is-successor {suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-weight = suc₄₀₀
+suc-ordinal-is-successor : ∀ {y n} → y HasOrdinal (suc n) → IsSuccessor y
+suc-ordinal-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos cursor ×₄+ mkPos (suc cursor₁)} {n = _} has-ordinal = suc₁
+suc-ordinal-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} {n = _} has-ordinal = suc₄
+suc-ordinal-is-successor {quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-ordinal = suc₁₀₀
+suc-ordinal-is-successor {suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-ordinal = suc₄₀₀
 
-is-successor⇒suc-weight : ∀ {y} → IsSuccessor y → ∃[ n ] y HasWeight (suc (suc n))
-is-successor⇒suc-weight suc₁ = _ , has-weight
-is-successor⇒suc-weight suc₄ = _ , has-weight
-is-successor⇒suc-weight suc₁₀₀ = _ , has-weight
-is-successor⇒suc-weight suc₄₀₀ = _ , has-weight
+is-successor⇒suc-ordinal : ∀ {y} → IsSuccessor y → ∃[ n ] y HasOrdinal (suc n)
+is-successor⇒suc-ordinal suc₁ = _ , has-ordinal
+is-successor⇒suc-ordinal suc₄ = _ , has-ordinal
+is-successor⇒suc-ordinal suc₁₀₀ = _ , has-ordinal
+is-successor⇒suc-ordinal suc₄₀₀ = _ , has-ordinal
 
 import Data.Nat.Induction as ℕ
 open import Induction.WellFounded
@@ -82,48 +82,28 @@ import Relation.Binary.Construct.On as On
 open import Function using (_∘_)
 
 <-WellFounded : WellFounded _<_
-<-WellFounded y = On.accessible (proj₁ ∘ toWeight) (ℕ.<-wellFounded-fast (proj₁ (toWeight y)))
+<-WellFounded y = On.accessible (proj₁ ∘ toOrdinal) (ℕ.<-wellFounded-fast (proj₁ (toOrdinal y)))
 
-⋖⇒suc : ∀ {y₁ y₂} → y₁ ⋖ y₂ → ∃[ n ] (y₁ HasWeight (suc n)) × (y₂ HasWeight (suc (suc n)))
-⋖⇒suc {y₁} {y₂} p with next-year-weight p has-weight
-...                  | epₙ = _ , has-weight , epₙ
+⋖⇒suc : ∀ {y₁ y₂} → y₁ ⋖ y₂ → ∃[ n ] (y₁ HasOrdinal n) × (y₂ HasOrdinal (suc n))
+⋖⇒suc {y₁} {y₂} p with next-year-ordinal p has-ordinal
+...                  | epₙ = _ , has-ordinal , epₙ
 
-weight-unique : ∀ {y n₁ n₂} → {{_ : NonZero n₁}} → {{_ : NonZero n₂}} → y HasWeight n₁ → y HasWeight n₂ → n₁ ≡ n₂
-weight-unique has-weight has-weight = refl
+ordinal-unique : ∀ {y n₁ n₂} → y HasOrdinal n₁ → y HasOrdinal n₂ → n₁ ≡ n₂
+ordinal-unique has-ordinal has-ordinal = refl
 
 ⋖⇒< : ∀ {y₁ y₂} → y₁ ⋖ y₂ → y₁ < y₂
-⋖⇒< {y₁} {y₂} p with ⋖⇒suc p | toWeight y₁ | toWeight y₂
-... | n , ep₁ , ep₂ | n₁ , has-weight | n₂ , has-weight with weight-unique ep₁ has-weight | weight-unique ep₂ has-weight
-... | eq₁ | eq₂ rewrite sym (suc-injective eq₂) | sym eq₁ = ≤-refl
+⋖⇒< {y₁} {y₂} p with ⋖⇒suc p | toOrdinal y₁ | toOrdinal y₂
+... | n , ep₁ , ep₂ | n₁ , has-ordinal | n₂ , has-ordinal with ordinal-unique ep₁ has-ordinal | ordinal-unique ep₂ has-ordinal
+... | eq₁ | eq₂ rewrite sym eq₂ | sym eq₁ = ≤-refl
 
 ⋖-wellFounded : WellFounded _⋖_
 ⋖-wellFounded y = Subrelation.accessible ⋖⇒< (<-WellFounded y)
 
-private
-  year-unique' : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ HasWeight n → y₂ HasWeight n → Acc _⋖_ y₁ → y₁ ≡ y₂
-  year-unique' {y₁} {y₂} {suc (suc n)} p q (acc rs) with prevYear y₁ (suc-weight-is-successor p) | prevYear y₂ (suc-weight-is-successor q)
-  ... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique' {y₁'} {y₂'} (prev-year-weight y₁'⋖y₁ p) (prev-year-weight y₂'⋖y₂ q) (rs y₁'⋖y₁)
-  ... | refl = next-year-unique y₁'⋖y₁ y₂'⋖y₂
-  year-unique' {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {suc zero} has-weight has-weight _ = refl
-
-year-unique : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ HasWeight n → y₂ HasWeight n → y₁ ≡ y₂
-year-unique p q = year-unique' p q (⋖-wellFounded _)
-
-weight≡leap+common : ∀ {y w l c} {{_ : NonZero w}} {{_ : NonZero l}}
-                   → y HasWeight w → y HasLeapWeight l → y HasCommonWeight c → w ≡ l + c
-weight≡leap+common {y} has-weight has-weight has-weight =
-  solve 4 (λ a b c q → con 1 :+ (a :+ (b :+ (c :+ q :* con 4) :* con 25) :* con 4)
-                     := (con 1 :+ b) :+ c :* con 24 :+ q :* con 97
-                     :+ (a :+ b :* con 3 :+ c :* con 76 :+ q :* con 303))
-        refl
-        (Position.toℕ (Year.pos₁ y)) (Position.toℕ (Year.pos₄ y)) (Position.toℕ (Year.pos₁₀₀ y)) (Year.quadricentennial y)
-  where open +-*-Solver
-
-is-successor⇒suc-common-weight : ∀ {y} → IsSuccessor y → ∃[ n ] y HasCommonWeight (suc n)
-is-successor⇒suc-common-weight {(q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor))} suc₁ = _ , has-weight
-is-successor⇒suc-common-weight {(q ×₄₀₀+ mkPos {acc = c} _ ×₁₀₀+ mkPos (suc {acc = b} cursor) ×₄+ mkPos first)} suc₄ = _ , has-weight
-is-successor⇒suc-common-weight {(q ×₄₀₀+ mkPos (suc {acc = n} cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₁₀₀ = _ , has-weight
-is-successor⇒suc-common-weight {(suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₄₀₀ = _ , has-weight
+year-unique : ∀ {y₁ y₂ n} → y₁ HasOrdinal n → y₂ HasOrdinal n → y₁ ≡ y₂
+year-unique {y₁} {y₂} {suc n} p q with prevYear y₁ (suc-ordinal-is-successor p) | prevYear y₂ (suc-ordinal-is-successor q)
+... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique {y₁'} {y₂'} (prev-year-ordinal y₁'⋖y₁ p) (prev-year-ordinal y₂'⋖y₂ q)
+... | refl = next-year-unique y₁'⋖y₁ y₂'⋖y₂
+year-unique {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero} has-ordinal has-ordinal = refl
 
 common⇒is-successor : ∀ {y} → y HasYearType common → IsSuccessor y
 common⇒is-successor common = suc₁
