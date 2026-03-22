@@ -8,8 +8,9 @@ open import Gregorianum.Data.Cursor.Position
 import Gregorianum.Year.Base as Y
 import Gregorianum.YearMonth.Base as YM
 open import Gregorianum.Month.Base as M
-open import Data.Nat as ℕ using (ℕ; suc; zero; _+_; _*_; z≤n; s≤s; _≤_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+open import Data.Nat as ℕ using (ℕ; suc; zero; _+_; _*_; _∸_; z≤n; s≤s; _≤_; _≡ᵇ_)
+import Data.Nat.Properties as ℕ
+open import Relation.Binary.PropositionalEquality as Eq using (_≡_; refl; sym; cong; subst; module ≡-Reasoning)
 open import Data.Product using (∃-syntax; _×_; _,_; proj₁; proj₂)
 open import Relation.Nullary.Decidable using (Dec; yes; no)
 open import Relation.Nullary.Negation using (¬_; contradiction)
@@ -118,28 +119,47 @@ acyclic ε = refl
 acyclic p@(extendʳ _ _) = contradiction p ¬circle
 
 private
-  fromFirst : ∀ {x len} → x HasOrdinal len → date-first ─[ len ]→ x
-  fromFirst {x} {zero} ho with ordinal≡0⇒first ho
+  from : ∀ {d₁ d₂ n k} → d₁ HasOrdinal n → d₂ HasOrdinal (n + k) → d₁ ─[ k ]→ d₂
+  from {n = n} {k = zero} p q rewrite ℕ.+-identityʳ n with date-unique p q
   ... | refl = ε
-  fromFirst {x} {suc len} ho with prevDate x (suc-ordinal-is-successor ho)
-  ... | x' , x'⋖x = extendʳ x'⋖x (fromFirst (prev-date-ordinal x'⋖x ho))
+  from {d₂ = d₂} {n = n} {k = suc k} ho₁ ho₂ rewrite ℕ.+-suc n k with prevDate d₂ (suc-ordinal-is-successor ho₂)
+  ... | d₂' , d₂'⋖d₂ with prev-date-ordinal d₂'⋖d₂ ho₂
+  ... | ho₂' = extendʳ d₂'⋖d₂ (from ho₁ ho₂')
 
-total : ∀ x y → Tri x y
-total x y = total' x y (⋖-wellFounded x)
-  where
-    total' : ∀ x y → WF.Acc _⋖_ x → Tri x y
-    total' x y wf with isSuccessor? x | isSuccessor? y
-    total' x y wf | no ¬p | no ¬q with ¬IsSuccessor⇒first ¬p | ¬IsSuccessor⇒first ¬q
-    ... | refl | refl = tri≡ refl
-    total' x y wf | no ¬p | yes _ with ¬IsSuccessor⇒first ¬p
-    total' x y wf | no _ | yes isSuc | refl = tri→ (is-successor⇒suc-ordinal isSuc .proj₁) (fromFirst (proj₂ (is-successor⇒suc-ordinal isSuc)))
-    total' x y wf | yes _ | no ¬q with ¬IsSuccessor⇒first ¬q
-    total' x y wf | yes isSuc | no _ | refl = tri← (is-successor⇒suc-ordinal isSuc .proj₁) (fromFirst (proj₂ (is-successor⇒suc-ordinal isSuc)))
-    total' x y (WF.acc rs) | yes isSuc₁ | yes isSuc₂ with prevDate x isSuc₁ | prevDate y isSuc₂
-    ... | x' , x'⋖x | y' , y'⋖y with total' x' y' (rs x'⋖x)
-    ... | tri≡ refl = tri≡ (next-date-unique x'⋖x y'⋖y)
-    ... | tri→ n x'→y' = tri→ n (shiftʳ x'⋖x y'⋖y x'→y')
-    ... | tri← n y'→x' = tri← n (shiftʳ y'⋖y x'⋖x y'→x')
+open import Data.Bool using (Bool; true; false; T)
+open import Data.Bool.Properties using (T?)
+
+private
+  compare-lemma : ∀ {d₁ d₂ n₁ n₂}
+            → d₁ HasOrdinal n₁
+            → d₂ HasOrdinal n₂
+            → n₁ ℕ.< n₂
+            → d₁ ─[ suc (ℕ.pred (n₂ ℕ.∸ n₁)) ]→ d₂
+  compare-lemma {d₁} {d₂} {n₁} {n₂} ho₁ ho₂ n₁<n₂ with ℕ.m≤n⇒∃[o]m+o≡n n₁<n₂
+  ... | k , refl with prevDate d₂ (suc-ordinal-is-successor ho₂)
+  ... | d₂' , d₂'⋖d₂ with prev-date-ordinal d₂'⋖d₂ ho₂
+  ... | ho₂' = extendʳ d₂'⋖d₂ (from ho₁ (subst (d₂' HasOrdinal_) eq ho₂'))
+    where
+      eq : n₁ + k ≡ n₁ + (suc (n₁ + k) ∸ n₁ ∸ 1)
+      eq = sym (cong (n₁ +_) (begin
+             ((1 + (n₁ + k)) ℕ.∸ n₁) ℕ.∸ 1
+           ≡⟨ cong (λ x → x ∸ n₁ ∸ 1) (sym (ℕ.+-suc n₁ k)) ⟩
+             (n₁ + suc k ∸ n₁) ∸ 1
+           ≡⟨ cong (_∸ 1) (ℕ.m+n∸m≡n n₁ (suc k)) ⟩
+             k
+           ∎))
+        where open ≡-Reasoning
+
+open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
+
+compare : ∀ d₁ d₂ → Tri d₁ d₂
+compare d₁ d₂ with toOrdinal d₁ | toOrdinal d₂
+... | n₁ , ho₁ | n₂ , ho₂ with ℕ.<-cmp n₁ n₂
+... | tri< a ¬b ¬c = tri→ (n₂ ∸ n₁ ∸ 1) (compare-lemma ho₁ ho₂ a)
+... | tri≈ ¬a refl ¬c = tri≡ (date-unique ho₁ ho₂)
+... | tri> ¬a ¬b c = tri← (n₁ ∸ n₂ ∸ 1) (compare-lemma ho₂ ho₁ c)
+
+total = compare
 
 isLinear : IsLinear
 isLinear = record
