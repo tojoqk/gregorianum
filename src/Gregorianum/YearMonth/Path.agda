@@ -138,3 +138,12 @@ total x y = total' x y (⋖-wellFounded x)
     ... | tri≡ refl = tri≡ (next-year-month-unique x'⋖x y'⋖y)
     ... | tri→ n x'→y' = tri→ n (shiftʳ x'⋖x y'⋖y x'→y')
     ... | tri← n y'→x' = tri← n (shiftʳ y'⋖y x'⋖x y'→x')
+
+isLinear : IsLinear
+isLinear = record
+             { isPath = isPath
+             ; uniqueˡ = uniqueˡ
+             ; uniqueʳ = uniqueʳ
+             ; acyclic = acyclic
+             ; total = total
+             }
