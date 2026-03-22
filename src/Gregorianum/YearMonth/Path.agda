@@ -111,12 +111,9 @@ private
       h ym (extendʳ ym'⋖ym ym→ym) (WF.acc rs) = h _ (extendˡ ym'⋖ym ym→ym) (rs ym'⋖ym)
   ... | ()
 
-acyclic : ∀ {x y m n} → x ─[ m ]→ y → y ─[ n ]→ x → m ≡ 0 × n ≡ 0
-acyclic ε ε = refl , refl
-acyclic ε (extendʳ x⋖y y→x) = contradiction (extendʳ x⋖y y→x) ¬circle
-acyclic (extendʳ x⋖y x→y) ε = contradiction (extendʳ x⋖y x→y) ¬circle
-acyclic (extendʳ y'⋖y x→y) (extendʳ x'⋖x y→x) with acyclic x→y (extendʳ x'⋖x (extendˡ y'⋖y y→x))
-...                                                    | ()
+acyclic : ∀ {x n} → x ─[ n ]→ x → n ≡ 0
+acyclic ε = refl
+acyclic p@(extendʳ _ _) = contradiction p ¬circle
 
 private
   fromFirst : ∀ {x len} → x HasOrdinal len → ym-first ─[ len ]→ x
