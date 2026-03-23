@@ -14,7 +14,9 @@ open import Relation.Binary.PropositionalEquality as Eq using (_≡_; refl; sym;
 open import Data.Product using (∃-syntax; _×_; _,_; proj₁; proj₂)
 open import Relation.Nullary.Decidable using (Dec; yes; no; True; toWitness)
 open import Relation.Nullary.Negation using (¬_; contradiction)
-import Induction.WellFounded as WF
+open import Data.Bool using (Bool; true; false; T)
+open import Data.Bool.Properties using (T?)
+open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
 
 data _─[_]→_ (x : Date) : ℕ → Date → Set where
   ε : x ─[ zero ]→ x
@@ -115,8 +117,6 @@ private
   ¬circle h with acyclic h
   ...          | ()
 
-
-private
   from : ∀ {d₁ d₂ n k} → d₁ HasOrdinal n → d₂ HasOrdinal (n + k) → d₁ ─[ k ]→ d₂
   from {n = n} {k = zero} p q rewrite ℕ.+-identityʳ n with date-unique p q
   ... | refl = ε
@@ -124,10 +124,6 @@ private
   ... | d₂' , d₂'⋖d₂ with prev-date-ordinal d₂'⋖d₂ ho₂
   ... | ho₂' = extendʳ d₂'⋖d₂ (from ho₁ ho₂')
 
-open import Data.Bool using (Bool; true; false; T)
-open import Data.Bool.Properties using (T?)
-
-private
   compare-lemma : ∀ {d₁ d₂ n₁ n₂}
             → d₁ HasOrdinal n₁
             → d₂ HasOrdinal n₂
@@ -147,8 +143,6 @@ private
              k
            ∎))
         where open ≡-Reasoning
-
-open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
 
 compare : ∀ d₁ d₂ → Tri d₁ d₂
 compare d₁ d₂ with toOrdinal d₁ | toOrdinal d₂
