@@ -99,29 +99,10 @@ uniqueʳ (extendʳ x'⋖y p) (extendʳ x'⋖z q) with uniqueʳ p q
 ...                                                    | refl = refl
 
 private
-  pattern date-first = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) YM.- mkPos first) - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩
-
-  first→first⇒len≡zero : ∀ {len} → date-first ─[ len ]→ date-first → len ≡ zero
-  first→first⇒len≡zero {zero} ε = refl
-  first→first⇒len≡zero {suc _} (extendʳ (stepʸᵐ (YM.stepʸ ())) h)
-
   path-ordinal : ∀ {d₁ d₂ k n} → d₁ ─[ k ]→ d₂ → d₁ HasOrdinal n → d₂ HasOrdinal (k + n)
   path-ordinal ε h = h
   path-ordinal {d₁} {d₂} (extendʳ y⋖d₂ y→d₂) ho₁ with path-ordinal y→d₂ ho₁
   ... | hoy = next-date-ordinal y⋖d₂ hoy
-
-  -- ¬circle : ∀ {x len} → ¬ (x ─[ suc len ]→ x)
-  -- ¬circle {x} {len} x→x with toOrdinal x
-  -- ... | n , ho with path-ordinal x→x ho
-  -- ... | h with ordinal-unique h ho
-  -- ¬circle {x} {len} x→x | n , ho | h₁ | h = {!!}
-
-  -- -- ¬circle {x} {zero} (extendʳ x₁ x→x) with toOrdinal x
-  -- -- ... | n , ho with identity⁻¹ x→x
-  -- -- ... | refl with next-date-ordinal x₁ ho
-  -- -- ... | h with ordinal-unique ho h
-  -- -- ... | ()
-  -- -- ¬circle {x} {suc len} (extendʳ x₁ x→x) = {!!}
 
 acyclic : ∀ {x n} → x ─[ n ]→ x → n ≡ 0
 acyclic {x} {n} x→x with toOrdinal x
