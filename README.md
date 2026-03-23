@@ -4,132 +4,114 @@
 
 Unlike traditional libraries that rely on runtime validation, Gregorianum encodes the structural laws of the calendar—such as month lengths, leap years, and era transitions—directly into the type system.
 
+## Core Abstractions: `Cursor` and `Position`
 
-## Structural Elegance of `Day`
+The heart of Gregorianum is the `Cursor`, which replaces raw integers with a type that guarantees boundary conditions.
 
-The heart of Gregorianum is the `Day` type. It is not merely a wrapper for an integer; it is a type-level representation of a day's **Successor Capacity**.
-
-
-### 1. Successor Capacity and Remainder
-
-A `Day` is indexed by its capacity (`cap`), the number of days already passed (`acc`), and the **remaining successor applications** (`rem`) within a month.
+### 1. Boundary-Safe `Cursor`
+`Cursor width acc rem` is indexed by the total width (`width`), the number of elements passed (`acc`), and the number of elements remaining (`rem`). Consequently, **"boundaries" (such as the end of a month or year) are not mere value comparisons but are expressed as type-level states (`rem ≡ 0`).**
 
 ```agda
-data Day (cap : ℕ) : (acc rem : ℕ) → Set where
-  1st : Day cap zero cap
-  suc : ∀ {acc rem} → Day cap acc (suc rem) → Day cap (suc acc) rem
+data Cursor (width : ℕ) : ℕ → ℕ → Set where
+  zero : Cursor width 0 width
+  suc  : ∀ {acc rem} → Cursor width acc (suc rem) → Cursor width (suc acc) rem
 ```
 
-This indexing makes the **"end-of-month"** a type-level state (`rem ≡ 0`). By identifying this state, the library can distinguish between an internal transition (same month) and a boundary transition (next month) with absolute logical certainty.
-
-
-### 2. The Inductive Nature of `last`
-
-The "last day" of any month is not defined by numerical constants, but by a recursive proof using structural induction:
+### 2. Structured `Year`
+To handle the complexities of Gregorian leap year rules, a `Year` is defined not as a simple number, but as a record that structures the 400-year cycle.
 
 ```agda
-last : ∀ {cap} → Day cap cap 0
-last {zero}  = 1st
-last {suc _} = injectˡ last
-```
-
-By using `injectˡ`, the library derives the end of a month of any length as a structural property, ensuring that `prevDay` logic is always grounded in the month's actual capacity.
-
-## The Date Type and Adjacency
-
-Atop the `Day` type lies the `Date` record and a formal adjacency relation `_⋖_`. This relation defines the legal "next day" logic as a type-level specification.
-
-### 1. The `Date` Record
-
-A `Date` is a dependent record where the `YearMonth` dictates the legal capacity of the `Day`.
-
-```agda
-record Date : Set where
-  constructor _-_
+record Year : Set where
   field
-    {cap}     : ℕ
-    year-month : YearMonth (suc cap) -- suc cap ≡ days
-    {acc} : ℕ
-    {rem} : ℕ
-    day : Day cap acc rem
-
-  open YearMonth year-month public
+    quadricentennial : ℕ        -- Count of 400-year cycles
+    pos₁₀₀ : Position 3         -- 100-year position (0-3)
+    pos₄   : Position 24        -- 4-year position (0-24)
+    pos₁   : Position 3         -- 1-year position (0-3)
 ```
+With this structure, leap year logic (divisibility by 400, 100, and 4) is naturally described through type-level pattern matching.
 
-### 2. Adjacency
+## Linear Ordering and Paths
 
-We define what it means for one date to succeed another using a data type. This captures the logic of the calendar as a set of logical rules:
+Gregorianum treats dates not as isolated data points, but as a **linearly ordered set connected by "Paths."**
 
-```agda
-data _⋖_ : Date → Date → Set where
-  step : ∀ {cap acc rem} {ym : YearMonth (suc cap)}
-       → (d : Day cap acc (suc rem))
-       → (ym - d) ⋖ (ym - suc d)
-  step-month : ∀ {cap₁ cap₂} {ym₁ : YearMonth (suc cap₁)} {ym₂ : YearMonth (suc cap₂)}
-             → (d : Day cap₁ cap₁ 0)
-             → ym₁ YM.⋖ ym₂
-             → (ym₁ - d) ⋖ (ym₂ - 1st)
-```
+### 1. Adjacency `_⋖_`
+The relationship between a date `d1` and its immediate successor `d2` is defined by the `d1 ⋖ d2` data type. This specification covers all "valid transitions," including month rollovers and leap year logic.
 
-The `nextDay` function is a projection from an existence proof (`next-day-exists`), ensuring that transitions are total and always land on a valid date.
-
+### 2. Paths between dates `_─[ n ]→_`
+An interval of `n` days between two dates is defined as the transitive closure of the adjacency relation (a path of length `n`). This allows for the formal proof of the following properties:
+- **Acyclicity**: If `d ─[ n ]→ d`, then `n ≡ 0`. Dates never loop.
+- **Totality**: For any two dates `d1` and `d2`, it is decidable whether one precedes the other or they are identical.
 
 ## Key Features
 
--   **Correct-by-Construction Transitions**: `nextDay` and `prevDay` are derived from existence proofs (`next-day-exists`). They are **total functions** that seamlessly handle month boundaries, leap years.
--   **Proof Irrelevance**: Internal witnesses (such as leap year proofs) are proven irrelevant. This ensures that date equality (`_≡_`) behaves intuitively, based only on calendar values, without being hindered by underlying proof structures.
--   **Proleptic Support**: Full support for dates in the deep past and far future using arbitrary-precision integers (`ℤ`).
--   **Decidable Interface**: Conversion from raw integers to verified `Date` types is **decidable**. Using the `True` witness pattern, you can construct verified dates with elegant syntax.
+- **Type-Level Correctness**: Functions like `nextDate` and `addDays` are total functions based on proofs of existence. It is logically impossible to generate an invalid date.
+- **Decidable Interface**: The conversion from a simple numeric tuple `(y, m, d)` to a verified `Date` type is `Dec` (decidable). You can write dates verified at compile-time using the elegant syntax `⟨ 2026 - 3 - 23 ⟩`.
+- **Mapping to Ordinals**: The `toOrdinal` function maps dates to the number line (`ℕ`), enabling mathematically rigorous date comparisons and arithmetic.
 
-
-## Usage
+## Usage Examples
 
 ```agda
+module Gregorianum.Examples where
+
 open import Gregorianum.Date
+open import Data.Product using (_,_; proj₁; proj₂)
+open import Relation.Nullary.Decidable using (from-yes)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 -- Compile-time verified dates via decidable predicates
-today : Date
-today = ⟨+ 2024 - 2 - 23 ⟩
+_ : Date
+_ = ⟨ 2026 - 3 - 23 ⟩
 
 -- Leap years are handled automatically; 2024-02-29 is valid
-leapDay : Date
-leapDay = ⟨+ 2024 - 2 - 29 ⟩
+_ : Date
+_ = ⟨ 2024 - 2 - 29 ⟩
 
 -- This would result in a compile-time error:
 -- invalidDay : Date
--- invalidDay = ⟨+ 2025 - 2 - 29 ⟩ 
+-- invalidDay = ⟨ 2026 - 2 - 29 ⟩
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl)
-
--- Safe, total transitions guaranteed by existence proofs
-_ : nextDay today ≡ ⟨+ 2024 - 2 - 24 ⟩
+_ : proj₁ (nextDate ⟨ 2024 - 2 - 29 ⟩) ≡ ⟨ 2024 - 3 - 1 ⟩
 _ = refl
 
-_ : prevDay today ≡ ⟨+ 2024 - 2 - 22 ⟩
+_ : ⟨ 2024 - 2 - 29 ⟩ ⋖ ⟨ 2024 - 3 - 1 ⟩
+_ = proj₂ (nextDate ⟨ 2024 - 2 - 29 ⟩)
+
+_ : proj₁ (from-yes (prevDate? ⟨ 2024 - 3 - 1 ⟩)) ≡ ⟨ 2024 - 2 - 29 ⟩
 _ = refl
 
-_ : nextDay leapDay ≡ ⟨+ 2024 - 3 - 1 ⟩
+_ : ⟨ 2024 - 2 - 29 ⟩ ⋖ ⟨ 2024 - 3 - 1 ⟩
+_ = proj₂ (from-yes (prevDate? ⟨ 2024 - 3 - 1 ⟩))
+
+_ : ⟨ 2024 - 12 - 31 ⟩ ⋖ ⟨ 2025 - 1 - 1 ⟩
+_ = proj₂ (nextDate ⟨ 2024 - 12 - 31 ⟩)
+
+_ : ⟨ 2024 - 12 - 31 ⟩ ⋖ ⟨ 2025 - 1 - 1 ⟩
+_ = proj₂ (from-yes (prevDate? ⟨ 2025 - 1 - 1 ⟩))
+
+_ : proj₁ (addDays ⟨ 2024 - 2 - 22 ⟩ 366) ≡ ⟨ 2025 - 2 - 22 ⟩
 _ = refl
 
-_ : prevDay ⟨+ 2024 - 3 - 1 ⟩ ≡ leapDay
-_ = refl
+_ : ⟨ 2024 - 2 - 22 ⟩ ─[ 366 ]→ ⟨ 2025 - 2 - 22 ⟩
+_ = proj₂ (addDays ⟨ 2024 - 2 - 22 ⟩ 366)
 
-_ : nextDay ⟨+ 2024 - 12 - 31 ⟩ ≡ ⟨+ 2025 - 1 - 1 ⟩
-_ = refl
+_ : ⟨ 2024 - 2 - 22 ⟩ ─[ 366 ]→ ⟨ 2025 - 2 - 22 ⟩
+_ = proj₂ (from-yes (subtractDays? ⟨ 2025 - 2 - 22 ⟩ 366))
 
-_ : prevDay ⟨+ 2025 - 1 - 1 ⟩ ≡ ⟨+ 2024 - 12 - 31 ⟩
-_ = refl
+_ : ⟨ 2024 - 2 - 22 ⟩ ─[ 366 ]→ ⟨ 2025 - 2 - 22 ⟩
+_ = from-yes (⟨ 2024 - 2 - 22 ⟩ ─[ 366 ]→? ⟨ 2025 - 2 - 22 ⟩)
+
+_ : ⟨ 2024 - 2 - 22 ⟩ ─[ 366 ]→ ⟨ 2025 - 2 - 22 ⟩
+_ = from-yes (⟨ 2024 - 2 - 22 ⟩ ─[ 366 ]→? ⟨ 2025 - 2 - 22 ⟩)
 ```
-
 
 ## Project Structure
 
--   `Gregorianum.Date`: Core verified date types and total transitions.
--   `Gregorianum.Day`: The `Day` type indexed by successor capacity.
--   `Gregorianum.YearMonth`: Logic for month capacities and year-type dependencies.
--   `Gregorianum.Law.Leap`: Formal logic and irrelevance proofs for leap years.
--   `Gregorianum.Date.Plain`: Decidable conversion between raw data and verified types.
-
+- `Gregorianum.Date`: Core verified date types and total transitions.
+- `Gregorianum.Year`: Structured year definitions based on the 400-year cycle.
+- `Gregorianum.YearMonth`: Logic for month capacities and year-type dependencies.
+- `Gregorianum.Data.Cursor`: Core data structures for managing boundary conditions.
+- `Gregorianum.Date.Path`: Path theory for treating dates as a linearly ordered set.
+- `Gregorianum.Date.Plain`: Decidable conversion between raw data and verified types.
 
 ## Installation
 
@@ -143,14 +125,12 @@ _ = refl
     ```
 3.  Add `gregorianum` to your project's `.agda-lib` dependencies.
 
-
 ## Development Environment
 
 -   **Agda**: 2.8.0
 -   **standard-library**: v2.3
 
 Older versions of Agda or the standard library may work, but they are currently untested.
-
 
 ## License
 
