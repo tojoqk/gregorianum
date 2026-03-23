@@ -8,11 +8,11 @@ open import Gregorianum.Data.Cursor.Position
 import Gregorianum.Year.Base as Y
 import Gregorianum.YearMonth.Base as YM
 open import Gregorianum.Month.Base as M
-open import Data.Nat as ℕ using (ℕ; suc; zero; _+_; _*_; _∸_; z≤n; s≤s; _≤_; _≡ᵇ_)
+open import Data.Nat as ℕ using (ℕ; suc; zero; _+_; _*_; _∸_; z≤n; s≤s; _≤_; _≡ᵇ_; _≟_)
 import Data.Nat.Properties as ℕ
 open import Relation.Binary.PropositionalEquality as Eq using (_≡_; refl; sym; cong; subst; module ≡-Reasoning)
 open import Data.Product using (∃-syntax; _×_; _,_; proj₁; proj₂)
-open import Relation.Nullary.Decidable using (Dec; yes; no)
+open import Relation.Nullary.Decidable using (Dec; yes; no; True; toWitness)
 open import Relation.Nullary.Negation using (¬_; contradiction)
 import Induction.WellFounded as WF
 
@@ -105,18 +105,35 @@ private
   first→first⇒len≡zero {zero} ε = refl
   first→first⇒len≡zero {suc _} (extendʳ (stepʸᵐ (YM.stepʸ ())) h)
 
-  ¬circle : ∀ {x len}
-          → ¬ (x ─[ suc len ]→ x)
-  ¬circle {x} x→x with first→first⇒len≡zero (h x x→x (⋖-wellFounded x))
-    where
-      h : ∀ {len} → ∀ d → d ─[ len ]→ d → WF.Acc _⋖_ d → date-first ─[ len ]→ date-first
-      h d ε (WF.acc rs) = ε
-      h d (extendʳ d'⋖d d→d) (WF.acc rs) = h _ (extendˡ d'⋖d d→d) (rs d'⋖d)
-  ... | ()
+  path-ordinal : ∀ {d₁ d₂ k n} → d₁ ─[ k ]→ d₂ → d₁ HasOrdinal n → d₂ HasOrdinal (k + n)
+  path-ordinal ε h = h
+  path-ordinal {d₁} {d₂} (extendʳ y⋖d₂ y→d₂) ho₁ with path-ordinal y→d₂ ho₁
+  ... | hoy = next-date-ordinal y⋖d₂ hoy
+
+  -- ¬circle : ∀ {x len} → ¬ (x ─[ suc len ]→ x)
+  -- ¬circle {x} {len} x→x with toOrdinal x
+  -- ... | n , ho with path-ordinal x→x ho
+  -- ... | h with ordinal-unique h ho
+  -- ¬circle {x} {len} x→x | n , ho | h₁ | h = {!!}
+
+  -- -- ¬circle {x} {zero} (extendʳ x₁ x→x) with toOrdinal x
+  -- -- ... | n , ho with identity⁻¹ x→x
+  -- -- ... | refl with next-date-ordinal x₁ ho
+  -- -- ... | h with ordinal-unique ho h
+  -- -- ... | ()
+  -- -- ¬circle {x} {suc len} (extendʳ x₁ x→x) = {!!}
 
 acyclic : ∀ {x n} → x ─[ n ]→ x → n ≡ 0
-acyclic ε = refl
-acyclic p@(extendʳ _ _) = contradiction p ¬circle
+acyclic {x} {n} x→x with toOrdinal x
+... | n' , ho' with path-ordinal x→x ho'
+... | h with ordinal-unique h ho'
+... | eq = ℕ.+-cancelʳ-≡ n' n 0 eq
+
+private
+  ¬circle : ∀ {x len} → ¬ (x ─[ suc len ]→ x)
+  ¬circle h with acyclic h
+  ...          | ()
+
 
 private
   from : ∀ {d₁ d₂ n k} → d₁ HasOrdinal n → d₂ HasOrdinal (n + k) → d₁ ─[ k ]→ d₂
@@ -169,3 +186,37 @@ isLinear = record
              ; acyclic = acyclic
              ; total = total
              }
+
+addDays : ∀ d₁ n → ∃[ d₂ ] d₁ ─[ n ]→ d₂
+addDays d₁ zero = d₁ , ε
+addDays d₁ (suc n) with addDays d₁ n
+... | d₂' , h with nextDate d₂'
+... | d₂ , d₂'⋖d₂ = d₂ , extendʳ d₂'⋖d₂ h
+
+subtractDays? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
+subtractDays? d₂ zero = yes (d₂ , ε)
+subtractDays? d₂ (suc n) with isSuccessor? d₂
+... | yes isSuc with prevDate d₂ isSuc
+... | d₂' , d₂'⋖d₂ with subtractDays? d₂' n
+... | yes (d₁ , h) = yes (d₁ , extendʳ d₂'⋖d₂ h)
+... | no ¬p = no h
+  where
+    h : ¬ Data.Product.Σ Date (λ d₁ → d₁ ─[ suc n ]→ d₂)
+    h (d₁ , extendʳ y⋖d₂ d₁→y) with prev-date-unique d₂'⋖d₂ y⋖d₂
+    ... | refl = ¬p (d₁ , d₁→y)
+subtractDays? d₂ (suc n) | no ¬isSuc = no λ { (_ , extendʳ x _) → ¬isSuc (∃prev⇒IsSuccessor x)}
+
+private
+  unique-len' : ∀ {x y m n} → x ─[ m ]→ y → x ─[ n ]→ y → m ≡ n
+  unique-len' {x} {y} {m} {n} p q with toOrdinal x | toOrdinal y
+  ... | nx , hox | ny , hoy with ordinal-unique (path-ordinal p hox) (path-ordinal q hox)
+  ... | eq = ℕ.+-cancelʳ-≡ nx m n eq
+
+_─[_]→?_ : ∀ d₁ n d₂ → Dec (d₁ ─[ n ]→ d₂)
+_─[_]→?_ d₁ n d₂ with compare d₁ d₂
+(d₁ ─[ zero ]→? d₂) | tri≡ refl = yes ε
+(d₁ ─[ suc n ]→? d₂) | tri≡ refl = no λ { (extendʳ x x₁) → ¬circle (extendʳ x x₁) }
+(d₁ ─[ n ]→? d₂) | tri→ k d₁→d₂ with n ≟ (suc k)
+... | yes refl = yes d₁→d₂
+(d₁ ─[ n ]→? d₂) | tri→ k d₁→d₂ | no ¬p = no λ d₁→d₂' → ¬p (unique-len' d₁→d₂' d₁→d₂)
+(d₁ ─[ n ]→? d₂) | tri← k x = no λ {x₁ → ¬circle (trans x x₁)}

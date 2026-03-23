@@ -110,6 +110,12 @@ is-successor⇒suc-ordinal {year - mkPos (suc c)} (sucʸ x) = _ +
 ¬IsSuccessor⇒first {y - mkPos first} p | no ¬isSuc | refl = refl
 ¬IsSuccessor⇒first {y - mkPos (suc cursor)} p | no ¬isSuc | refl = contradiction sucᵐ p
 
+∃prev⇒IsSuccessor : ∀ {ym₁ ym₂ : YearMonth} → ym₁ ⋖ ym₂ → IsSuccessor ym₂
+∃prev⇒IsSuccessor {_} {year - month} d with Y.isSuccessor? year
+... | yes p = sucʸ p
+... | no p with Y.¬IsSuccessor⇒first p
+∃prev⇒IsSuccessor {_} {year - month} stepᵐ | no p | refl = sucᵐ
+
 prev-year-month-ordinal : ∀ {ym₁ ym₂ n} → ym₁ ⋖ ym₂ → ym₂ HasOrdinal (suc n) → ym₁ HasOrdinal n
 prev-year-month-ordinal ym₁⋖ym₂ p with ⋖⇒suc ym₁⋖ym₂
 ... | _ , q , p' with ordinal-unique p p'

@@ -117,6 +117,13 @@ is-successor⇒suc-ordinal {d} isSuc with prevDate d isSuc
 ¬IsSuccessor⇒first {ym - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = refl
 ¬IsSuccessor⇒first {ym - mkPos (suc cursor) ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = contradiction sucᵈ ¬isSuc
 
+∃prev⇒IsSuccessor : ∀ {d₁ d₂ : Date} → d₁ ⋖ d₂ → IsSuccessor d₂
+∃prev⇒IsSuccessor {_} {ym - d₂ ⟨ hd ⟩} d with YM.isSuccessor? ym
+... | yes p = sucʸᵐ p
+... | no p with YM.¬IsSuccessor⇒first p
+∃prev⇒IsSuccessor {_} {_ - _ ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} stepᵈ | no _ | refl = sucᵈ
+∃prev⇒IsSuccessor {_} {ym - d₂ ⟨ hd ⟩} (stepʸᵐ (YM.stepʸ ())) | no p | refl
+
 ordinal≡0⇒first : ∀ {d} → d HasOrdinal 0 → d ≡ date-first
 ordinal≡0⇒first {d} p with isSuccessor? d
 ordinal≡0⇒first {d} ho | yes isSuc with is-successor⇒suc-ordinal isSuc

@@ -45,6 +45,12 @@ next-year-unique step₄ step₄ = refl
 next-year-unique step₁₀₀ step₁₀₀ = refl
 next-year-unique step₄₀₀ step₄₀₀ = refl
 
+∃prev⇒IsSuccessor : ∀ {y₁ y₂ : Year} → y₁ ⋖ y₂ → IsSuccessor y₂
+∃prev⇒IsSuccessor step = suc₁
+∃prev⇒IsSuccessor step₄ = suc₄
+∃prev⇒IsSuccessor step₁₀₀ = suc₁₀₀
+∃prev⇒IsSuccessor step₄₀₀ = suc₄₀₀
+
 ¬IsSuccessor⇒first : ∀ {y} → ¬ (IsSuccessor y) → y ≡ (zero ×₄₀₀+ (mkPos first) ×₁₀₀+ (mkPos first) ×₄+ (mkPos first))
 ¬IsSuccessor⇒first {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)} ¬isSuc = contradiction suc₁ ¬isSuc
 ¬IsSuccessor⇒first {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} ¬isSuc = contradiction suc₄ ¬isSuc
