@@ -70,15 +70,6 @@ prevDate (ym - mkPos first ⟨ hasDays ⟩) (sucʸᵐ p)  with YM.prevYearMonth 
     h : (ym' - mkPos last ⟨ hd ⟩) ⋖ (ym - mkPos first ⟨ hasDays ⟩)
     h = stepʸᵐ ym'⋖ym
 
-
--- prevDate (ym - mkPos {acc = suc acc} (suc c) ⟨ hasDays ⟩) sucᵈ = (ym - mkPos c ⟨ hasDays ⟩) , stepᵈ
--- prevDate (ym - mkPos {acc = zero} first ⟨ hasDays ⟩) (sucʸᵐ x) with YM.prevYearMonth ym x
--- ... | ym' , ym'⋖ym with YM.days ym'
--- ... | suc width , hasDays' = (ym' - mkPos last ⟨ hasDays' ⟩) , h
---     where
---       h : (ym' - mkPos last ⟨ hasDays' ⟩) ⋖ (ym - mkPos first ⟨ hasDays ⟩)
---       h = stepʸᵐ ym'⋖ym
-
 data _HasOrdinal_ (d : Date) : (n : ℕ) → Set where
   has-leap-ordinal : ∀ {yl yc ymo}
                    → (Date.year d) HasYearType Y.leap
