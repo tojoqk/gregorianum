@@ -106,7 +106,7 @@ isSuccessor? (suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos f
 isSuccessor? (zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = no λ ()
 
 data _HasOrdinal_ (year : Year) : (n : ℕ) → Set where
-  has-ordinal : year HasOrdinal (Position.toℕ (Year.pos₁ year) + (Position.toℕ (Year.pos₄ year) + (Position.toℕ (Year.pos₁₀₀ year) + Year.quadricentennial year * 4) * 25) * 4)
+  has-ordinal : year HasOrdinal (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 4 + Position.toℕ (Year.pos₁₀₀ year) * 100 + Year.quadricentennial year * 400)
 
 toOrdinal : (y : Year) → ∃[ n ] y HasOrdinal n
 toOrdinal y = _ , has-ordinal
