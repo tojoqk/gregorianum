@@ -32,22 +32,22 @@ open Path isTimeline public
 
 open import Gregorianum.Relation.Path Year _─[_]→_ using (Tri; tri→; tri←; tri≡) public
 
-addYears : ∀ ym₁ n → ∃[ ym₂ ] ym₁ ─[ n ]→ ym₂
-addYears ym₁ n = let (_ , ho₁) = toOrdinal ym₁ in
-                  let (ym₂ , ho₂) = shift ym₁ n ho₁
-                  in ym₂ , ⟨ ho₁ , ho₂ ⟩
+forward : ∀ ym₁ n → ∃[ ym₂ ] ym₁ ─[ n ]→ ym₂
+forward ym₁ n = let (_ , ho₁) = toOrdinal ym₁ in
+                let (ym₂ , ho₂) = shift ym₁ n ho₁
+                in ym₂ , ⟨ ho₁ , ho₂ ⟩
 
-subtractYears? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
-subtractYears? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
-subtractYears? d₂ (suc n) with isSuc? d₂
+backward? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
+backward? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
+backward? d₂ (suc n) with isSuc? d₂
 ... | yes isSuc with prevYear d₂ isSuc
-... | d₂' , d₂'⋖d₂ with subtractYears? d₂' n
+... | d₂' , d₂'⋖d₂ with backward? d₂' n
 ... | yes (d₁ , ⟨ ho₁ , ho₂' ⟩) = yes (d₁ , ⟨ ho₁ , next-year-ordinal d₂'⋖d₂ ho₂' ⟩)
 ... | no ¬p = no h
   where
     h : ¬ (∃[ d₁ ] d₁ ─[ suc n ]→ d₂)
     h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬p (d₁ , ⟨ ho₁ , prev-year-ordinal d₂'⋖d₂ ho₂ ⟩)
-subtractYears? d₂ (suc n) | no ¬isSuc = no h
+backward? d₂ (suc n) | no ¬isSuc = no h
   where
     h : ¬ (∃[ d₁ ] d₁ ─[ suc n ]→ d₂)
     h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬isSuc (suc-ordinal-is-successor ho₂)

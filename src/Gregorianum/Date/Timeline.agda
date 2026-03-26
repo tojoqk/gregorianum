@@ -32,22 +32,22 @@ open Path isTimeline public
 
 open import Gregorianum.Relation.Path Date _─[_]→_ using (Tri; tri→; tri←; tri≡) public
 
-addDays : ∀ d₁ n → ∃[ d₂ ] d₁ ─[ n ]→ d₂
-addDays d₁ n = let (_ , ho₁) = toOrdinal d₁ in
+forward : ∀ d₁ n → ∃[ d₂ ] d₁ ─[ n ]→ d₂
+forward d₁ n = let (_ , ho₁) = toOrdinal d₁ in
                let (d₂ , ho₂) = shift d₁ n ho₁
                in d₂ , ⟨ ho₁ , ho₂ ⟩
 
-subtractDays? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
-subtractDays? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
-subtractDays? d₂ (suc n) with isSuc? d₂
+backward? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
+backward? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
+backward? d₂ (suc n) with isSuc? d₂
 ... | yes isSuc with prevDate d₂ isSuc
-... | d₂' , d₂'⋖d₂ with subtractDays? d₂' n
+... | d₂' , d₂'⋖d₂ with backward? d₂' n
 ... | yes (d₁ , ⟨ ho₁ , ho₂' ⟩) = yes (d₁ , ⟨ ho₁ , next-date-ordinal d₂'⋖d₂ ho₂' ⟩)
 ... | no ¬p = no h
   where
     h : ¬ (∃[ d₁ ] d₁ ─[ suc n ]→ d₂)
     h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬p (d₁ , ⟨ ho₁ , prev-date-ordinal d₂'⋖d₂ ho₂ ⟩)
-subtractDays? d₂ (suc n) | no ¬isSuc = no h
+backward? d₂ (suc n) | no ¬isSuc = no h
   where
     h : ¬ (∃[ d₁ ] d₁ ─[ suc n ]→ d₂)
     h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬isSuc (suc-ordinal-is-successor ho₂)
