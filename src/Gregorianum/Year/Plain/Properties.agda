@@ -22,7 +22,7 @@ prev-year-plain step₄ plain = plain
 prev-year-plain step₁₀₀ plain = plain
 prev-year-plain step₄₀₀ plain = plain
 
-suc-plain-is-successor : ∀ {y n} → y HasPlain (suc n) → IsSuccessor y
+suc-plain-is-successor : ∀ {y n} → y HasPlain (suc n) → IsSuc y
 suc-plain-is-successor {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)} p = suc₁
 suc-plain-is-successor {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} p = suc₄
 suc-plain-is-successor {q ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} p = suc₁₀₀

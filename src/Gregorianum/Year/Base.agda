@@ -61,18 +61,18 @@ _ = fourth
 _ : Cursor 24 24 zero
 _ = twenty-fifth
 
-data IsSuccessor : Year → Set where
+data IsSuc : Year → Set where
   suc₁ : ∀ {q pos₁₀₀ pos₄ acc₁ rem₁}
         → {c₁ : Cursor 3 (suc acc₁) rem₁}
-        → IsSuccessor (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos c₁)
+        → IsSuc (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos c₁)
   suc₄ : ∀ {q pos₁₀₀ acc₄ rem₄}
         → {c₄ : Cursor 24 (suc acc₄) rem₄}
-        → IsSuccessor (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos zero)
+        → IsSuc (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos zero)
   suc₁₀₀ : ∀ {q acc₁₀₀ rem₁₀₀}
           → {c₁₀₀ : Cursor 3 (suc acc₁₀₀) rem₁₀₀}
-          → IsSuccessor (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos zero ×₄+ mkPos zero)
+          → IsSuc (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos zero ×₄+ mkPos zero)
   suc₄₀₀ : ∀ {q}
-          → IsSuccessor ((suc q) ×₄₀₀+ mkPos zero ×₁₀₀+ mkPos zero ×₄+ mkPos zero)
+          → IsSuc ((suc q) ×₄₀₀+ mkPos zero ×₁₀₀+ mkPos zero ×₄+ mkPos zero)
 
 yearType : (y : Year) → ∃[ yt ] y HasYearType yt
 yearType (_ ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos (suc c₁)) = common , common
@@ -92,18 +92,18 @@ nextYear (q ×₄₀₀+ mkPos { rem = zero } c₁₀₀@(suc×₄ _) ×₁₀�
 ...                                                                                                                           | ()
 nextYear (q ×₄₀₀+ mkPos { rem = zero } fourth ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) = (suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) , step₄₀₀
 
-prevYear : ∀ y₂ → IsSuccessor y₂ → ∃[ y₁ ] y₁ ⋖ y₂
+prevYear : ∀ y₂ → IsSuc y₂ → ∃[ y₁ ] y₁ ⋖ y₂
 prevYear (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc c₁)) suc₁ = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos c₁) , step
 prevYear (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos zero) suc₄ = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos fourth) , step₄
 prevYear (q ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos zero ×₄+ mkPos zero) suc₁₀₀ = (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos twenty-fifth ×₄+ mkPos fourth) , step₁₀₀
 prevYear (suc q ×₄₀₀+ mkPos zero ×₁₀₀+ mkPos zero ×₄+ mkPos zero) suc₄₀₀ = (q ×₄₀₀+ mkPos fourth ×₁₀₀+ mkPos twenty-fifth ×₄+ mkPos fourth) , step₄₀₀
 
-isSuccessor? : (y : Year) → Dec (IsSuccessor y)
-isSuccessor? (quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)) = yes suc₁
-isSuccessor? (quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first) = yes suc₄
-isSuccessor? (quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first) = yes suc₁₀₀
-isSuccessor? (suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = yes suc₄₀₀
-isSuccessor? (zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = no λ ()
+isSuc? : (y : Year) → Dec (IsSuc y)
+isSuc? (quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)) = yes suc₁
+isSuc? (quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first) = yes suc₄
+isSuc? (quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first) = yes suc₁₀₀
+isSuc? (suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = yes suc₄₀₀
+isSuc? (zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = no λ ()
 
 data _HasOrdinal_ (year : Year) : (n : ℕ) → Set where
   has-ordinal : year HasOrdinal (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 4 + Position.toℕ (Year.pos₁₀₀ year) * 100 + Year.quadricentennial year * 400)

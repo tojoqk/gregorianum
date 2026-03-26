@@ -24,13 +24,13 @@ prev-year-weight step₄ has-weight = has-weight
 prev-year-weight step₁₀₀ has-weight = has-weight
 prev-year-weight step₄₀₀ has-weight = has-weight
 
-suc-weight-is-successor : ∀ {y n} → {{_ : NonZero n}} → y HasWeight (suc n) → IsSuccessor y
+suc-weight-is-successor : ∀ {y n} → {{_ : NonZero n}} → y HasWeight (suc n) → IsSuc y
 suc-weight-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos cursor ×₄+ mkPos (suc cursor₁)} {n = _} has-weight = suc₁
 suc-weight-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} {n = _} has-weight = suc₄
 suc-weight-is-successor {quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-weight = suc₁₀₀
 suc-weight-is-successor {suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-weight = suc₄₀₀
 
-is-successor⇒suc-weight : ∀ {y} → IsSuccessor y → ∃[ n ] y HasWeight (suc (suc n))
+is-successor⇒suc-weight : ∀ {y} → IsSuc y → ∃[ n ] y HasWeight (suc (suc n))
 is-successor⇒suc-weight suc₁ = _ , has-weight
 is-successor⇒suc-weight suc₄ = _ , has-weight
 is-successor⇒suc-weight suc₁₀₀ = _ , has-weight
@@ -88,7 +88,7 @@ weight≡leap+common {y} has-weight has-weight has-weight =
   ∎))
   where open ≡-Reasoning
 
-is-successor⇒suc-common-weight : ∀ {y} → IsSuccessor y → ∃[ n ] y HasCommonWeight (suc n)
+is-successor⇒suc-common-weight : ∀ {y} → IsSuc y → ∃[ n ] y HasCommonWeight (suc n)
 is-successor⇒suc-common-weight {(q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor))} suc₁ = _ , has-weight
 is-successor⇒suc-common-weight {(q ×₄₀₀+ mkPos {acc = c} _ ×₁₀₀+ mkPos (suc {acc = b} cursor) ×₄+ mkPos first)} suc₄ = _ , has-weight
 is-successor⇒suc-common-weight {(q ×₄₀₀+ mkPos (suc {acc = n} cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₁₀₀ = _ , has-weight

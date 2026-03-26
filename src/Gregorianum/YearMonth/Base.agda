@@ -23,17 +23,17 @@ data _⋖_ : YearMonth → YearMonth → Set where
   stepᵐ : ∀ {y acc rem} → {c : Cursor 11 acc (suc rem)} → (y - mkPos c) ⋖ (y - mkPos (suc c))
   stepʸ : ∀ {y₁ y₂} → y₁ Y.⋖ y₂ → (y₁ - december) ⋖ (y₂ - january)
 
-data IsSuccessor : YearMonth → Set where
-  sucᵐ : ∀ {acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuccessor ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c)
-  sucʸ : ∀ {ym} → Y.IsSuccessor (YearMonth.year ym) → IsSuccessor ym
+data IsSuc : YearMonth → Set where
+  sucᵐ : ∀ {acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuc ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c)
+  sucʸ : ∀ {ym} → Y.IsSuc (YearMonth.year ym) → IsSuc ym
 
 
-isSuccessor? : (ym : YearMonth) → Dec (IsSuccessor ym)
-isSuccessor? (year - month) with Y.isSuccessor? year
+isSuc? : (ym : YearMonth) → Dec (IsSuc ym)
+isSuc? (year - month) with Y.isSuc? year
 ... | yes p = yes (sucʸ p)
-isSuccessor? (year - month) | no p with Y.¬IsSuccessor⇒first p
-isSuccessor? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first) | no ¬p | refl = no λ { (sucʸ p) → ¬p p}
-isSuccessor? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos (suc _)) | no _ | refl = yes sucᵐ
+isSuc? (year - month) | no p with Y.¬IsSuc⇒first p
+isSuc? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first) | no ¬p | refl = no λ { (sucʸ p) → ¬p p}
+isSuc? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos (suc _)) | no _ | refl = yes sucᵐ
 
 record _HasDays_ (ym : YearMonth) (days : ℕ) : Set where
   constructor mkHasDays
@@ -54,7 +54,7 @@ nextYearMonth (year - mkPos {rem = zero} twelfth) with Y.nextYear year
 nextYearMonth (year - mkPos {rem = zero} c₁₂@(suc×₁₂ _)) with Cursor.rem≡0⇒width≡acc c₁₂
 ...                                                         | ()
 
-prevYearMonth : ∀ ym₂ → IsSuccessor ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
+prevYearMonth : ∀ ym₂ → IsSuc ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
 prevYearMonth (_ - mkPos (suc c)) sucᵐ = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c) , stepᵐ
 prevYearMonth (year - mkPos first) (sucʸ x) = (proj₁ (Y.prevYear year x) - december) , stepʸ (proj₂ (Y.prevYear year x))
 prevYearMonth (year - mkPos (suc month)) (sucʸ x) = (year - mkPos month) , stepᵐ

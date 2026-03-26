@@ -105,37 +105,37 @@ ordinal-unique (has-common-ordinal Y.common₁₀₀ _ _ _) (has-leap-ordinal ()
 private
   pattern date-first = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) YM.- mkPos first) - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩
 
-is-successor⇒suc-ordinal : ∀ {d} → IsSuccessor d → ∃[ n ] d HasOrdinal (suc n)
+is-successor⇒suc-ordinal : ∀ {d} → IsSuc d → ∃[ n ] d HasOrdinal (suc n)
 is-successor⇒suc-ordinal {d} isSuc with prevDate d isSuc
 ... | d' , d'⋖d with toOrdinal d'
 ... | n' , ho' = n' , (next-date-ordinal d'⋖d ho')
 
-¬IsSuccessor⇒first : ∀ {d} → ¬ IsSuccessor d → d ≡ date-first
-¬IsSuccessor⇒first {ym - d ⟨ hd ⟩} ¬isSuc with YM.isSuccessor? ym
+¬IsSuc⇒first : ∀ {d} → ¬ IsSuc d → d ≡ date-first
+¬IsSuc⇒first {ym - d ⟨ hd ⟩} ¬isSuc with YM.isSuc? ym
 ... | yes h = contradiction (sucʸᵐ h) ¬isSuc
-... | no ¬h with YM.¬IsSuccessor⇒first ¬h
-¬IsSuccessor⇒first {ym - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = refl
-¬IsSuccessor⇒first {ym - mkPos (suc cursor) ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = contradiction sucᵈ ¬isSuc
+... | no ¬h with YM.¬IsSuc⇒first ¬h
+¬IsSuc⇒first {ym - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = refl
+¬IsSuc⇒first {ym - mkPos (suc cursor) ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = contradiction sucᵈ ¬isSuc
 
-∃prev⇒IsSuccessor : ∀ {d₁ d₂ : Date} → d₁ ⋖ d₂ → IsSuccessor d₂
-∃prev⇒IsSuccessor {_} {ym - d₂ ⟨ hd ⟩} d with YM.isSuccessor? ym
+∃prev⇒IsSuc : ∀ {d₁ d₂ : Date} → d₁ ⋖ d₂ → IsSuc d₂
+∃prev⇒IsSuc {_} {ym - d₂ ⟨ hd ⟩} d with YM.isSuc? ym
 ... | yes p = sucʸᵐ p
-... | no p with YM.¬IsSuccessor⇒first p
-∃prev⇒IsSuccessor {_} {_ - _ ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} stepᵈ | no _ | refl = sucᵈ
-∃prev⇒IsSuccessor {_} {ym - d₂ ⟨ hd ⟩} (stepʸᵐ (YM.stepʸ ())) | no p | refl
+... | no p with YM.¬IsSuc⇒first p
+∃prev⇒IsSuc {_} {_ - _ ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} stepᵈ | no _ | refl = sucᵈ
+∃prev⇒IsSuc {_} {ym - d₂ ⟨ hd ⟩} (stepʸᵐ (YM.stepʸ ())) | no p | refl
 
 ordinal≡0⇒first : ∀ {d} → d HasOrdinal 0 → d ≡ date-first
-ordinal≡0⇒first {d} p with isSuccessor? d
+ordinal≡0⇒first {d} p with isSuc? d
 ordinal≡0⇒first {d} ho | yes isSuc with is-successor⇒suc-ordinal isSuc
 ... | _ , ho' with ordinal-unique ho ho'
 ... | ()
-ordinal≡0⇒first {d} ho | no ¬isSuc with ¬IsSuccessor⇒first ¬isSuc
+ordinal≡0⇒first {d} ho | no ¬isSuc with ¬IsSuc⇒first ¬isSuc
 ... | refl = refl
 
-suc-ordinal-is-successor : ∀ {d n} → d HasOrdinal (suc n) → IsSuccessor d
-suc-ordinal-is-successor {yearMonth - day ⟨ hasDays ⟩} {n} ho with YM.isSuccessor? yearMonth
+suc-ordinal-is-successor : ∀ {d n} → d HasOrdinal (suc n) → IsSuc d
+suc-ordinal-is-successor {yearMonth - day ⟨ hasDays ⟩} {n} ho with YM.isSuc? yearMonth
 ... | yes h = sucʸᵐ h
-... | no ¬h with YM.¬IsSuccessor⇒first ¬h
+... | no ¬h with YM.¬IsSuc⇒first ¬h
 suc-ordinal-is-successor {yearMonth - mkPos (suc cursor) ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} {n} ho | no ¬h | refl = sucᵈ
 suc-ordinal-is-successor {yearMonth - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} {n} ho | no ¬h | refl with ordinal-unique ho (has-leap-ordinal Y.leap₄₀₀ Y.has-weight Y.has-weight january-weight)
 ... | ()

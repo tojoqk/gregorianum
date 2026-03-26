@@ -42,14 +42,14 @@ data _⋖_ : Date → Date → Set where
          → ym₁ YM.⋖ ym₂
          → (ym₁ - mkPos c ⟨ hasDays₁ ⟩) ⋖ (ym₂ - mkPos first ⟨ hasDays₂ ⟩)
 
-data IsSuccessor : Date → Set where
+data IsSuc : Date → Set where
   sucᵈ : ∀ {acc rem}
        → {c : Cursor 30 (suc acc) rem}
-       → IsSuccessor (((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) YM.- mkPos first) - (mkPos c) ⟨ YM.mkHasDays Y.leap₄₀₀ M.january-days ⟩ )
+       → IsSuc (((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) YM.- mkPos first) - (mkPos c) ⟨ YM.mkHasDays Y.leap₄₀₀ M.january-days ⟩ )
   sucʸᵐ : ∀ {ym width acc rem}
         → {hasDays : ym HasDays (suc width)}
         → {c : Cursor width acc rem}
-        → YM.IsSuccessor ym → IsSuccessor (ym - mkPos c ⟨ hasDays ⟩)
+        → YM.IsSuc ym → IsSuc (ym - mkPos c ⟨ hasDays ⟩)
 
 nextDate : ∀ (d₁ : Date) → ∃[ d₂ ] d₁ ⋖ d₂
 nextDate (yearMonth - mkPos {rem = suc rem } cursor ⟨ hasDays ⟩) = (yearMonth - mkPos (suc cursor) ⟨ hasDays ⟩) , stepᵈ
@@ -61,7 +61,7 @@ nextDate (yearMonth - mkPos {rem = zero} cursor ⟨ hasDays ⟩) with YM.nextYea
     h with Cursor.rem≡0⇒width≡acc cursor
     ... | refl = stepʸᵐ ym⋖ym'
 
-prevDate : ∀ (d₂ : Date) → IsSuccessor d₂ → ∃[ d₁ ] d₁ ⋖ d₂
+prevDate : ∀ (d₂ : Date) → IsSuc d₂ → ∃[ d₁ ] d₁ ⋖ d₂
 prevDate (yearMonth - mkPos (suc c) ⟨ hasDays ⟩) _ = (yearMonth - mkPos c ⟨ hasDays ⟩) , stepᵈ
 prevDate (ym - mkPos first ⟨ hasDays ⟩) (sucʸᵐ p)  with YM.prevYearMonth ym p
 ... | ym' , ym'⋖ym with YM.days ym'
@@ -96,17 +96,17 @@ toOrdinal d | common , p with M.dayWeight (common , Date.month d)
 _<_ : Date → Date → Set
 d₁ < d₂ = proj₁ (toOrdinal d₁) ℕ.< proj₁ (toOrdinal d₂)
 
-isSuccessor? : ∀ d → Dec (IsSuccessor d)
-isSuccessor? (ym - d ⟨ hasDays ⟩) with YM.isSuccessor? ym
+isSuc? : ∀ d → Dec (IsSuc d)
+isSuc? (ym - d ⟨ hasDays ⟩) with YM.isSuc? ym
 ... | yes h = yes (sucʸᵐ h)
-isSuccessor? (ym - mkPos (suc cursor) ⟨ hasDays ⟩) | no ¬h = yes h
+isSuc? (ym - mkPos (suc cursor) ⟨ hasDays ⟩) | no ¬h = yes h
   where
-    h : IsSuccessor (ym - mkPos (suc cursor) ⟨ hasDays ⟩)
-    h with YM.¬IsSuccessor⇒first ¬h
+    h : IsSuc (ym - mkPos (suc cursor) ⟨ hasDays ⟩)
+    h with YM.¬IsSuc⇒first ¬h
     ... | refl with YM.days-unique hasDays (YM.mkHasDays Y.leap₄₀₀ M.january-days)
     ... | refl with YM.has-days-irrelevant hasDays (YM.mkHasDays Y.leap₄₀₀ M.january-days)
     ... | refl = sucᵈ
-isSuccessor? (ym - mkPos first ⟨ hasDays ⟩) | no ¬h = no h
+isSuc? (ym - mkPos first ⟨ hasDays ⟩) | no ¬h = no h
   where
-    h : ¬ IsSuccessor (ym - mkPos first ⟨ hasDays ⟩)
+    h : ¬ IsSuc (ym - mkPos first ⟨ hasDays ⟩)
     h (sucʸᵐ x) = ¬h x

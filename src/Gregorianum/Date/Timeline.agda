@@ -1,7 +1,7 @@
 module Gregorianum.Date.Timeline where
 
 open import Gregorianum.Date.Base
-  using (Date; _HasOrdinal_; toOrdinal; nextDate; isSuccessor?; prevDate)
+  using (Date; _HasOrdinal_; toOrdinal; nextDate; isSuc?; prevDate)
 open import Gregorianum.Date.Properties
   using (date-unique; next-date-ordinal; prev-date-ordinal; suc-ordinal-is-successor; ordinal-unique)
 
@@ -39,7 +39,7 @@ addDays d₁ n = let (_ , ho₁) = toOrdinal d₁ in
 
 subtractDays? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
 subtractDays? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
-subtractDays? d₂ (suc n) with isSuccessor? d₂
+subtractDays? d₂ (suc n) with isSuc? d₂
 ... | yes isSuc with prevDate d₂ isSuc
 ... | d₂' , d₂'⋖d₂ with subtractDays? d₂' n
 ... | yes (d₁ , ⟨ ho₁ , ho₂' ⟩) = yes (d₁ , ⟨ ho₁ , next-date-ordinal d₂'⋖d₂ ho₂' ⟩)

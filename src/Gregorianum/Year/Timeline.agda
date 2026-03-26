@@ -1,7 +1,7 @@
 module Gregorianum.Year.Timeline where
 
 open import Gregorianum.Year.Base
-  using (Year; _HasOrdinal_; toOrdinal; nextYear; isSuccessor?; prevYear)
+  using (Year; _HasOrdinal_; toOrdinal; nextYear; isSuc?; prevYear)
 open import Gregorianum.Year.Properties
   using (year-unique; next-year-ordinal; prev-year-ordinal; suc-ordinal-is-successor; ordinal-unique)
 
@@ -39,7 +39,7 @@ addYears ym₁ n = let (_ , ho₁) = toOrdinal ym₁ in
 
 subtractYears? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
 subtractYears? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
-subtractYears? d₂ (suc n) with isSuccessor? d₂
+subtractYears? d₂ (suc n) with isSuc? d₂
 ... | yes isSuc with prevYear d₂ isSuc
 ... | d₂' , d₂'⋖d₂ with subtractYears? d₂' n
 ... | yes (d₁ , ⟨ ho₁ , ho₂' ⟩) = yes (d₁ , ⟨ ho₁ , next-year-ordinal d₂'⋖d₂ ho₂' ⟩)

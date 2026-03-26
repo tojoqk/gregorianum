@@ -1,7 +1,7 @@
 module Gregorianum.YearMonth.Timeline where
 
 open import Gregorianum.YearMonth.Base
-  using (YearMonth; _HasOrdinal_; toOrdinal; nextYearMonth; isSuccessor?; prevYearMonth)
+  using (YearMonth; _HasOrdinal_; toOrdinal; nextYearMonth; isSuc?; prevYearMonth)
 open import Gregorianum.YearMonth.Properties
   using (year-month-unique; next-year-month-ordinal; prev-year-month-ordinal; suc-ordinal-is-successor; ordinal-unique)
 
@@ -39,7 +39,7 @@ addMonths ym₁ n = let (_ , ho₁) = toOrdinal ym₁ in
 
 subtractMonths? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
 subtractMonths? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
-subtractMonths? d₂ (suc n) with isSuccessor? d₂
+subtractMonths? d₂ (suc n) with isSuc? d₂
 ... | yes isSuc with prevYearMonth d₂ isSuc
 ... | d₂' , d₂'⋖d₂ with subtractMonths? d₂' n
 ... | yes (d₁ , ⟨ ho₁ , ho₂' ⟩) = yes (d₁ , ⟨ ho₁ , next-year-month-ordinal d₂'⋖d₂ ho₂' ⟩)

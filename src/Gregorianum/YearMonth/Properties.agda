@@ -80,33 +80,33 @@ next-year-month-ordinal (stepᵐ {y} {ac} {rm} {c}) (has-ordinal {n} Y.has-weigh
 ordinal-unique : ∀ {ym n₁ n₂} → ym HasOrdinal n₁ → ym HasOrdinal n₂ → n₁ ≡ n₂
 ordinal-unique (has-ordinal Y.has-weight) (has-ordinal Y.has-weight) = refl
 
-suc-ordinal-is-successor : ∀ {ym n} → ym HasOrdinal (suc n) → IsSuccessor ym
-suc-ordinal-is-successor {year - mkPos cursor} p with Y.isSuccessor? year
+suc-ordinal-is-successor : ∀ {ym n} → ym HasOrdinal (suc n) → IsSuc ym
+suc-ordinal-is-successor {year - mkPos cursor} p with Y.isSuc? year
 ... | yes q = sucʸ q
-suc-ordinal-is-successor {year - mkPos cursor} p | no ¬q with Y.¬IsSuccessor⇒first ¬q
+suc-ordinal-is-successor {year - mkPos cursor} p | no ¬q with Y.¬IsSuc⇒first ¬q
 suc-ordinal-is-successor {(0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first} p | no ¬q | refl with toOrdinal ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first)
 suc-ordinal-is-successor {(0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first} p | no ¬q | refl | n , snd with ordinal-unique p snd
 suc-ordinal-is-successor {(zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first} p | no ¬q | refl | n , has-ordinal Y.has-weight | ()
 suc-ordinal-is-successor {year - mkPos (suc cursor)} p | no _ | refl = sucᵐ
 
-is-successor⇒suc-ordinal : ∀ {ym} → IsSuccessor ym → ∃[ n ] ym HasOrdinal (suc n)
+is-successor⇒suc-ordinal : ∀ {ym} → IsSuc ym → ∃[ n ] ym HasOrdinal (suc n)
 is-successor⇒suc-ordinal sucᵐ = _ + 0 * 12 , has-ordinal Y.has-weight
 is-successor⇒suc-ordinal {year - mkPos first} (sucʸ x) with Y.is-successor⇒suc-weight x
 ... | fst , snd = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (fst * 12))))))))))) , has-ordinal snd
 is-successor⇒suc-ordinal {year - mkPos (suc c)} (sucʸ x) = _ , has-ordinal Y.has-weight
 
-¬IsSuccessor⇒first : ∀ {ym} → ¬ IsSuccessor ym → ym ≡ (zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first
-¬IsSuccessor⇒first {y - m} p with Y.isSuccessor? y
-¬IsSuccessor⇒first {y - m} p | yes isSuc = contradiction (sucʸ isSuc) p
-¬IsSuccessor⇒first {y - m} p | no ¬isSuc with Y.¬IsSuccessor⇒first ¬isSuc
-¬IsSuccessor⇒first {y - mkPos first} p | no ¬isSuc | refl = refl
-¬IsSuccessor⇒first {y - mkPos (suc cursor)} p | no ¬isSuc | refl = contradiction sucᵐ p
+¬IsSuc⇒first : ∀ {ym} → ¬ IsSuc ym → ym ≡ (zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first
+¬IsSuc⇒first {y - m} p with Y.isSuc? y
+¬IsSuc⇒first {y - m} p | yes isSuc = contradiction (sucʸ isSuc) p
+¬IsSuc⇒first {y - m} p | no ¬isSuc with Y.¬IsSuc⇒first ¬isSuc
+¬IsSuc⇒first {y - mkPos first} p | no ¬isSuc | refl = refl
+¬IsSuc⇒first {y - mkPos (suc cursor)} p | no ¬isSuc | refl = contradiction sucᵐ p
 
-∃prev⇒IsSuccessor : ∀ {ym₁ ym₂ : YearMonth} → ym₁ ⋖ ym₂ → IsSuccessor ym₂
-∃prev⇒IsSuccessor {_} {year - month} d with Y.isSuccessor? year
+∃prev⇒IsSuc : ∀ {ym₁ ym₂ : YearMonth} → ym₁ ⋖ ym₂ → IsSuc ym₂
+∃prev⇒IsSuc {_} {year - month} d with Y.isSuc? year
 ... | yes p = sucʸ p
-... | no p with Y.¬IsSuccessor⇒first p
-∃prev⇒IsSuccessor {_} {year - month} stepᵐ | no p | refl = sucᵐ
+... | no p with Y.¬IsSuc⇒first p
+∃prev⇒IsSuc {_} {year - month} stepᵐ | no p | refl = sucᵐ
 
 prev-year-month-ordinal : ∀ {ym₁ ym₂ n} → ym₁ ⋖ ym₂ → ym₂ HasOrdinal (suc n) → ym₁ HasOrdinal n
 prev-year-month-ordinal ym₁⋖ym₂ p with ⋖⇒suc ym₁⋖ym₂
@@ -126,11 +126,11 @@ first-ordinal≡zero p with ordinal-unique p (has-ordinal Y.has-weight)
 ... | refl = refl
 
 ordinal≡0⇒first : ∀ {ym} → ym HasOrdinal 0 → ym ≡ ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first)
-ordinal≡0⇒first {ym} p with isSuccessor? ym
+ordinal≡0⇒first {ym} p with isSuc? ym
 ordinal≡0⇒first {ym} p | yes isSuc with is-successor⇒suc-ordinal isSuc
 ... | fst , snd with ordinal-unique snd p
 ... | ()
-ordinal≡0⇒first {ym} p | no q with ¬IsSuccessor⇒first q
+ordinal≡0⇒first {ym} p | no q with ¬IsSuc⇒first q
 ordinal≡0⇒first {ym} p | no q | refl = refl
 
 year-month-unique : ∀ {ym₁ ym₂ n} → ym₁ HasOrdinal n → ym₂ HasOrdinal n → ym₁ ≡ ym₂
