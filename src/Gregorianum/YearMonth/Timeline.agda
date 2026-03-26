@@ -1,4 +1,4 @@
-module Gregorianum.YearMonth.Path where
+module Gregorianum.YearMonth.Timeline where
 
 open import Gregorianum.YearMonth.Base
   using (YearMonth; _HasOrdinal_; toOrdinal; nextYearMonth; isSuccessor?; prevYearMonth)
@@ -29,6 +29,8 @@ isTimeline = record
               }
 
 open Path isTimeline public
+
+open import Gregorianum.Relation.Path YearMonth _─[_]→_ using (Tri; tri→; tri←; tri≡) public
 
 addMonths : ∀ ym₁ n → ∃[ ym₂ ] ym₁ ─[ n ]→ ym₂
 addMonths ym₁ n = let (_ , ho₁) = toOrdinal ym₁ in

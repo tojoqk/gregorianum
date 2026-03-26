@@ -2,8 +2,6 @@ module Gregorianum.Date where
 
 open import Gregorianum.Date.Base public
 open import Gregorianum.Date.Plain using (⟨_-_-_⟩ ; toPlain; fromPlain?) public
-open import Gregorianum.Date.Path using (_─[_]→_; _─[_]→?_; addDays; subtractDays?; compare) public
-open import Gregorianum.Relation.Path Date _─[_]→_ using (Tri; tri→; tri←; tri≡) public
 
 open import Data.Product using (∃-syntax; _,_)
 open import Relation.Nullary.Decidable using (Dec; yes; no)

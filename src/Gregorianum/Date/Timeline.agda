@@ -1,4 +1,4 @@
-module Gregorianum.Date.Path where
+module Gregorianum.Date.Timeline where
 
 open import Gregorianum.Date.Base
   using (Date; _HasOrdinal_; toOrdinal; nextDate; isSuccessor?; prevDate)
@@ -29,6 +29,8 @@ isTimeline = record
               }
 
 open Path isTimeline public
+
+open import Gregorianum.Relation.Path Date _─[_]→_ using (Tri; tri→; tri←; tri≡) public
 
 addDays : ∀ d₁ n → ∃[ d₂ ] d₁ ─[ n ]→ d₂
 addDays d₁ n = let (_ , ho₁) = toOrdinal d₁ in
