@@ -7,7 +7,7 @@ open import Data.Nat as ℕ using (ℕ; suc; zero; NonZero; _+_; _*_)
 open import Data.Product using (∃-syntax; _,_)
 
 data _HasWeight_ (year : Year) : (n : ℕ) → {{NonZero n}} → Set where
-  has-weight : year HasWeight (1 + (Position.toℕ (Year.pos₁ year) + (Position.toℕ (Year.pos₄ year) + (Position.toℕ (Year.pos₁₀₀ year) + Year.quadricentennial year * 4) * 25) * 4))
+  has-weight : year HasWeight (1 + Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 4 + Position.toℕ (Year.pos₁₀₀ year) * 100 + Year.quadricentennial year * 400)
 
 toWeight : (y : Year) → ∃[ n ] y HasWeight (suc n)
 toWeight (q ×₄₀₀+ y₁₀₀ ×₁₀₀+ y₄ ×₄+ y₁) = _ , has-weight

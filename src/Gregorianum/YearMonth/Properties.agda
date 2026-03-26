@@ -93,15 +93,7 @@ is-successor⇒suc-ordinal : ∀ {ym} → IsSuccessor ym → ∃[ n ] ym HasOrdi
 is-successor⇒suc-ordinal sucᵐ = _ + 0 * 12 , has-ordinal Y.has-weight
 is-successor⇒suc-ordinal {year - mkPos first} (sucʸ x) with Y.is-successor⇒suc-weight x
 ... | fst , snd = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (fst * 12))))))))))) , has-ordinal snd
-is-successor⇒suc-ordinal {year - mkPos (suc c)} (sucʸ x) = _ +
-                                                             (Position.acc (Y.Year.pos₁ year) +
-                                                              (Position.toℕ (Y.Year.pos₄ year) +
-                                                               (Position.toℕ (Y.Year.pos₁₀₀ year) +
-                                                                Y.Year.quadricentennial year * 4)
-                                                               * 25)
-                                                              * 4)
-                                                             * 12
-                                                             , has-ordinal Y.has-weight
+is-successor⇒suc-ordinal {year - mkPos (suc c)} (sucʸ x) = _ , has-ordinal Y.has-weight
 
 ¬IsSuccessor⇒first : ∀ {ym} → ¬ IsSuccessor ym → ym ≡ (zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first
 ¬IsSuccessor⇒first {y - m} p with Y.isSuccessor? y

@@ -6,10 +6,10 @@ open import Gregorianum.Year.Weight.Base
 open import Gregorianum.Data.Cursor
 open import Gregorianum.Data.Cursor.Position hiding (_<_)
 open import Data.Nat as ℕ using (ℕ; suc; zero; NonZero; _+_; _*_)
+open import Data.Nat.Properties using (+-assoc; +-comm; *-suc; *-distribˡ-+)
 open import Data.Product using (∃-syntax; _,_; _×_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
-open import Data.Nat.Solver using (module +-*-Solver)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; trans; module ≡-Reasoning)
 open import Data.Unit using (⊤; tt)
 
 next-year-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₁ HasWeight n → y₂ HasWeight (suc n)
@@ -45,15 +45,48 @@ leap-weight-unique has-weight has-weight = refl
 common-weight-unique : ∀ {y n₁ n₂} → y HasCommonWeight n₁ → y HasCommonWeight n₂ → n₁ ≡ n₂
 common-weight-unique has-weight has-weight = refl
 
+
+private
+  m+k₁+n+k₂≡m+n+k₁+k₂ : ∀ m k₁ n k₂ → (m + k₁) + (n + k₂) ≡ (m + n) + (k₁ + k₂)
+  m+k₁+n+k₂≡m+n+k₁+k₂ m k₁ n k₂ =
+    begin
+      (m + k₁) + (n + k₂)
+    ≡⟨ +-assoc m k₁ (n + k₂) ⟩
+      m + (k₁ + (n + k₂))
+    ≡⟨ cong (m +_) (sym (+-assoc k₁ n k₂)) ⟩
+      m + (k₁ + n + k₂)
+    ≡⟨ cong (λ e → m + (e + k₂)) (+-comm k₁ n) ⟩
+      m + (n + k₁ + k₂)
+    ≡⟨ cong (m +_) (+-assoc n k₁ k₂) ⟩
+      m + (n + (k₁ + k₂))
+    ≡⟨ sym (+-assoc m n (k₁ + k₂)) ⟩
+      m + n + (k₁ + k₂)
+    ∎
+    where open ≡-Reasoning
+
 weight≡leap+common : ∀ {y w l c} {{_ : NonZero w}} {{_ : NonZero l}}
                    → y HasWeight w → y HasLeapWeight l → y HasCommonWeight c → w ≡ l + c
 weight≡leap+common {y} has-weight has-weight has-weight =
-  solve 4 (λ a b c q → con 1 :+ (a :+ (b :+ (c :+ q :* con 4) :* con 25) :* con 4)
-                     := (con 1 :+ b) :+ c :* con 24 :+ q :* con 97
-                     :+ (a :+ b :* con 3 :+ c :* con 76 :+ q :* con 303))
-        refl
-        (Position.toℕ (Year.pos₁ y)) (Position.toℕ (Year.pos₄ y)) (Position.toℕ (Year.pos₁₀₀ y)) (Year.quadricentennial y)
-  where open +-*-Solver
+  let q = Year.quadricentennial y in
+  let a = Position.toℕ (Year.pos₁ y) in
+  let b = Position.toℕ (Year.pos₄ y) in
+  let c = Position.toℕ (Year.pos₁₀₀ y) in
+  sym (cong suc (begin
+    ((b + c * 24) + q * 97) + (((a + b * 3) + c * 76) + q * 303)
+  ≡⟨ m+k₁+n+k₂≡m+n+k₁+k₂ (b + c * 24) (q * 97) ((a + b * 3) + c * 76) (q * 303) ⟩
+     ((b + c * 24) + ((a + b * 3) + c * 76)) + (q * 97 + q * 303)
+  ≡⟨ cong ((b + c * 24) + ((a + b * 3) + c * 76) +_) (sym (*-distribˡ-+ q 97 303)) ⟩
+    ((b + c * 24) + ((a + b * 3) + c * 76)) + (q * 400)
+  ≡⟨ cong (_+  q * 400) (m+k₁+n+k₂≡m+n+k₁+k₂ b (c * 24) (a + b * 3) (c * 76)) ⟩
+    (b + (a + b * 3)) + (c * 24 + c * 76) +  (q * 400)
+  ≡⟨ cong (λ e → (b + (a + b * 3)) + e +  (q * 400)) (sym (*-distribˡ-+ c 24 76)) ⟩
+    (b + (a + b * 3)) + (c * 100) +  (q * 400)
+  ≡⟨ cong (λ e → e + (c * 100) +  (q * 400)) (trans (+-comm b (a + b * 3)) (+-assoc a (b * 3) b)) ⟩
+   a + (b * 3 + b) + (c * 100) +  (q * 400)
+  ≡⟨ cong (λ e → a + e + (c * 100) +  (q * 400)) (trans (+-comm (b * 3) b) (sym (*-suc b 3))) ⟩
+    a + b * 4 + c * 100 + q * 400
+  ∎))
+  where open ≡-Reasoning
 
 is-successor⇒suc-common-weight : ∀ {y} → IsSuccessor y → ∃[ n ] y HasCommonWeight (suc n)
 is-successor⇒suc-common-weight {(q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor))} suc₁ = _ , has-weight
