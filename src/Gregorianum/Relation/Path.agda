@@ -31,20 +31,6 @@ record IsLinear : Set where
     isPath : IsPath
     uniqueˡ : ∀ {x y z n} → x ─[ n ]→ z → y ─[ n ]→ z → x ≡ y
     uniqueʳ : ∀ {x y z n} → x ─[ n ]→ y → x ─[ n ]→ z → y ≡ z
+    uniqueᶜ : ∀ {x y m n} → x ─[ m ]→ y → x ─[ n ]→ y → m ≡ n
     acyclic : ∀ {x n} → x ─[ n ]→ x → n ≡ 0
     total : ∀ x y → Tri x y
-
-  open IsPath isPath public
-
-  unique-len : ∀ {x y m n} → x ─[ m ]→ y → x ─[ n ]→ y → m ≡ n
-  unique-len {m = zero} {n = zero} p q = refl
-  unique-len {m = zero} {n = suc n} p q with identity⁻¹ p
-  ...                                         | refl with acyclic q
-  ...                                                   | ()
-  unique-len {m = suc m} {n = zero} p q with identity⁻¹ q
-  ...                                         | refl with acyclic p
-  ...                                                   | ()
-  unique-len {m = suc m} {n = suc n} p q with split 1 m p | split 1 n q
-  ... | a , x→a , a→y | b , x→b , b→y with uniqueʳ x→a x→b
-  ...                                        | refl with unique-len a→y b→y
-  ...                                                  | refl = refl

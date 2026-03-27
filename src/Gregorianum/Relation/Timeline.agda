@@ -90,6 +90,15 @@ module Path (isTimeline : IsTimeline) where
   acyclic : ∀ {x n} → x ─[ n ]→ x → n ≡ 0
   acyclic ⟨ s , e ⟩[ ord ] = +-cancelʳ-≡ ord _ _ (ordinal-unique e s)
 
+  private
+    ¬circle : ∀ {x n} → ¬ (x ─[ suc n ]→ x)
+    ¬circle x with acyclic x
+    ... | ()
+
+  uniqueᶜ : ∀ {x y m n} → x ─[ m ]→ y →  x ─[ n ]→ y → m ≡ n
+  uniqueᶜ {m = m} {n = n} ⟨ ho₁ , ho₂ ⟩[ ord ] ⟨ ho₁' , ho₂' ⟩ with ordinal-unique ho₁ ho₁'
+  ... | refl = +-cancelʳ-≡ ord m n (ordinal-unique ho₂ ho₂')
+
   compare : ∀ x y → Tri x y
   compare x y with toOrdinal x | toOrdinal y
   compare x y | n₁ , ho₁ | n₂ , ho₂ with <-cmp n₁ n₂
@@ -104,19 +113,11 @@ module Path (isTimeline : IsTimeline) where
   isLinear = record
               { isPath = isPath
               ; uniqueˡ = uniqueˡ
+              ; uniqueᶜ = uniqueᶜ
               ; uniqueʳ = uniqueʳ
               ; acyclic = acyclic
               ; total = total
               }
-
-  private
-    ¬circle : ∀ {x n} → ¬ (x ─[ suc n ]→ x)
-    ¬circle x with acyclic x
-    ... | ()
-
-    uniqueᶜ : ∀ {x y m n} → x ─[ m ]→ y →  x ─[ n ]→ y → m ≡ n
-    uniqueᶜ {m = m} {n = n} ⟨ ho₁ , ho₂ ⟩[ ord ] ⟨ ho₁' , ho₂' ⟩ with ordinal-unique ho₁ ho₁'
-    ... | refl = +-cancelʳ-≡ ord m n (ordinal-unique ho₂ ho₂')
 
   _─[_]→?_ : ∀ x n y → Dec (x ─[ n ]→ y)
   x ─[ n ]→? y with compare x y

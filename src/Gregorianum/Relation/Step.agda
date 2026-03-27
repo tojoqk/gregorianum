@@ -121,6 +121,21 @@ module Path (isStep : IsStep) where
   acyclic x→x = acyclic' x→x (⋖-wellFounded _)
 
   private
+    ¬circle : ∀ {x n} → ¬ (x ─[ suc n ]→ x)
+    ¬circle x with acyclic x
+    ... | ()
+
+  uniqueᶜ : ∀ {x y m n} → x ─[ m ]→ y →  x ─[ n ]→ y → m ≡ n
+  uniqueᶜ {m = zero} {n = zero} ε ε = refl
+  uniqueᶜ {m = zero} {n = suc n} ε x→y with acyclic x→y
+  ... | ()
+  uniqueᶜ {m = suc m} {n = zero} x→y ε with acyclic x→y
+  ... | ()
+  uniqueᶜ {m = suc m} {n = suc n} (x→y'₁ ▸ y'⋖y₁) (x→y'₂ ▸ y'⋖y₂) with prev-unique y'⋖y₁ y'⋖y₂
+  ... | refl with uniqueᶜ x→y'₁ x→y'₂
+  ... | refl = refl
+
+  private
     bridge' : ∀ x y → ¬ IsSuc x → WF.Acc _⋖_ y → ∃[ n ] x ─[ n ]→ y
     bridge' x y ¬isSuc _ with isSuc? y
     bridge' x y ¬isSuc (WF.acc rs) | yes isSuc' with prev y isSuc'
@@ -155,22 +170,8 @@ module Path (isStep : IsStep) where
   isLinear = record
               { isPath = isPath
               ; uniqueˡ = uniqueˡ
+              ; uniqueᶜ = uniqueᶜ
               ; uniqueʳ = uniqueʳ
               ; acyclic = acyclic
               ; total = total
               }
-
-  private
-    ¬circle : ∀ {x n} → ¬ (x ─[ suc n ]→ x)
-    ¬circle x with acyclic x
-    ... | ()
-
-  uniqueᶜ : ∀ {x y m n} → x ─[ m ]→ y →  x ─[ n ]→ y → m ≡ n
-  uniqueᶜ {m = zero} {n = zero} ε ε = refl
-  uniqueᶜ {m = zero} {n = suc n} ε x→y with acyclic x→y
-  ... | ()
-  uniqueᶜ {m = suc m} {n = zero} x→y ε with acyclic x→y
-  ... | ()
-  uniqueᶜ {m = suc m} {n = suc n} (x→y'₁ ▸ y'⋖y₁) (x→y'₂ ▸ y'⋖y₂) with prev-unique y'⋖y₁ y'⋖y₂
-  ... | refl with uniqueᶜ x→y'₁ x→y'₂
-  ... | refl = refl
