@@ -54,6 +54,7 @@ An interval of `n` days between two dates is defined as the transitive closure o
 module Gregorianum.Examples where
 
 open import Gregorianum.Date
+open import Gregorianum.Date.Step
 open import Data.Product using (_,_; proj₁; proj₂)
 open import Relation.Nullary.Decidable using (from-yes)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
