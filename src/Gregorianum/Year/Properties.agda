@@ -21,29 +21,29 @@ year-type-unique leap₄ leap₄ = refl
 year-type-unique common₁₀₀ common₁₀₀ = refl
 year-type-unique leap₄₀₀ leap₄₀₀ = refl
 
-has-year-type-irrelevant : ∀ {y yt} → (p q : y HasYearType yt) → p ≡ q
-has-year-type-irrelevant common common = refl
-has-year-type-irrelevant leap₄ leap₄ = refl
-has-year-type-irrelevant common₁₀₀ common₁₀₀ = refl
-has-year-type-irrelevant leap₄₀₀ leap₄₀₀ = refl
+has-type-irrelevant : ∀ {y yt} → (p q : y HasYearType yt) → p ≡ q
+has-type-irrelevant common common = refl
+has-type-irrelevant leap₄ leap₄ = refl
+has-type-irrelevant common₁₀₀ common₁₀₀ = refl
+has-type-irrelevant leap₄₀₀ leap₄₀₀ = refl
 
-prev-year-unique : ∀ {y₁ y₂ y₃}
+prev-unique : ∀ {y₁ y₂ y₃}
                 → y₁ ⋖ y₃
                 → y₂ ⋖ y₃
                 → y₁ ≡ y₂
-prev-year-unique step step = refl
-prev-year-unique step₄ step₄ = refl
-prev-year-unique step₁₀₀ step₁₀₀ = refl
-prev-year-unique step₄₀₀ step₄₀₀ = refl
+prev-unique step step = refl
+prev-unique step₄ step₄ = refl
+prev-unique step₁₀₀ step₁₀₀ = refl
+prev-unique step₄₀₀ step₄₀₀ = refl
 
-next-year-unique : ∀ {y₁ y₂ y₃}
+next-unique : ∀ {y₁ y₂ y₃}
                 → y₁ ⋖ y₂
                 → y₁ ⋖ y₃
                 → y₂ ≡ y₃
-next-year-unique step step = refl
-next-year-unique step₄ step₄ = refl
-next-year-unique step₁₀₀ step₁₀₀ = refl
-next-year-unique step₄₀₀ step₄₀₀ = refl
+next-unique step step = refl
+next-unique step₄ step₄ = refl
+next-unique step₁₀₀ step₁₀₀ = refl
+next-unique step₄₀₀ step₄₀₀ = refl
 
 ∃prev⇒IsSuc : ∀ {y₁ y₂ : Year} → y₁ ⋖ y₂ → IsSuc y₂
 ∃prev⇒IsSuc step = suc₁
@@ -62,29 +62,29 @@ next-year-unique step₄₀₀ step₄₀₀ = refl
 ¬isSuc-unique ¬isSuc₁ ¬isSuc₂ with ¬IsSuc⇒first ¬isSuc₁ | ¬IsSuc⇒first ¬isSuc₂
 ... | refl | refl = refl
 
-next-year-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasOrdinal n → y₂ HasOrdinal (suc n)
-next-year-ordinal step has-ordinal = has-ordinal
-next-year-ordinal step₄ has-ordinal = has-ordinal
-next-year-ordinal step₁₀₀ has-ordinal = has-ordinal
-next-year-ordinal step₄₀₀ has-ordinal = has-ordinal
+next-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasOrdinal n → y₂ HasOrdinal (suc n)
+next-ordinal step has-ordinal = has-ordinal
+next-ordinal step₄ has-ordinal = has-ordinal
+next-ordinal step₁₀₀ has-ordinal = has-ordinal
+next-ordinal step₄₀₀ has-ordinal = has-ordinal
 
-prev-year-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₂ HasOrdinal (suc n) → y₁ HasOrdinal n
-prev-year-ordinal step has-ordinal = has-ordinal
-prev-year-ordinal step₄ has-ordinal = has-ordinal
-prev-year-ordinal step₁₀₀ has-ordinal = has-ordinal
-prev-year-ordinal step₄₀₀ has-ordinal = has-ordinal
+prev-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₂ HasOrdinal (suc n) → y₁ HasOrdinal n
+prev-ordinal step has-ordinal = has-ordinal
+prev-ordinal step₄ has-ordinal = has-ordinal
+prev-ordinal step₁₀₀ has-ordinal = has-ordinal
+prev-ordinal step₄₀₀ has-ordinal = has-ordinal
 
-suc-ordinal-is-successor : ∀ {y n} → y HasOrdinal (suc n) → IsSuc y
-suc-ordinal-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos cursor ×₄+ mkPos (suc cursor₁)} {n = _} has-ordinal = suc₁
-suc-ordinal-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} {n = _} has-ordinal = suc₄
-suc-ordinal-is-successor {quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-ordinal = suc₁₀₀
-suc-ordinal-is-successor {suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-ordinal = suc₄₀₀
+suc-ordinal⇒IsSuc : ∀ {y n} → y HasOrdinal (suc n) → IsSuc y
+suc-ordinal⇒IsSuc {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos cursor ×₄+ mkPos (suc cursor₁)} {n = _} has-ordinal = suc₁
+suc-ordinal⇒IsSuc {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} {n = _} has-ordinal = suc₄
+suc-ordinal⇒IsSuc {quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-ordinal = suc₁₀₀
+suc-ordinal⇒IsSuc {suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-ordinal = suc₄₀₀
 
-is-successor⇒suc-ordinal : ∀ {y} → IsSuc y → ∃[ n ] y HasOrdinal (suc n)
-is-successor⇒suc-ordinal suc₁ = _ , has-ordinal
-is-successor⇒suc-ordinal suc₄ = _ , has-ordinal
-is-successor⇒suc-ordinal suc₁₀₀ = _ , has-ordinal
-is-successor⇒suc-ordinal suc₄₀₀ = _ , has-ordinal
+IsSuc⇒suc-ordinal : ∀ {y} → IsSuc y → ∃[ n ] y HasOrdinal (suc n)
+IsSuc⇒suc-ordinal suc₁ = _ , has-ordinal
+IsSuc⇒suc-ordinal suc₄ = _ , has-ordinal
+IsSuc⇒suc-ordinal suc₁₀₀ = _ , has-ordinal
+IsSuc⇒suc-ordinal suc₄₀₀ = _ , has-ordinal
 
 import Data.Nat.Induction as ℕ
 open import Induction.WellFounded
@@ -95,7 +95,7 @@ open import Function using (_∘_)
 <-WellFounded y = On.accessible (proj₁ ∘ toOrdinal) (ℕ.<-wellFounded-fast (proj₁ (toOrdinal y)))
 
 ⋖⇒suc : ∀ {y₁ y₂} → y₁ ⋖ y₂ → ∃[ n ] (y₁ HasOrdinal n) × (y₂ HasOrdinal (suc n))
-⋖⇒suc {y₁} {y₂} p with next-year-ordinal p has-ordinal
+⋖⇒suc {y₁} {y₂} p with next-ordinal p has-ordinal
 ...                  | epₙ = _ , has-ordinal , epₙ
 
 ordinal-unique : ∀ {y n₁ n₂} → y HasOrdinal n₁ → y HasOrdinal n₂ → n₁ ≡ n₂
@@ -110,11 +110,11 @@ ordinal-unique has-ordinal has-ordinal = refl
 ⋖-wellFounded y = Subrelation.accessible ⋖⇒< (<-WellFounded y)
 
 year-unique : ∀ {y₁ y₂ n} → y₁ HasOrdinal n → y₂ HasOrdinal n → y₁ ≡ y₂
-year-unique {y₁} {y₂} {suc n} p q with prevYear y₁ (suc-ordinal-is-successor p) | prevYear y₂ (suc-ordinal-is-successor q)
-... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique {y₁'} {y₂'} (prev-year-ordinal y₁'⋖y₁ p) (prev-year-ordinal y₂'⋖y₂ q)
-... | refl = next-year-unique y₁'⋖y₁ y₂'⋖y₂
+year-unique {y₁} {y₂} {suc n} p q with prev y₁ (suc-ordinal⇒IsSuc p) | prev y₂ (suc-ordinal⇒IsSuc q)
+... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique {y₁'} {y₂'} (prev-ordinal y₁'⋖y₁ p) (prev-ordinal y₂'⋖y₂ q)
+... | refl = next-unique y₁'⋖y₁ y₂'⋖y₂
 year-unique {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero} has-ordinal has-ordinal = refl
 
-common⇒is-successor : ∀ {y} → y HasYearType common → IsSuc y
-common⇒is-successor common = suc₁
-common⇒is-successor common₁₀₀ = suc₁₀₀
+common⇒IsSuc : ∀ {y} → y HasYearType common → IsSuc y
+common⇒IsSuc common = suc₁
+common⇒IsSuc common₁₀₀ = suc₁₀₀

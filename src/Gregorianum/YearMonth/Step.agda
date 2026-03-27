@@ -1,7 +1,7 @@
 module Gregorianum.YearMonth.Step where
 
-open import Gregorianum.YearMonth using (YearMonth; _⋖_; IsSuc; isSuc?; nextYearMonth; prevYearMonth; toOrdinal)
-open import Gregorianum.YearMonth.Properties using (¬isSuc-unique; next-year-month-unique; prev-year-month-unique; ⋖-wellFounded; ∃prev⇒IsSuc; suc-ordinal-is-successor; prev-year-month-ordinal; next-year-month-ordinal)
+open import Gregorianum.YearMonth using (YearMonth; _⋖_; IsSuc; isSuc?; next; prev; toOrdinal)
+open import Gregorianum.YearMonth.Properties using (¬isSuc-unique; next-unique; prev-unique; ⋖-wellFounded; ∃prev⇒IsSuc; suc-ordinal⇒IsSuc; prev-ordinal; next-ordinal)
 import Gregorianum.YearMonth.Timeline as T
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
@@ -17,10 +17,10 @@ isStep = record
           { IsSuc = IsSuc
           ; isSuc? = isSuc?
           ; ¬isSuc-unique = ¬isSuc-unique
-          ; next = nextYearMonth
-          ; prev = prevYearMonth
-          ; next-unique = next-year-month-unique
-          ; prev-unique = prev-year-month-unique
+          ; next = next
+          ; prev = prev
+          ; next-unique = next-unique
+          ; prev-unique = prev-unique
           ; ⋖-wellFounded = ⋖-wellFounded
           }
 
@@ -31,12 +31,12 @@ open import Gregorianum.Relation.Path YearMonth _─[_]→_ using (Tri; tri→; 
 forward : ∀ x n → ∃[ y ] x ─[ n ]→ y
 forward x zero = x , ε
 forward x (suc n) = let (y' , x→y') = forward x n in
-                    let (y , x⋖y)  = nextYearMonth y' in y , (x→y' ▸ x⋖y)
+                    let (y , x⋖y)  = next y' in y , (x→y' ▸ x⋖y)
 
 backward? : ∀ y n → Dec (∃[ x ] x ─[ n ]→ y)
 backward? y zero = yes (y , ε)
 backward? y (suc n) with isSuc? y
-backward? y (suc n) | yes isSuc with prevYearMonth y isSuc
+backward? y (suc n) | yes isSuc with prev y isSuc
 ... | y' , y'⋖y with backward? y' n
 ... | yes (x , x→y) = yes (x , (x→y ▸ y'⋖y))
 ... | no ¬p = no λ {(x , x→y) → ¬p (x , (x→y ▸⁻¹ y'⋖y))}
@@ -45,15 +45,15 @@ backward? y (suc n) | no ¬isSuc = no λ { (_ , (_ ▸ y'⋖y)) → ¬isSuc (∃
 fromTimeline : ∀ {x y n} → x T.─[ n ]→ y → x ─[ n ]→ y
 fromTimeline {n = zero} x→y with T.identity⁻¹ x→y
 ... | refl = ε
-fromTimeline {y = y} {n = suc n} T.⟨ start , end ⟩ with prevYearMonth y (suc-ordinal-is-successor end)
-... | y' , y'⋖y with prev-year-month-ordinal y'⋖y end
+fromTimeline {y = y} {n = suc n} T.⟨ start , end ⟩ with prev y (suc-ordinal⇒IsSuc end)
+... | y' , y'⋖y with prev-ordinal y'⋖y end
 ... | ho with fromTimeline T.⟨ start , ho ⟩
 ... | x→y' = x→y' ▸ y'⋖y
 
 toTimeline : ∀ {x y n} → x ─[ n ]→ y → x T.─[ n ]→ y
 toTimeline ε = T.identity refl
 toTimeline (x→y' ▸ y'⋖y) with toTimeline x→y'
-... | T.⟨ start , end' ⟩ = T.⟨ start , next-year-month-ordinal y'⋖y end' ⟩
+... | T.⟨ start , end' ⟩ = T.⟨ start , next-ordinal y'⋖y end' ⟩
 
 compare : ∀ x y → Tri x y
 compare x y with T.compare x y

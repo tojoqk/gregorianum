@@ -1,9 +1,9 @@
 module Gregorianum.Year.Timeline where
 
 open import Gregorianum.Year.Base
-  using (Year; _HasOrdinal_; toOrdinal; nextYear; isSuc?; prevYear)
+  using (Year; _HasOrdinal_; toOrdinal; next; isSuc?; prev)
 open import Gregorianum.Year.Properties
-  using (year-unique; next-year-ordinal; prev-year-ordinal; suc-ordinal-is-successor; ordinal-unique)
+  using (year-unique; next-ordinal; prev-ordinal; suc-ordinal⇒IsSuc; ordinal-unique)
 
 open import Gregorianum.Relation.Timeline Year using (IsTimeline; module Path)
 
@@ -16,8 +16,8 @@ private
   shift : ∀ {n} → (ym₁ : Year) → (k : ℕ) → ym₁ HasOrdinal n → ∃[ ym₂ ] ym₂ HasOrdinal (k + n)
   shift ym₁ zero ho = ym₁ , ho
   shift ym₁ (suc k) ho with shift ym₁ k ho
-  ... | ym₂' , ho₂' with nextYear ym₂'
-  ... | ym₂ , ym₂'⋖ym₂ = ym₂ , next-year-ordinal ym₂'⋖ym₂ ho₂'
+  ... | ym₂' , ho₂' with next ym₂'
+  ... | ym₂ , ym₂'⋖ym₂ = ym₂ , next-ordinal ym₂'⋖ym₂ ho₂'
 
 isTimeline : IsTimeline 
 isTimeline = record
@@ -40,14 +40,14 @@ forward ym₁ n = let (_ , ho₁) = toOrdinal ym₁ in
 backward? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
 backward? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
 backward? d₂ (suc n) with isSuc? d₂
-... | yes isSuc with prevYear d₂ isSuc
+... | yes isSuc with prev d₂ isSuc
 ... | d₂' , d₂'⋖d₂ with backward? d₂' n
-... | yes (d₁ , ⟨ ho₁ , ho₂' ⟩) = yes (d₁ , ⟨ ho₁ , next-year-ordinal d₂'⋖d₂ ho₂' ⟩)
+... | yes (d₁ , ⟨ ho₁ , ho₂' ⟩) = yes (d₁ , ⟨ ho₁ , next-ordinal d₂'⋖d₂ ho₂' ⟩)
 ... | no ¬p = no h
   where
     h : ¬ (∃[ d₁ ] d₁ ─[ suc n ]→ d₂)
-    h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬p (d₁ , ⟨ ho₁ , prev-year-ordinal d₂'⋖d₂ ho₂ ⟩)
+    h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬p (d₁ , ⟨ ho₁ , prev-ordinal d₂'⋖d₂ ho₂ ⟩)
 backward? d₂ (suc n) | no ¬isSuc = no h
   where
     h : ¬ (∃[ d₁ ] d₁ ─[ suc n ]→ d₂)
-    h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬isSuc (suc-ordinal-is-successor ho₂)
+    h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬isSuc (suc-ordinal⇒IsSuc ho₂)

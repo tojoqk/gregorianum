@@ -80,23 +80,23 @@ yearType (_ ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ m
 yearType (_ ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos first ×₄+ mkPos first) = common , common₁₀₀
 yearType (_ ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = leap , leap₄₀₀
 
-nextYear : ∀ y₁ → ∃[ y₂ ] y₁ ⋖ y₂
-nextYear (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos {rem = suc rem} c₁) = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc c₁)) , step
-nextYear (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos {rem = zero} c₁@(suc×₄ _)) with Cursor.rem≡0⇒width≡acc c₁
+next : ∀ y₁ → ∃[ y₂ ] y₁ ⋖ y₂
+next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos {rem = suc rem} c₁) = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc c₁)) , step
+next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos {rem = zero} c₁@(suc×₄ _)) with Cursor.rem≡0⇒width≡acc c₁
 ...                                                                         | ()
-nextYear (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos {rem = suc rem} c₄ ×₄+ mkPos {rem = zero} fourth) = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos first) , step₄
-nextYear (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos {rem = zero} c₄@(suc×₂₅ _) ×₄+ mkPos {rem = zero} fourth) with Cursor.rem≡0⇒width≡acc c₄
+next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos {rem = suc rem} c₄ ×₄+ mkPos {rem = zero} fourth) = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos first) , step₄
+next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos {rem = zero} c₄@(suc×₂₅ _) ×₄+ mkPos {rem = zero} fourth) with Cursor.rem≡0⇒width≡acc c₄
 ...                                                                                               | ()
-nextYear (q ×₄₀₀+ mkPos { rem = suc rem } pos₁₀₀ ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) = (q ×₄₀₀+ mkPos (suc pos₁₀₀) ×₁₀₀+ mkPos first ×₄+ mkPos first) , step₁₀₀
-nextYear (q ×₄₀₀+ mkPos { rem = zero } c₁₀₀@(suc×₄ _) ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) with Cursor.rem≡0⇒width≡acc c₁₀₀
+next (q ×₄₀₀+ mkPos { rem = suc rem } pos₁₀₀ ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) = (q ×₄₀₀+ mkPos (suc pos₁₀₀) ×₁₀₀+ mkPos first ×₄+ mkPos first) , step₁₀₀
+next (q ×₄₀₀+ mkPos { rem = zero } c₁₀₀@(suc×₄ _) ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) with Cursor.rem≡0⇒width≡acc c₁₀₀
 ...                                                                                                                           | ()
-nextYear (q ×₄₀₀+ mkPos { rem = zero } fourth ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) = (suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) , step₄₀₀
+next (q ×₄₀₀+ mkPos { rem = zero } fourth ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) = (suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) , step₄₀₀
 
-prevYear : ∀ y₂ → IsSuc y₂ → ∃[ y₁ ] y₁ ⋖ y₂
-prevYear (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc c₁)) suc₁ = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos c₁) , step
-prevYear (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos zero) suc₄ = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos fourth) , step₄
-prevYear (q ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos zero ×₄+ mkPos zero) suc₁₀₀ = (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos twenty-fifth ×₄+ mkPos fourth) , step₁₀₀
-prevYear (suc q ×₄₀₀+ mkPos zero ×₁₀₀+ mkPos zero ×₄+ mkPos zero) suc₄₀₀ = (q ×₄₀₀+ mkPos fourth ×₁₀₀+ mkPos twenty-fifth ×₄+ mkPos fourth) , step₄₀₀
+prev : ∀ y₂ → IsSuc y₂ → ∃[ y₁ ] y₁ ⋖ y₂
+prev (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc c₁)) suc₁ = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos c₁) , step
+prev (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos zero) suc₄ = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos fourth) , step₄
+prev (q ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos zero ×₄+ mkPos zero) suc₁₀₀ = (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos twenty-fifth ×₄+ mkPos fourth) , step₁₀₀
+prev (suc q ×₄₀₀+ mkPos zero ×₁₀₀+ mkPos zero ×₄+ mkPos zero) suc₄₀₀ = (q ×₄₀₀+ mkPos fourth ×₁₀₀+ mkPos twenty-fifth ×₄+ mkPos fourth) , step₄₀₀
 
 isSuc? : (y : Year) → Dec (IsSuc y)
 isSuc? (quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)) = yes suc₁

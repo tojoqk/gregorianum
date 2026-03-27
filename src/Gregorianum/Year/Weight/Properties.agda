@@ -12,29 +12,29 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; trans; module ≡-Reasoning)
 open import Data.Unit using (⊤; tt)
 
-next-year-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₁ HasWeight n → y₂ HasWeight (suc n)
-next-year-weight step has-weight = has-weight
-next-year-weight step₄ has-weight = has-weight
-next-year-weight step₁₀₀ has-weight = has-weight
-next-year-weight step₄₀₀ has-weight = has-weight
+next-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₁ HasWeight n → y₂ HasWeight (suc n)
+next-weight step has-weight = has-weight
+next-weight step₄ has-weight = has-weight
+next-weight step₁₀₀ has-weight = has-weight
+next-weight step₄₀₀ has-weight = has-weight
 
-prev-year-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₂ HasWeight (suc n) → y₁ HasWeight n
-prev-year-weight step has-weight = has-weight
-prev-year-weight step₄ has-weight = has-weight
-prev-year-weight step₁₀₀ has-weight = has-weight
-prev-year-weight step₄₀₀ has-weight = has-weight
+prev-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₂ HasWeight (suc n) → y₁ HasWeight n
+prev-weight step has-weight = has-weight
+prev-weight step₄ has-weight = has-weight
+prev-weight step₁₀₀ has-weight = has-weight
+prev-weight step₄₀₀ has-weight = has-weight
 
-suc-weight-is-successor : ∀ {y n} → {{_ : NonZero n}} → y HasWeight (suc n) → IsSuc y
-suc-weight-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos cursor ×₄+ mkPos (suc cursor₁)} {n = _} has-weight = suc₁
-suc-weight-is-successor {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} {n = _} has-weight = suc₄
-suc-weight-is-successor {quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-weight = suc₁₀₀
-suc-weight-is-successor {suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-weight = suc₄₀₀
+suc-weight-IsSuc : ∀ {y n} → {{_ : NonZero n}} → y HasWeight (suc n) → IsSuc y
+suc-weight-IsSuc {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos cursor ×₄+ mkPos (suc cursor₁)} {n = _} has-weight = suc₁
+suc-weight-IsSuc {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} {n = _} has-weight = suc₄
+suc-weight-IsSuc {quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-weight = suc₁₀₀
+suc-weight-IsSuc {suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} has-weight = suc₄₀₀
 
-is-successor⇒suc-weight : ∀ {y} → IsSuc y → ∃[ n ] y HasWeight (suc (suc n))
-is-successor⇒suc-weight suc₁ = _ , has-weight
-is-successor⇒suc-weight suc₄ = _ , has-weight
-is-successor⇒suc-weight suc₁₀₀ = _ , has-weight
-is-successor⇒suc-weight suc₄₀₀ = _ , has-weight
+IsSuc⇒suc-weight : ∀ {y} → IsSuc y → ∃[ n ] y HasWeight (suc (suc n))
+IsSuc⇒suc-weight suc₁ = _ , has-weight
+IsSuc⇒suc-weight suc₄ = _ , has-weight
+IsSuc⇒suc-weight suc₁₀₀ = _ , has-weight
+IsSuc⇒suc-weight suc₄₀₀ = _ , has-weight
 
 weight-unique : ∀ {y n₁ n₂} → {{_ : NonZero n₁}} → {{_ : NonZero n₂}} → y HasWeight n₁ → y HasWeight n₂ → n₁ ≡ n₂
 weight-unique has-weight has-weight = refl
@@ -88,24 +88,24 @@ weight≡leap+common {y} has-weight has-weight has-weight =
   ∎))
   where open ≡-Reasoning
 
-is-successor⇒suc-common-weight : ∀ {y} → IsSuc y → ∃[ n ] y HasCommonWeight (suc n)
-is-successor⇒suc-common-weight {(q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor))} suc₁ = _ , has-weight
-is-successor⇒suc-common-weight {(q ×₄₀₀+ mkPos {acc = c} _ ×₁₀₀+ mkPos (suc {acc = b} cursor) ×₄+ mkPos first)} suc₄ = _ , has-weight
-is-successor⇒suc-common-weight {(q ×₄₀₀+ mkPos (suc {acc = n} cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₁₀₀ = _ , has-weight
-is-successor⇒suc-common-weight {(suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₄₀₀ = _ , has-weight
+IsSuc⇒suc-common-weight : ∀ {y} → IsSuc y → ∃[ n ] y HasCommonWeight (suc n)
+IsSuc⇒suc-common-weight {(q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor))} suc₁ = _ , has-weight
+IsSuc⇒suc-common-weight {(q ×₄₀₀+ mkPos {acc = c} _ ×₁₀₀+ mkPos (suc {acc = b} cursor) ×₄+ mkPos first)} suc₄ = _ , has-weight
+IsSuc⇒suc-common-weight {(q ×₄₀₀+ mkPos (suc {acc = n} cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₁₀₀ = _ , has-weight
+IsSuc⇒suc-common-weight {(suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₄₀₀ = _ , has-weight
 
-next-leap-year-is-common : ∀ {y₁ y₂} → y₁ ⋖ y₂ → y₁ HasYearType leap → y₂ HasYearType common
-next-leap-year-is-common step leap₄ = common
-next-leap-year-is-common step leap₄₀₀ = common
+next-leap-is-common : ∀ {y₁ y₂} → y₁ ⋖ y₂ → y₁ HasYearType leap → y₂ HasYearType common
+next-leap-is-common step leap₄ = common
+next-leap-is-common step leap₄₀₀ = common
 
-next-year-leap-common-weight : ∀ {y₁ y₂ lw cw}
+next-leap-common-weight : ∀ {y₁ y₂ lw cw}
                              → {{_ : NonZero lw}}
                              → y₁ ⋖ y₂
                              → y₁ HasLeapWeight lw
                              → y₁ HasCommonWeight cw
                              → (y₂ HasYearType leap × y₂ HasLeapWeight (suc lw) × y₂ HasCommonWeight cw)
                              ⊎ (y₂ HasYearType common × y₂ HasLeapWeight lw × y₂ HasCommonWeight (suc cw))
-next-year-leap-common-weight step has-weight has-weight = inj₂ (common , has-weight , has-weight)
-next-year-leap-common-weight step₄ has-weight has-weight = inj₁ (leap₄ , has-weight , has-weight)
-next-year-leap-common-weight step₁₀₀ has-weight has-weight = inj₂ (common₁₀₀ , has-weight , has-weight)
-next-year-leap-common-weight step₄₀₀ has-weight has-weight = inj₁ (leap₄₀₀ , has-weight , has-weight)
+next-leap-common-weight step has-weight has-weight = inj₂ (common , has-weight , has-weight)
+next-leap-common-weight step₄ has-weight has-weight = inj₁ (leap₄ , has-weight , has-weight)
+next-leap-common-weight step₁₀₀ has-weight has-weight = inj₂ (common₁₀₀ , has-weight , has-weight)
+next-leap-common-weight step₄₀₀ has-weight has-weight = inj₁ (leap₄₀₀ , has-weight , has-weight)

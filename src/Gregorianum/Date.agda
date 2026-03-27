@@ -7,7 +7,7 @@ open import Data.Product using (∃-syntax; _,_)
 open import Relation.Nullary.Decidable using (Dec; yes; no)
 open import Gregorianum.Date.Properties
 
-prevDate? : ∀ d₂ → Dec (∃[ d₁ ] d₁ ⋖ d₂)
-prevDate? d₂ with isSuc? d₂
-... | yes isSuc = yes (prevDate d₂ isSuc)
+prev? : ∀ d₂ → Dec (∃[ d₁ ] d₁ ⋖ d₂)
+prev? d₂ with isSuc? d₂
+... | yes isSuc = yes (prev d₂ isSuc)
 ... | no ¬isSuc = no λ { (_ , d₁⋖d₂) → ¬isSuc (∃prev⇒IsSuc d₁⋖d₂)}

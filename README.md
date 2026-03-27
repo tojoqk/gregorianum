@@ -44,7 +44,7 @@ An interval of `n` days between two dates is defined as the transitive closure o
 
 ## Key Features
 
-- **Type-Level Correctness**: Functions like `nextDate` and `forward` are total functions based on proofs of existence. It is logically impossible to generate an invalid date.
+- **Type-Level Correctness**: Functions like `next` and `forward` are total functions based on proofs of existence. It is logically impossible to generate an invalid date.
 - **Decidable Interface**: The conversion from a simple numeric tuple `(y, m, d)` to a verified `Date` type is `Dec` (decidable). You can write dates verified at compile-time using the elegant syntax `⟨ 2026 - 3 - 23 ⟩`.
 - **Mapping to Ordinals**: The `toOrdinal` function maps dates to the number line (`ℕ`), enabling mathematically rigorous date comparisons and arithmetic.
 
@@ -70,23 +70,23 @@ _ = ⟨ 2024 - 2 - 29 ⟩
 -- invalidDay : Date
 -- invalidDay = ⟨ 2026 - 2 - 29 ⟩
 
-_ : proj₁ (nextDate ⟨ 2024 - 2 - 29 ⟩) ≡ ⟨ 2024 - 3 - 1 ⟩
+_ : proj₁ (next ⟨ 2024 - 2 - 29 ⟩) ≡ ⟨ 2024 - 3 - 1 ⟩
 _ = refl
 
 _ : ⟨ 2024 - 2 - 29 ⟩ ⋖ ⟨ 2024 - 3 - 1 ⟩
-_ = proj₂ (nextDate ⟨ 2024 - 2 - 29 ⟩)
+_ = proj₂ (next ⟨ 2024 - 2 - 29 ⟩)
 
-_ : proj₁ (from-yes (prevDate? ⟨ 2024 - 3 - 1 ⟩)) ≡ ⟨ 2024 - 2 - 29 ⟩
+_ : proj₁ (from-yes (prev? ⟨ 2024 - 3 - 1 ⟩)) ≡ ⟨ 2024 - 2 - 29 ⟩
 _ = refl
 
 _ : ⟨ 2024 - 2 - 29 ⟩ ⋖ ⟨ 2024 - 3 - 1 ⟩
-_ = proj₂ (from-yes (prevDate? ⟨ 2024 - 3 - 1 ⟩))
+_ = proj₂ (from-yes (prev? ⟨ 2024 - 3 - 1 ⟩))
 
 _ : ⟨ 2024 - 12 - 31 ⟩ ⋖ ⟨ 2025 - 1 - 1 ⟩
-_ = proj₂ (nextDate ⟨ 2024 - 12 - 31 ⟩)
+_ = proj₂ (next ⟨ 2024 - 12 - 31 ⟩)
 
 _ : ⟨ 2024 - 12 - 31 ⟩ ⋖ ⟨ 2025 - 1 - 1 ⟩
-_ = proj₂ (from-yes (prevDate? ⟨ 2025 - 1 - 1 ⟩))
+_ = proj₂ (from-yes (prev? ⟨ 2025 - 1 - 1 ⟩))
 
 _ : proj₁ (forward ⟨ 2024 - 2 - 22 ⟩ 366) ≡ ⟨ 2025 - 2 - 22 ⟩
 _ = refl

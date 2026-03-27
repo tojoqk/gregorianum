@@ -51,9 +51,9 @@ data IsSuc : Date → Set where
         → {c : Cursor width acc rem}
         → YM.IsSuc ym → IsSuc (ym - mkPos c ⟨ hasDays ⟩)
 
-nextDate : ∀ (d₁ : Date) → ∃[ d₂ ] d₁ ⋖ d₂
-nextDate (yearMonth - mkPos {rem = suc rem } cursor ⟨ hasDays ⟩) = (yearMonth - mkPos (suc cursor) ⟨ hasDays ⟩) , stepᵈ
-nextDate (yearMonth - mkPos {rem = zero} cursor ⟨ hasDays ⟩) with YM.nextYearMonth yearMonth
+next : ∀ (d₁ : Date) → ∃[ d₂ ] d₁ ⋖ d₂
+next (yearMonth - mkPos {rem = suc rem } cursor ⟨ hasDays ⟩) = (yearMonth - mkPos (suc cursor) ⟨ hasDays ⟩) , stepᵈ
+next (yearMonth - mkPos {rem = zero} cursor ⟨ hasDays ⟩) with YM.next yearMonth
 ... | ym' , ym⋖ym' with YM.days ym'
 ... | suc width , hasDays' = (ym' - mkPos first ⟨ hasDays' ⟩) , h
   where
@@ -61,9 +61,9 @@ nextDate (yearMonth - mkPos {rem = zero} cursor ⟨ hasDays ⟩) with YM.nextYea
     h with Cursor.rem≡0⇒width≡acc cursor
     ... | refl = stepʸᵐ ym⋖ym'
 
-prevDate : ∀ (d₂ : Date) → IsSuc d₂ → ∃[ d₁ ] d₁ ⋖ d₂
-prevDate (yearMonth - mkPos (suc c) ⟨ hasDays ⟩) _ = (yearMonth - mkPos c ⟨ hasDays ⟩) , stepᵈ
-prevDate (ym - mkPos first ⟨ hasDays ⟩) (sucʸᵐ p)  with YM.prevYearMonth ym p
+prev : ∀ (d₂ : Date) → IsSuc d₂ → ∃[ d₁ ] d₁ ⋖ d₂
+prev (yearMonth - mkPos (suc c) ⟨ hasDays ⟩) _ = (yearMonth - mkPos c ⟨ hasDays ⟩) , stepᵈ
+prev (ym - mkPos first ⟨ hasDays ⟩) (sucʸᵐ p)  with YM.prev ym p
 ... | ym' , ym'⋖ym with YM.days ym'
 ... | suc ds , hd = (ym' - mkPos last ⟨ hd ⟩) , h
   where
@@ -90,7 +90,7 @@ toOrdinal d with Y.yearType (Date.year d)
 toOrdinal d | leap , p with M.dayWeight (leap , Date.month d)
 toOrdinal d | leap , p | w , q = _ , has-leap-ordinal p Y.has-weight Y.has-weight q
 toOrdinal d | common , p with M.dayWeight (common , Date.month d)
-... | w , q with Y.is-successor⇒suc-common-weight (Y.common⇒is-successor p)
+... | w , q with Y.IsSuc⇒suc-common-weight (Y.common⇒IsSuc p)
 ... | ycw , q' = _ , has-common-ordinal p has-weight q' q
 
 _<_ : Date → Date → Set

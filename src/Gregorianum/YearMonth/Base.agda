@@ -47,17 +47,17 @@ days (ym - m) with Y.yearType ym
 ...              | yt , pʸᵗ with M.days (yt , m)
 ...                            | ds , pᵈ = ds , mkHasDays pʸᵗ pᵈ
 
-nextYearMonth : ∀ ym₁ → ∃[ ym₂ ] ym₁ ⋖ ym₂
-nextYearMonth (year - mkPos {rem = suc rem} cursor) = (year - mkPos (suc cursor)) , stepᵐ
-nextYearMonth (year - mkPos {rem = zero} twelfth) with Y.nextYear year
+next : ∀ ym₁ → ∃[ ym₂ ] ym₁ ⋖ ym₂
+next (year - mkPos {rem = suc rem} cursor) = (year - mkPos (suc cursor)) , stepᵐ
+next (year - mkPos {rem = zero} twelfth) with Y.next year
 ...                                                  | year' , p = (year' - january) , stepʸ p
-nextYearMonth (year - mkPos {rem = zero} c₁₂@(suc×₁₂ _)) with Cursor.rem≡0⇒width≡acc c₁₂
+next (year - mkPos {rem = zero} c₁₂@(suc×₁₂ _)) with Cursor.rem≡0⇒width≡acc c₁₂
 ...                                                         | ()
 
-prevYearMonth : ∀ ym₂ → IsSuc ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
-prevYearMonth (_ - mkPos (suc c)) sucᵐ = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c) , stepᵐ
-prevYearMonth (year - mkPos first) (sucʸ x) = (proj₁ (Y.prevYear year x) - december) , stepʸ (proj₂ (Y.prevYear year x))
-prevYearMonth (year - mkPos (suc month)) (sucʸ x) = (year - mkPos month) , stepᵐ
+prev : ∀ ym₂ → IsSuc ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
+prev (_ - mkPos (suc c)) sucᵐ = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c) , stepᵐ
+prev (year - mkPos first) (sucʸ x) = (proj₁ (Y.prev year x) - december) , stepʸ (proj₂ (Y.prev year x))
+prev (year - mkPos (suc month)) (sucʸ x) = (year - mkPos month) , stepᵐ
 
 data _HasOrdinal_ (ym : YearMonth) : (n : ℕ) → Set where
   has-ordinal : ∀ {yw}

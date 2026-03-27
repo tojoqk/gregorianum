@@ -18,23 +18,23 @@ _ = ⟨ 2024 - 2 - 29 ⟩
 -- invalidDay : Date
 -- invalidDay = ⟨ 2026 - 2 - 29 ⟩
 
-_ : proj₁ (nextDate ⟨ 2024 - 2 - 29 ⟩) ≡ ⟨ 2024 - 3 - 1 ⟩
+_ : proj₁ (next ⟨ 2024 - 2 - 29 ⟩) ≡ ⟨ 2024 - 3 - 1 ⟩
 _ = refl
 
 _ : ⟨ 2024 - 2 - 29 ⟩ ⋖ ⟨ 2024 - 3 - 1 ⟩
-_ = proj₂ (nextDate ⟨ 2024 - 2 - 29 ⟩)
+_ = proj₂ (next ⟨ 2024 - 2 - 29 ⟩)
 
-_ : proj₁ (from-yes (prevDate? ⟨ 2024 - 3 - 1 ⟩)) ≡ ⟨ 2024 - 2 - 29 ⟩
+_ : proj₁ (from-yes (prev? ⟨ 2024 - 3 - 1 ⟩)) ≡ ⟨ 2024 - 2 - 29 ⟩
 _ = refl
 
 _ : ⟨ 2024 - 2 - 29 ⟩ ⋖ ⟨ 2024 - 3 - 1 ⟩
-_ = proj₂ (from-yes (prevDate? ⟨ 2024 - 3 - 1 ⟩))
+_ = proj₂ (from-yes (prev? ⟨ 2024 - 3 - 1 ⟩))
 
 _ : ⟨ 2024 - 12 - 31 ⟩ ⋖ ⟨ 2025 - 1 - 1 ⟩
-_ = proj₂ (nextDate ⟨ 2024 - 12 - 31 ⟩)
+_ = proj₂ (next ⟨ 2024 - 12 - 31 ⟩)
 
 _ : ⟨ 2024 - 12 - 31 ⟩ ⋖ ⟨ 2025 - 1 - 1 ⟩
-_ = proj₂ (from-yes (prevDate? ⟨ 2025 - 1 - 1 ⟩))
+_ = proj₂ (from-yes (prev? ⟨ 2025 - 1 - 1 ⟩))
 
 _ : proj₁ (forward ⟨ 2024 - 2 - 22 ⟩ 366) ≡ ⟨ 2025 - 2 - 22 ⟩
 _ = refl

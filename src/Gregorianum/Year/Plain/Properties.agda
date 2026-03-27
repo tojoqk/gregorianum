@@ -10,26 +10,26 @@ open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-next-year-plain : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasPlain n → y₂ HasPlain (suc n)
-next-year-plain step plain = plain
-next-year-plain step₄ plain = plain
-next-year-plain step₁₀₀ plain = plain
-next-year-plain step₄₀₀ plain = plain
+next-plain : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasPlain n → y₂ HasPlain (suc n)
+next-plain step plain = plain
+next-plain step₄ plain = plain
+next-plain step₁₀₀ plain = plain
+next-plain step₄₀₀ plain = plain
 
-prev-year-plain : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₂ HasPlain (suc n) → y₁ HasPlain n
-prev-year-plain step plain = plain
-prev-year-plain step₄ plain = plain
-prev-year-plain step₁₀₀ plain = plain
-prev-year-plain step₄₀₀ plain = plain
+prev-plain : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₂ HasPlain (suc n) → y₁ HasPlain n
+prev-plain step plain = plain
+prev-plain step₄ plain = plain
+prev-plain step₁₀₀ plain = plain
+prev-plain step₄₀₀ plain = plain
 
-suc-plain-is-successor : ∀ {y n} → y HasPlain (suc n) → IsSuc y
-suc-plain-is-successor {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)} p = suc₁
-suc-plain-is-successor {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} p = suc₄
-suc-plain-is-successor {q ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} p = suc₁₀₀
-suc-plain-is-successor {suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} p = suc₄₀₀
+suc-plain-IsSuc : ∀ {y n} → y HasPlain (suc n) → IsSuc y
+suc-plain-IsSuc {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)} p = suc₁
+suc-plain-IsSuc {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} p = suc₄
+suc-plain-IsSuc {q ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} p = suc₁₀₀
+suc-plain-IsSuc {suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} p = suc₄₀₀
 
 year-unique : ∀ {y₁ y₂ n} → y₁ HasPlain n → y₂ HasPlain n → y₁ ≡ y₂
-year-unique {y₁} {y₂} {ℕ.suc n} p q with prevYear y₁ (suc-plain-is-successor p) | prevYear y₂ (suc-plain-is-successor q)
-... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique {y₁'} {y₂'} {n} (prev-year-plain y₁'⋖y₁ p) (prev-year-plain y₂'⋖y₂ q)
-... | refl = next-year-unique y₁'⋖y₁ y₂'⋖y₂
+year-unique {y₁} {y₂} {ℕ.suc n} p q with prev y₁ (suc-plain-IsSuc p) | prev y₂ (suc-plain-IsSuc q)
+... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique {y₁'} {y₂'} {n} (prev-plain y₁'⋖y₁ p) (prev-plain y₂'⋖y₂ q)
+... | refl = next-unique y₁'⋖y₁ y₂'⋖y₂
 year-unique {ℕ.zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {ℕ.zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {ℕ.zero} plain plain = refl
