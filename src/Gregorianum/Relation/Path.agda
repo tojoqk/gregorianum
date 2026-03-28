@@ -34,3 +34,5 @@ record IsLinear : Set where
     uniqueᶜ : ∀ {x y m n} → x ─[ m ]→ y → x ─[ n ]→ y → m ≡ n
     acyclic : ∀ {x n} → x ─[ n ]→ x → n ≡ 0
     total : ∀ x y → Tri x y
+
+  open IsPath isPath public
