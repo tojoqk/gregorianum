@@ -110,15 +110,6 @@ _ : ⟨ 2024 - 2 - 22 ⟩ ─[ 366 ]→ ⟨ 2025 - 2 - 22 ⟩
 _ = from-yes (⟨ 2024 - 2 - 22 ⟩ ─[ 366 ]→? ⟨ 2025 - 2 - 22 ⟩)
 ```
 
-## Project Structure
-
-- `Gregorianum.Date`: Core verified date types and total transitions.
-- `Gregorianum.Year`: Structured year definitions based on the 400-year cycle.
-- `Gregorianum.YearMonth`: Logic for month capacities and year-type dependencies.
-- `Gregorianum.Data.Cursor`: Core data structures for managing boundary conditions.
-- `Gregorianum.Date.Path`: Path theory for treating dates as a linearly ordered set.
-- `Gregorianum.Date.Plain`: Decidable conversion between raw data and verified types.
-
 ## Installation
 
 1.  Clone the repository:
