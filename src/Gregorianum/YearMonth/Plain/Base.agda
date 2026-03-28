@@ -1,7 +1,6 @@
 module Gregorianum.YearMonth.Plain.Base where
 
-open import Gregorianum.YearMonth.Base
-open import Gregorianum.Month.Base
+open import Gregorianum.YearMonth.Base using (YearMonth; _-_)
 
 import Gregorianum.Year.Plain as Y
 import Gregorianum.Month.Plain as M

@@ -1,16 +1,15 @@
 module Gregorianum.Year.Weight.Properties where
 
-open import Gregorianum.Year.Base hiding (_<_)
-open import Gregorianum.Year.Weight.Base
+open import Gregorianum.Year.Weight.Base using (_HasWeight_; _HasLeapWeight_; _HasCommonWeight_; has-weight)
+open import Gregorianum.Year.Base using (Year; _×₄₀₀+_×₁₀₀+_×₄+_; _⋖_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; IsSuc; _HasYearType_; leap; common; leap₄; common₁₀₀; leap₄₀₀; step; step₄; step₁₀₀; step₄₀₀)
+open import Gregorianum.Data.Cursor using (suc; first)
+open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
 
-open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position hiding (_<_)
-open import Data.Nat as ℕ using (ℕ; suc; zero; NonZero; _+_; _*_)
+open import Data.Nat using (ℕ; suc; zero; NonZero; _+_; _*_)
 open import Data.Nat.Properties using (+-assoc; +-comm; *-suc; *-distribˡ-+)
 open import Data.Product using (∃-syntax; _,_; _×_)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; trans; module ≡-Reasoning)
-open import Data.Unit using (⊤; tt)
 
 next-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₁ HasWeight n → y₂ HasWeight (suc n)
 next-weight step has-weight = has-weight

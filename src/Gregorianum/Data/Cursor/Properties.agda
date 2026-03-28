@@ -3,7 +3,7 @@ module Gregorianum.Data.Cursor.Properties where
 open import Gregorianum.Data.Cursor.Base
 
 open import Data.Nat using (zero; suc; _+_; _≤_; z≤n; s≤s)
-open import Data.Nat.Properties as ℕ
+open import Data.Nat.Properties using (+-suc; +-identityʳ; ≤-reflexive; ≤-trans; m≤n⇒m≤1+n; ≤-refl)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong)
 
 unique : ∀ {width acc rem}
@@ -15,7 +15,7 @@ unique {acc = suc _} (suc c₁) (suc c₂) = cong suc (unique c₁ c₂)
 width≡acc+rem : ∀ {width acc rem} → Cursor width acc rem → width ≡ acc + rem
 width≡acc+rem zero = refl
 width≡acc+rem {rem = rem} (suc c) with width≡acc+rem c
-...                                  | refl = ℕ.+-suc _ rem
+...                                  | refl = +-suc _ rem
 
 acc≡0⇒width≡rem : ∀ {width rem}
                 → Cursor width 0 rem
@@ -26,7 +26,7 @@ rem≡0⇒width≡acc : ∀ {width acc}
                 → Cursor width acc 0
                 → width ≡ acc
 rem≡0⇒width≡acc c with width≡acc+rem c
-...                   | refl = ℕ.+-identityʳ _
+...                   | refl = +-identityʳ _
 
 acc≤width : ∀ {width acc rem}
           → Cursor width acc rem

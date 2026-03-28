@@ -2,15 +2,13 @@ module Gregorianum.Year.Properties where
 
 open import Gregorianum.Year.Base
 
-open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position hiding (_<_)
-import Gregorianum.Data.Cursor.Properties as Cursor
+open import Gregorianum.Data.Cursor using (suc; first)
+open import Gregorianum.Data.Cursor.Position using (mkPos)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
-open import Data.Nat as ℕ using (ℕ; _+_; _*_; zero; suc; NonZero)
-open import Data.Nat.Properties using (suc-injective; ≤-refl)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat.Properties using (≤-refl)
 open import Relation.Nullary.Negation using (¬_; contradiction)
 open import Data.Product using (∃-syntax; _,_; proj₁; _×_)
-open import Data.Nat.Solver using (module +-*-Solver)
 
 year-type-unique : ∀ {y yt₁ yt₂}
                 → y HasYearType yt₁

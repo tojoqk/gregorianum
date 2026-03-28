@@ -2,15 +2,15 @@ module Gregorianum.Month.Plain.Base where
 
 open import Gregorianum.Month.Base
 
-open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position
-open import Gregorianum.Data.Cursor.Properties as Cursor
+open import Gregorianum.Data.Cursor using (suc)
+open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
+open import Gregorianum.Data.Cursor.Properties using (width≡acc+rem)
 
 open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat.Properties using (_≤?_; m≤m+n)
 open import Data.Product using (∃-syntax; _,_; proj₁)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary.Decidable using (Dec; yes; no)
-open import Data.Nat.Properties using (_≤?_; m≤m+n)
 open import Relation.Nullary.Negation using (¬_)
 
 data _HasPlain_ (m : Month) : ℕ → Set where
@@ -39,5 +39,5 @@ fromPlain? 12 = yes (december , plain)
 fromPlain? (suc×₁₃ n) = no h
   where
     h : ¬ (∃[ m ] m HasPlain suc×₁₃ n)
-    h ([ mkPos c@(suc×₁₃ _) ] , _) with Cursor.width≡acc+rem c
+    h ([ mkPos c@(suc×₁₃ _) ] , _) with width≡acc+rem c
     ...                           | ()

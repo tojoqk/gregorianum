@@ -1,15 +1,12 @@
 module Gregorianum.Year.Base where
 
-open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position hiding (_<_)
-import Gregorianum.Data.Cursor.Properties as Cursor
-import Gregorianum.Data.Cursor.Position.Properties as Position
-open import Relation.Nullary.Decidable using (Dec; yes; no)
+open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; fourth; twenty-fifth; suc×₄; suc×₂₅)
+open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
+open import Gregorianum.Data.Cursor.Properties using (rem≡0⇒width≡acc)
 
 open import Data.Nat as ℕ using (ℕ; suc; zero; NonZero; _+_; _*_)
-open import Data.Nat.DivMod using (_divMod_; result)
 open import Data.Product using (∃-syntax; _,_; proj₁)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
+open import Relation.Nullary.Decidable using (Dec; yes; no)
 
 data YearType : Set where
   common : YearType
@@ -82,13 +79,13 @@ yearType (_ ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first
 
 next : ∀ y₁ → ∃[ y₂ ] y₁ ⋖ y₂
 next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos {rem = suc rem} c₁) = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc c₁)) , step
-next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos {rem = zero} c₁@(suc×₄ _)) with Cursor.rem≡0⇒width≡acc c₁
+next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos {rem = zero} c₁@(suc×₄ _)) with rem≡0⇒width≡acc c₁
 ...                                                                         | ()
 next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos {rem = suc rem} c₄ ×₄+ mkPos {rem = zero} fourth) = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos first) , step₄
-next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos {rem = zero} c₄@(suc×₂₅ _) ×₄+ mkPos {rem = zero} fourth) with Cursor.rem≡0⇒width≡acc c₄
+next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos {rem = zero} c₄@(suc×₂₅ _) ×₄+ mkPos {rem = zero} fourth) with rem≡0⇒width≡acc c₄
 ...                                                                                               | ()
 next (q ×₄₀₀+ mkPos { rem = suc rem } pos₁₀₀ ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) = (q ×₄₀₀+ mkPos (suc pos₁₀₀) ×₁₀₀+ mkPos first ×₄+ mkPos first) , step₁₀₀
-next (q ×₄₀₀+ mkPos { rem = zero } c₁₀₀@(suc×₄ _) ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) with Cursor.rem≡0⇒width≡acc c₁₀₀
+next (q ×₄₀₀+ mkPos { rem = zero } c₁₀₀@(suc×₄ _) ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) with rem≡0⇒width≡acc c₁₀₀
 ...                                                                                                                           | ()
 next (q ×₄₀₀+ mkPos { rem = zero } fourth ×₁₀₀+ mkPos {rem = zero} twenty-fifth ×₄+ mkPos {rem = zero} fourth) = (suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) , step₄₀₀
 

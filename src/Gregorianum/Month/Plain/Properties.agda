@@ -1,13 +1,12 @@
 module Gregorianum.Month.Plain.Properties where
 
+open import Gregorianum.Month.Plain.Base using (_HasPlain_; plain)
 open import Gregorianum.Month.Base
-open import Gregorianum.Month.Plain.Base
 
-open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position
-open import Gregorianum.Data.Cursor.Properties as Cursor
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Gregorianum.Data.Cursor using (suc×₁₂)
+open import Gregorianum.Data.Cursor.Position using (mkPos)
+open import Gregorianum.Data.Cursor.Properties using (width≡acc+rem)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 month-unique : ∀ {m₁ m₂ n} → m₁ HasPlain n → m₂ HasPlain n → m₁ ≡ m₂
 month-unique {january} {january} plain plain = refl
@@ -22,5 +21,5 @@ month-unique {september} {september} plain plain = refl
 month-unique {october} {october} plain plain = refl
 month-unique {november} {november} plain plain = refl
 month-unique {december} {december} plain plain = refl
-month-unique {[ mkPos c₁@(suc×₁₂ _) ]} {[ mkPos (suc×₁₂ _) ]} plain plain with Cursor.width≡acc+rem c₁
+month-unique {[ mkPos c₁@(suc×₁₂ _) ]} {[ mkPos (suc×₁₂ _) ]} plain plain with width≡acc+rem c₁
 ...                                                                  | ()

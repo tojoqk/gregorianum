@@ -1,11 +1,11 @@
 module Gregorianum.Year.Plain.Properties where
 
-open import Gregorianum.Year.Plain.Base
+open import Gregorianum.Year.Plain.Base using (_HasPlain_; plain)
 
-open import Gregorianum.Year.Base
+open import Gregorianum.Year.Base using (_⋖_; IsSuc; _×₄₀₀+_×₁₀₀+_×₄+_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; prev; step; step₄; step₁₀₀; step₄₀₀)
 open import Gregorianum.Year.Properties hiding (year-unique)
-open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position
+open import Gregorianum.Data.Cursor using (zero; suc; first)
+open import Gregorianum.Data.Cursor.Position using (mkPos)
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

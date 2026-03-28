@@ -1,8 +1,8 @@
 module Gregorianum.Year.Weight.Base where
 
-open import Gregorianum.Year.Base
+open import Gregorianum.Year.Base using (Year; _×₄₀₀+_×₁₀₀+_×₄+_)
 
-open import Gregorianum.Data.Cursor.Position
+open import Gregorianum.Data.Cursor.Position using (Position)
 open import Data.Nat as ℕ using (ℕ; suc; zero; NonZero; _+_; _*_)
 open import Data.Product using (∃-syntax; _,_)
 

@@ -1,16 +1,13 @@
 module Gregorianum.Year.Plain.Base where
 
-open import Gregorianum.Year.Base
-open import Gregorianum.Year.Properties
+open import Gregorianum.Year.Base using (Year; _×₄₀₀+_×₁₀₀+_×₄+_)
 
-open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position
-import Gregorianum.Data.Cursor.Position.Properties as Position
-import Gregorianum.Data.Cursor.Properties as Cursor
+open import Gregorianum.Data.Cursor.Position using (Position; fromFin)
+open import Gregorianum.Data.Cursor.Position.Properties using (toℕ∘fromFin≡toℕ)
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (∃-syntax; _,_)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
+open import Relation.Binary.PropositionalEquality using (sym)
 open import Data.Nat.DivMod using (_divMod_; result)
 
 data _HasPlain_ (year : Year) : ℕ → Set where
@@ -29,6 +26,6 @@ fromPlain n with n divMod 4
     h rewrite p₄
               | p₁₀₀
               | p₄₀₀
-              | sym (Position.toℕ∘fromFin≡toℕ r₄₀₀)
-              | sym (Position.toℕ∘fromFin≡toℕ r₁₀₀)
-              | sym (Position.toℕ∘fromFin≡toℕ r₄) = plain
+              | sym (toℕ∘fromFin≡toℕ r₄₀₀)
+              | sym (toℕ∘fromFin≡toℕ r₁₀₀)
+              | sym (toℕ∘fromFin≡toℕ r₄) = plain

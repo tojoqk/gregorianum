@@ -1,8 +1,8 @@
 module Gregorianum.YearMonth.Plain.Properties where
 
-open import Gregorianum.YearMonth.Plain.Base
-open import Gregorianum.Year.Plain.Properties
-open import Gregorianum.Month.Plain.Properties
+open import Gregorianum.YearMonth.Plain.Base using (plain; _HasPlain_)
+open import Gregorianum.Year.Plain.Properties using (year-unique)
+open import Gregorianum.Month.Plain.Properties using (month-unique)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
 
 yearMonth-unique : ∀ {ym₁ ym₂ tup} → ym₁ HasPlain tup → ym₂ HasPlain tup → ym₁ ≡ ym₂

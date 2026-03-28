@@ -10,10 +10,10 @@ open import Gregorianum.Relation.Path A _─[_]→_ renaming (Tri to PathTri)
 open IsLinear isLinear renaming (total to path-total)
 
 open import Data.Nat using (ℕ; zero; suc; NonZero)
-import Data.Nat.Properties as ℕ
+open import Data.Nat.Properties using (m+n≡0⇒m≡0; m+n≡0⇒n≡0)
+open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; _≢_; refl)
 open import Relation.Nullary.Negation using (¬_)
-open import Data.Product using (_,_)
 
 record _≼_ (x₁ : A) (x₂ : A) : Set where
   constructor ≼⟨_⟩
@@ -28,7 +28,7 @@ pattern ≼⟨_⟩[_] path length = record { length = length ; path = path }
 
 ≼-antisym : ∀ {x y} → x ≼ y → y ≼ x → x ≡ y
 ≼-antisym ≼⟨ x→y ⟩[ len₁ ] ≼⟨ y→x ⟩[ len₂ ] with acyclic (trans x→y y→x)
-... | eq with ℕ.m+n≡0⇒m≡0 len₁ eq | ℕ.m+n≡0⇒n≡0 len₁ eq
+... | eq with m+n≡0⇒m≡0 len₁ eq | m+n≡0⇒n≡0 len₁ eq
 ... | refl | refl = identity⁻¹ x→y
 
 ≼-trans : ∀ {x y z} → x ≼ y → y ≼ z → x ≼ z

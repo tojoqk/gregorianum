@@ -1,11 +1,11 @@
 module Gregorianum.Relation.Timeline (A : Set) where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; <-cmp; s≤s; _≟_)
-open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
+open import Data.Nat.Properties using (+-assoc; +-comm; +-cancelˡ-≡; +-cancelʳ-≡; m∸n+n≡m)
 open import Data.Product using (∃-syntax; _×_; _,_)
+open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
 open import Relation.Nullary.Decidable using (Dec; yes; no)
 open import Relation.Binary.PropositionalEquality as Eq using (_≡_; refl; sym; cong; subst; module ≡-Reasoning)
-open import Data.Nat.Properties using (+-assoc; +-comm; +-cancelˡ-≡; +-cancelʳ-≡; m∸n+n≡m)
 open import Relation.Nullary.Negation using (¬_)
 
 record IsTimeline : Set₁ where

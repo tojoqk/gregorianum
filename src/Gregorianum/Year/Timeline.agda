@@ -1,10 +1,7 @@
 module Gregorianum.Year.Timeline where
 
-open import Gregorianum.Year.Base
-  using (Year; _HasOrdinal_; toOrdinal; next; isSuc?; prev)
-open import Gregorianum.Year.Properties
-  using (year-unique; next-ordinal; prev-ordinal; suc-ordinal⇒IsSuc; ordinal-unique)
-
+open import Gregorianum.Year.Base using (Year; _HasOrdinal_; toOrdinal; next; isSuc?; prev)
+open import Gregorianum.Year.Properties using (year-unique; next-ordinal; prev-ordinal; suc-ordinal⇒IsSuc; ordinal-unique)
 open import Gregorianum.Relation.Timeline Year using (IsTimeline; module Path)
 
 open import Data.Nat using (ℕ; zero; suc; _+_)

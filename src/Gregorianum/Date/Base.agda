@@ -1,22 +1,22 @@
 module Gregorianum.Date.Base where
 
-open import Gregorianum.Year as Y using (Year; _HasYearType_; YearType; leap; common)
-open import Gregorianum.Year.Properties as Y
-import Gregorianum.Month.Base as M
-open import Gregorianum.Year.Weight.Base as Y
-open import Gregorianum.Year.Weight.Properties as Y
-open import Gregorianum.YearMonth as YM using (YearMonth; _HasDays_)
+open import Gregorianum.Year using (_×₄₀₀+_×₁₀₀+_×₄+_; Year; _HasYearType_; YearType; yearType; leap; common; leap₄₀₀)
+open import Gregorianum.Year.Properties using (common⇒IsSuc)
+open import Gregorianum.Year.Weight.Base using (_HasLeapWeight_; _HasCommonWeight_; has-weight)
+open import Gregorianum.Year.Weight.Properties using (IsSuc⇒suc-common-weight)
+open import Gregorianum.YearMonth.Base as YM using (YearMonth; _HasDays_; _-_)
 import Gregorianum.YearMonth.Properties as YM
-import Gregorianum.Month as M
-open import Gregorianum.Day
-open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position hiding (_<_)
-import Gregorianum.Data.Cursor.Properties as Cursor
-open import Data.Product using (∃-syntax; _,_; proj₁)
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong)
+open import Gregorianum.Month using ([_]; january-days; _HasDayWeight_; dayWeight)
+open import Gregorianum.Day using (Day; [_])
+open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; last)
+open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
+open import Gregorianum.Data.Cursor.Properties using (rem≡0⇒width≡acc)
+
 open import Data.Nat as ℕ using (ℕ; zero; suc; _+_; _*_; NonZero)
+open import Data.Product using (∃-syntax; _,_; proj₁)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary.Decidable using (Dec; yes; no)
-open import Relation.Nullary.Negation using (¬_; contradiction)
+open import Relation.Nullary.Negation using (¬_)
 
 record Date : Set where
   constructor mkDate
@@ -45,7 +45,7 @@ data _⋖_ : Date → Date → Set where
 data IsSuc : Date → Set where
   sucᵈ : ∀ {acc rem}
        → {c : Cursor 30 (suc acc) rem}
-       → IsSuc (((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) YM.- M.[ mkPos first ]) - [ mkPos c ] ⟨ YM.mkHasDays Y.leap₄₀₀ M.january-days ⟩ )
+       → IsSuc (((zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]) - [ mkPos c ] ⟨ YM.mkHasDays leap₄₀₀ january-days ⟩ )
   sucʸᵐ : ∀ {ym width acc rem}
         → {hasDays : ym HasDays (suc width)}
         → {c : Cursor width acc rem}
@@ -58,7 +58,7 @@ next (yearMonth - [ mkPos {rem = zero} cursor ] ⟨ hasDays ⟩) with YM.next ye
 ... | suc width , hasDays' = (ym' - [ mkPos first ] ⟨ hasDays' ⟩) , h
   where
     h : (yearMonth - [ mkPos cursor ] ⟨ hasDays ⟩)  ⋖ (ym' - [ mkPos first ] ⟨ hasDays' ⟩)
-    h with Cursor.rem≡0⇒width≡acc cursor
+    h with rem≡0⇒width≡acc cursor
     ... | refl = stepʸᵐ ym⋖ym'
 
 prev : ∀ (d₂ : Date) → IsSuc d₂ → ∃[ d₁ ] d₁ ⋖ d₂
@@ -72,25 +72,25 @@ prev (ym - [ mkPos first ] ⟨ hasDays ⟩) (sucʸᵐ p)  with YM.prev ym p
 
 data _HasOrdinal_ (d : Date) : (n : ℕ) → Set where
   has-leap-ordinal : ∀ {yl yc ymo}
-                   → (Date.year d) HasYearType Y.leap
-                   → (Date.year d) Y.HasLeapWeight (suc yl)
-                   → (Date.year d) Y.HasCommonWeight yc
-                   → (Y.leap , Date.month d) M.HasDayWeight ymo
+                   → (Date.year d) HasYearType leap
+                   → (Date.year d) HasLeapWeight (suc yl)
+                   → (Date.year d) HasCommonWeight yc
+                   → (leap , Date.month d) HasDayWeight ymo
                    → d HasOrdinal (Position.toℕ (Day.position (Date.day d)) + ymo + yl * 366 + yc * 365)
   has-common-ordinal : ∀ {yl yc ymo}
                      → {{_ : NonZero yl}}
-                     → (Date.year d) HasYearType Y.common
-                     → (Date.year d) Y.HasLeapWeight yl
-                     → (Date.year d) Y.HasCommonWeight (suc yc)
-                     → (Y.common , Date.month d) M.HasDayWeight ymo
+                     → (Date.year d) HasYearType common
+                     → (Date.year d) HasLeapWeight yl
+                     → (Date.year d) HasCommonWeight (suc yc)
+                     → (common , Date.month d) HasDayWeight ymo
                      → d HasOrdinal (Position.toℕ (Day.position (Date.day d)) + ymo + yl * 366 + yc * 365)
 
 toOrdinal : (d : Date) → ∃[ n ] d HasOrdinal n
-toOrdinal d with Y.yearType (Date.year d)
-toOrdinal d | leap , p with M.dayWeight (leap , Date.month d)
-toOrdinal d | leap , p | w , q = _ , has-leap-ordinal p Y.has-weight Y.has-weight q
-toOrdinal d | common , p with M.dayWeight (common , Date.month d)
-... | w , q with Y.IsSuc⇒suc-common-weight (Y.common⇒IsSuc p)
+toOrdinal d with yearType (Date.year d)
+toOrdinal d | leap , p with dayWeight (leap , Date.month d)
+toOrdinal d | leap , p | w , q = _ , has-leap-ordinal p has-weight has-weight q
+toOrdinal d | common , p with dayWeight (common , Date.month d)
+... | w , q with IsSuc⇒suc-common-weight (common⇒IsSuc p)
 ... | ycw , q' = _ , has-common-ordinal p has-weight q' q
 
 _<_ : Date → Date → Set
@@ -103,8 +103,8 @@ isSuc? (ym - [ mkPos (suc cursor) ] ⟨ hasDays ⟩) | no ¬h = yes h
   where
     h : IsSuc (ym - [ mkPos (suc cursor) ] ⟨ hasDays ⟩)
     h with YM.¬IsSuc⇒first ¬h
-    ... | refl with YM.days-unique hasDays (YM.mkHasDays Y.leap₄₀₀ M.january-days)
-    ... | refl with YM.has-days-irrelevant hasDays (YM.mkHasDays Y.leap₄₀₀ M.january-days)
+    ... | refl with YM.days-unique hasDays (YM.mkHasDays leap₄₀₀ january-days)
+    ... | refl with YM.has-days-irrelevant hasDays (YM.mkHasDays leap₄₀₀ january-days)
     ... | refl = sucᵈ
 isSuc? (ym - [ mkPos first ] ⟨ hasDays ⟩) | no ¬h = no h
   where

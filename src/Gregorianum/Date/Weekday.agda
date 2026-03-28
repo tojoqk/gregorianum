@@ -1,27 +1,16 @@
 module Gregorianum.Date.Weekday where
 
-open import Gregorianum.YearMonth using (_-_; _HasDays_; mkHasDays)
-open import Gregorianum.Data.Cursor using (first)
-open import Gregorianum.Data.Cursor.Position using (mkPos; Position)
-open import Gregorianum.Year using (_×₄₀₀+_×₁₀₀+_×₄+_; leap₄₀₀)
-open import Gregorianum.Year.Weight.Base
-open import Gregorianum.Month using (january; january-days; january-weight)
-
-open import Gregorianum.Day
-open import Gregorianum.Date.Base hiding (_<_)
+open import Gregorianum.Date.Base using (Date; _HasOrdinal_; toOrdinal)
 open import Gregorianum.Date.Properties using (ordinal-unique)
-import Gregorianum.Date.Timeline as T
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _<_; z≤n; s≤s; _≤_)
-open import Data.Fin.Properties
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _<_; z≤n; s≤s)
+open import Data.Fin as Fin using (Fin; zero; suc)
+open import Data.Fin.Properties using (toℕ-injective; toℕ<n)
 open import Data.Nat.DivMod as DivMod using (_%_; DivMod; _divMod_; _div_; result)
-import Data.Nat.Properties as ℕ
-open import Data.Product using (∃-syntax; _,_; _×_; Σ-syntax; proj₂)
+open import Data.Product using (∃-syntax; _,_)
 open import Relation.Nullary.Decidable using (Dec; yes; no; True; toWitness)
 open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; subst; module ≡-Reasoning)
-open import Gregorianum.Date.Timeline using (_─[_]→_; ⟨_,_⟩)
-open import Data.Fin as Fin using (Fin; zero; suc)
 
 record Weekday : Set where
   constructor [_]
