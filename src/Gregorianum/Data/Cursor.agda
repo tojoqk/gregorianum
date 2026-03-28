@@ -34,11 +34,11 @@ pattern twenty-ninth = suc twenty-eighth
 pattern thirtieth = suc twenty-ninth
 pattern thirty-first = suc thirtieth
 
-pattern suc×₄ x = suc (suc (suc (suc x)))
+pattern suc⁴ x = suc (suc (suc (suc x)))
 
-pattern suc×₁₂ x = suc×₄ (suc×₄ (suc×₄ x))
+pattern suc¹² x = suc⁴ (suc⁴ (suc⁴ x))
 
 private
-  pattern suc×₅ x = suc (suc×₄ x)
+  pattern suc⁵ x = suc (suc⁴ x)
 
-pattern suc×₂₅ x = suc×₅ (suc×₅ (suc×₅ (suc×₅ (suc×₅ x))))
+pattern suc²⁵ x = suc⁵ (suc⁵ (suc⁵ (suc⁵ (suc⁵ x))))

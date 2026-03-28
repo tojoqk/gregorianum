@@ -4,7 +4,7 @@ open import Gregorianum.Year as Y using (Year; YearType; _×₄₀₀+_×₁₀�
 import Gregorianum.Year.Properties as Y
 open import Gregorianum.Year.Weight.Base using (_HasWeight_; has-weight)
 open import Gregorianum.Month.Base as M using (Month; [_]; january; december)
-open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; suc×₁₂)
+open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; suc¹²)
 open import Gregorianum.Data.Cursor.Position using (mkPos; Position)
 open import Gregorianum.Data.Cursor.Properties using (rem≡0⇒width≡acc)
 
@@ -51,7 +51,7 @@ next : ∀ ym₁ → ∃[ ym₂ ] ym₁ ⋖ ym₂
 next (year - [ mkPos {rem = suc rem} cursor ]) = (year - [ mkPos (suc cursor) ]) , stepᵐ
 next (year - december) with Y.next year
 ...                                                  | year' , p = (year' - january) , stepʸ p
-next (year - [ mkPos {rem = zero} c₁₂@(suc×₁₂ _) ]) with rem≡0⇒width≡acc c₁₂
+next (year - [ mkPos {rem = zero} c₁₂@(suc¹² _) ]) with rem≡0⇒width≡acc c₁₂
 ...                                                         | ()
 
 prev : ∀ ym₂ → IsSuc ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂

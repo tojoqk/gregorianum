@@ -53,7 +53,7 @@ days (yt , september) = 30 , september-days
 days (yt , october) = 31 , october-days
 days (yt , november) = 30 , november-days
 days (yt , december) = 31 , december-days
-days (yt , [ mkPos c@(suc×₁₂ _) ]) with Cursor.width≡acc+rem c
+days (yt , [ mkPos c@(suc¹² _) ]) with Cursor.width≡acc+rem c
 ...                               | ()
 days (common , february) = 28 , february-common-days
 days (leap , february) = 29 , february-leap-days
@@ -95,7 +95,7 @@ dayWeight (common , september) = 243 , september-common-weight
 dayWeight (common , october) = 273 , october-common-weight
 dayWeight (common , november) = 304 , november-common-weight
 dayWeight (common , december) = 334 , december-common-weight
-dayWeight (common , [ mkPos c@(suc×₁₂ _) ]) with Cursor.width≡acc+rem c
+dayWeight (common , [ mkPos c@(suc¹² _) ]) with Cursor.width≡acc+rem c
 ...                                        | ()
 dayWeight (leap , march) = 60 , march-leap-weight
 dayWeight (leap , april) = 91 , april-leap-weight
@@ -107,5 +107,5 @@ dayWeight (leap , september) = 244 , september-leap-weight
 dayWeight (leap , october) = 274 , october-leap-weight
 dayWeight (leap , november) = 305 , november-leap-weight
 dayWeight (leap , december) = 335 , december-leap-weight
-dayWeight (leap , [ mkPos c@(suc×₁₂ _) ]) with Cursor.width≡acc+rem c
+dayWeight (leap , [ mkPos c@(suc¹² _) ]) with Cursor.width≡acc+rem c
 ...                                      | ()
