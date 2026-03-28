@@ -2,7 +2,7 @@ module Gregorianum.Date.Properties where
 
 open import Gregorianum.Date.Base
 
-open import Gregorianum.Day.Base using (Day)
+open import Gregorianum.Day.Base
 import Gregorianum.YearMonth.Base as YM
 import Gregorianum.Month.Base as M
 import Gregorianum.Year.Base as Y
@@ -44,7 +44,7 @@ prev-unique : ∀ {d₁ d₂ d₃ : Date}
                  → d₁ ≡ d₂
 prev-unique stepᵈ stepᵈ = refl
 prev-unique (stepʸᵐ p) (stepʸᵐ q) with YM.prev-unique p q
-prev-unique {_ - mkPos c₁ ⟨ hasDays₁ ⟩} {_ - mkPos c₂ ⟨ hasDays₂ ⟩} (stepʸᵐ p) (stepʸᵐ q) | refl with YM.days-unique hasDays₁ hasDays₂
+prev-unique {_ - [ mkPos c₁ ] ⟨ hasDays₁ ⟩} {_ - [ mkPos c₂ ] ⟨ hasDays₂ ⟩} (stepʸᵐ p) (stepʸᵐ q) | refl with YM.days-unique hasDays₁ hasDays₂
 ... | refl with YM.has-days-irrelevant hasDays₁ hasDays₂
 ... | refl with Cursor.unique c₁ c₂
 ... | refl = refl
@@ -64,12 +64,12 @@ next-ordinal : ∀ {d₁ d₂ n} → d₁ ⋖ d₂ → d₁ HasOrdinal n → d�
 next-ordinal stepᵈ (has-leap-ordinal hasYearType hlw hcw hdw) = has-leap-ordinal hasYearType hlw hcw hdw
 next-ordinal stepᵈ (has-common-ordinal hasYearType hlw hcw hdw) = has-common-ordinal hasYearType hlw hcw hdw
 next-ordinal (stepʸᵐ (YM.stepʸ y₁⋖y₂)) (has-leap-ordinal hasYearType hlw hcw hdw) with Y.next-leap-is-common y₁⋖y₂ hasYearType | Y.next-leap-common-weight y₁⋖y₂ hlw hcw
-next-ordinal {(y YM.- mkPos twelfth) - mkPos thirty-first ⟨ YM.mkHasDays _ M.december-days ⟩} (stepʸᵐ (YM.stepʸ y₁⋖y₂)) (has-leap-ordinal hasYearType hlw hcw december-leap-weight) | hyt | inj₂ (_ , hlw' , hcw') = has-common-ordinal hyt hlw' hcw' M.january-weight
+next-ordinal {(y YM.- december) - [ mkPos thirty-first ] ⟨ YM.mkHasDays _ M.december-days ⟩} (stepʸᵐ (YM.stepʸ y₁⋖y₂)) (has-leap-ordinal hasYearType hlw hcw december-leap-weight) | hyt | inj₂ (_ , hlw' , hcw') = has-common-ordinal hyt hlw' hcw' M.january-weight
 ... | Y.common | inj₁ (() , _)
 ... | Y.common₁₀₀ | inj₁ (() , _)
 next-ordinal (stepʸᵐ (YM.stepʸ y₁⋖y₂)) (has-common-ordinal hasYearType hlw hcw hdw) with Y.next-leap-common-weight y₁⋖y₂ hlw hcw
-next-ordinal {(y YM.- mkPos twelfth) - mkPos thirty-first ⟨ YM.mkHasDays _ M.december-days ⟩} {d₂} (stepʸᵐ (YM.stepʸ y₁⋖y₂)) (has-common-ordinal {yl} {yc} hasYearType hlw hcw december-common-weight) | inj₁ (hyt , hlw' , hcw') = subst (d₂ HasOrdinal_) (trans (ℕ.+-comm (yl * 366) (365 + (yc * 365))) (cong (365 +_) (ℕ.+-comm (yc * 365) (yl * 366)))) (has-leap-ordinal hyt hlw' hcw' M.january-weight)
-next-ordinal {(y YM.- mkPos twelfth) - mkPos thirty-first ⟨ YM.mkHasDays _ M.december-days ⟩} {d₂} (stepʸᵐ (YM.stepʸ y₁⋖y₂)) (has-common-ordinal {yl} {yc} hasYearType hlw hcw december-common-weight) | inj₂ (hyt , hlw' , hcw') = subst (d₂ HasOrdinal_) (trans (ℕ.+-comm (yl * 366) (365 + (yc * 365))) (cong (365 +_) (ℕ.+-comm (yc * 365) (yl * 366)))) (has-common-ordinal hyt hlw' hcw' M.january-weight)
+next-ordinal {(y YM.- december) - [ mkPos thirty-first ] ⟨ YM.mkHasDays _ M.december-days ⟩} {d₂} (stepʸᵐ (YM.stepʸ y₁⋖y₂)) (has-common-ordinal {yl} {yc} hasYearType hlw hcw december-common-weight) | inj₁ (hyt , hlw' , hcw') = subst (d₂ HasOrdinal_) (trans (ℕ.+-comm (yl * 366) (365 + (yc * 365))) (cong (365 +_) (ℕ.+-comm (yc * 365) (yl * 366)))) (has-leap-ordinal hyt hlw' hcw' M.january-weight)
+next-ordinal {(y YM.- december) - [ mkPos thirty-first ] ⟨ YM.mkHasDays _ M.december-days ⟩} {d₂} (stepʸᵐ (YM.stepʸ y₁⋖y₂)) (has-common-ordinal {yl} {yc} hasYearType hlw hcw december-common-weight) | inj₂ (hyt , hlw' , hcw') = subst (d₂ HasOrdinal_) (trans (ℕ.+-comm (yl * 366) (365 + (yc * 365))) (cong (365 +_) (ℕ.+-comm (yc * 365) (yl * 366)))) (has-common-ordinal hyt hlw' hcw' M.january-weight)
 next-ordinal {_ - _ ⟨ YM.mkHasDays {Y.leap} hasYearType hasDays ⟩} (stepʸᵐ YM.stepᵐ) (has-leap-ordinal hyt hlw hcw hdw) with M.next-month-day-weight hasDays hdw
 ... | h = has-leap-ordinal hyt hlw hcw h
 next-ordinal {_ - _ ⟨ YM.mkHasDays {Y.common} () hasDays ⟩} (stepʸᵐ YM.stepᵐ) (has-leap-ordinal Y.leap₄ hlw hcw hdw)
@@ -103,7 +103,7 @@ ordinal-unique (has-common-ordinal Y.common₁₀₀ _ _ _) (has-leap-ordinal ()
 ⋖-wellFounded d = Subrelation.accessible ⋖⇒< (<-WellFounded d)
 
 private
-  pattern date-first = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) YM.- mkPos first) - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩
+  pattern date-first = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) YM.- january) - [ mkPos first ] ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩
 
 IsSuc⇒suc-ordinal : ∀ {d} → IsSuc d → ∃[ n ] d HasOrdinal (suc n)
 IsSuc⇒suc-ordinal {d} isSuc with prev d isSuc
@@ -114,8 +114,8 @@ IsSuc⇒suc-ordinal {d} isSuc with prev d isSuc
 ¬IsSuc⇒first {ym - d ⟨ hd ⟩} ¬isSuc with YM.isSuc? ym
 ... | yes h = contradiction (sucʸᵐ h) ¬isSuc
 ... | no ¬h with YM.¬IsSuc⇒first ¬h
-¬IsSuc⇒first {ym - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = refl
-¬IsSuc⇒first {ym - mkPos (suc cursor) ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = contradiction sucᵈ ¬isSuc
+¬IsSuc⇒first {ym - [ mkPos first ] ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = refl
+¬IsSuc⇒first {ym - [ mkPos (suc cursor) ] ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} ¬isSuc | no ¬h | refl = contradiction sucᵈ ¬isSuc
 
 ¬isSuc-unique : ∀ {d₁ d₂} → ¬ IsSuc d₁ → ¬ IsSuc d₂ → d₁ ≡ d₂
 ¬isSuc-unique ¬isSuc₁ ¬isSuc₂ with ¬IsSuc⇒first ¬isSuc₁ | ¬IsSuc⇒first ¬isSuc₂
@@ -140,8 +140,8 @@ suc-ordinal⇒IsSuc : ∀ {d n} → d HasOrdinal (suc n) → IsSuc d
 suc-ordinal⇒IsSuc {yearMonth - day ⟨ hasDays ⟩} {n} ho with YM.isSuc? yearMonth
 ... | yes h = sucʸᵐ h
 ... | no ¬h with YM.¬IsSuc⇒first ¬h
-suc-ordinal⇒IsSuc {yearMonth - mkPos (suc cursor) ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} {n} ho | no ¬h | refl = sucᵈ
-suc-ordinal⇒IsSuc {yearMonth - mkPos first ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} {n} ho | no ¬h | refl with ordinal-unique ho (has-leap-ordinal Y.leap₄₀₀ Y.has-weight Y.has-weight january-weight)
+suc-ordinal⇒IsSuc {yearMonth - [ mkPos (suc cursor) ] ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} {n} ho | no ¬h | refl = sucᵈ
+suc-ordinal⇒IsSuc {yearMonth - [ mkPos first ] ⟨ YM.mkHasDays Y.leap₄₀₀ january-days ⟩} {n} ho | no ¬h | refl with ordinal-unique ho (has-leap-ordinal Y.leap₄₀₀ Y.has-weight Y.has-weight january-weight)
 ... | ()
 
 prev-ordinal : ∀ {d₁ d₂ n} → d₁ ⋖ d₂ → d₂ HasOrdinal (suc n) → d₁ HasOrdinal n

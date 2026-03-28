@@ -20,11 +20,11 @@ record YearMonth : Set where
     month : Month
 
 data _⋖_ : YearMonth → YearMonth → Set where
-  stepᵐ : ∀ {y acc rem} → {c : Cursor 11 acc (suc rem)} → (y - mkPos c) ⋖ (y - mkPos (suc c))
+  stepᵐ : ∀ {y acc rem} → {c : Cursor 11 acc (suc rem)} → (y - [ mkPos c ]) ⋖ (y - [ mkPos (suc c) ])
   stepʸ : ∀ {y₁ y₂} → y₁ Y.⋖ y₂ → (y₁ - december) ⋖ (y₂ - january)
 
 data IsSuc : YearMonth → Set where
-  sucᵐ : ∀ {acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuc ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c)
+  sucᵐ : ∀ {acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuc ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos c ])
   sucʸ : ∀ {ym} → Y.IsSuc (YearMonth.year ym) → IsSuc ym
 
 
@@ -32,8 +32,8 @@ isSuc? : (ym : YearMonth) → Dec (IsSuc ym)
 isSuc? (year - month) with Y.isSuc? year
 ... | yes p = yes (sucʸ p)
 isSuc? (year - month) | no p with Y.¬IsSuc⇒first p
-isSuc? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first) | no ¬p | refl = no λ { (sucʸ p) → ¬p p}
-isSuc? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos (suc _)) | no _ | refl = yes sucᵐ
+isSuc? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]) | no ¬p | refl = no λ { (sucʸ p) → ¬p p}
+isSuc? ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos (suc _) ]) | no _ | refl = yes sucᵐ
 
 record _HasDays_ (ym : YearMonth) (days : ℕ) : Set where
   constructor mkHasDays
@@ -48,21 +48,21 @@ days (ym - m) with Y.yearType ym
 ...                            | ds , pᵈ = ds , mkHasDays pʸᵗ pᵈ
 
 next : ∀ ym₁ → ∃[ ym₂ ] ym₁ ⋖ ym₂
-next (year - mkPos {rem = suc rem} cursor) = (year - mkPos (suc cursor)) , stepᵐ
-next (year - mkPos {rem = zero} twelfth) with Y.next year
+next (year - [ mkPos {rem = suc rem} cursor ]) = (year - [ mkPos (suc cursor) ]) , stepᵐ
+next (year - december) with Y.next year
 ...                                                  | year' , p = (year' - january) , stepʸ p
-next (year - mkPos {rem = zero} c₁₂@(suc×₁₂ _)) with Cursor.rem≡0⇒width≡acc c₁₂
+next (year - [ mkPos {rem = zero} c₁₂@(suc×₁₂ _) ]) with Cursor.rem≡0⇒width≡acc c₁₂
 ...                                                         | ()
 
 prev : ∀ ym₂ → IsSuc ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
-prev (_ - mkPos (suc c)) sucᵐ = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos c) , stepᵐ
-prev (year - mkPos first) (sucʸ x) = (proj₁ (Y.prev year x) - december) , stepʸ (proj₂ (Y.prev year x))
-prev (year - mkPos (suc month)) (sucʸ x) = (year - mkPos month) , stepᵐ
+prev (_ - [ mkPos (suc c) ]) sucᵐ = ((zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos c ]) , stepᵐ
+prev (year - [ mkPos first ]) (sucʸ x) = (proj₁ (Y.prev year x) - december) , stepʸ (proj₂ (Y.prev year x))
+prev (year - [ mkPos (suc month) ]) (sucʸ x) = (year - [ mkPos month ]) , stepᵐ
 
 data _HasOrdinal_ (ym : YearMonth) : (n : ℕ) → Set where
   has-ordinal : ∀ {yw}
              → (YearMonth.year ym) Y.HasWeight (suc yw)
-             → ym HasOrdinal (Position.toℕ (YearMonth.month ym) + yw * 12)
+             → ym HasOrdinal (Position.toℕ (Month.position (YearMonth.month ym)) + yw * 12)
 
 toOrdinal : (ym : YearMonth) → ∃[ n ] ym HasOrdinal n
 toOrdinal ym = _ , has-ordinal Y.has-weight

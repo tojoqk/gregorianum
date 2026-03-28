@@ -8,32 +8,23 @@ open import Gregorianum.Data.Cursor.Position
 open import Gregorianum.Data.Cursor.Properties as Cursor
 open import Data.Product using (∃-syntax; _×_; _,_)
 
-Month = Position 11
+record Month : Set where
+  constructor [_]
+  field
+    position : Position 11
 
-january : Month
-january = mkPos first
-february : Month
-february = mkPos second
-march : Month
-march = mkPos third
-april : Month
-april = mkPos fourth
-may : Month
-may = mkPos fifth
-june : Month
-june = mkPos sixth
-july : Month
-july = mkPos seventh
-august : Month
-august = mkPos eighth
-september : Month
-september = mkPos ninth
-october : Month
-october = mkPos tenth
-november : Month
-november = mkPos eleventh
-december : Month
-december = mkPos twelfth
+pattern january = [ mkPos first ]
+pattern february = [ mkPos second ]
+pattern march = [ mkPos third ]
+pattern april = [ mkPos fourth ]
+pattern may = [ mkPos fifth ]
+pattern june = [ mkPos sixth ]
+pattern july = [ mkPos seventh ]
+pattern august = [ mkPos eighth ]
+pattern september = [ mkPos ninth ]
+pattern october = [ mkPos tenth ]
+pattern november = [ mkPos eleventh ]
+pattern december = [ mkPos twelfth ]
 
 data _HasDays_ : YearType × Month → ℕ → Set where
   january-days         : ∀ {yt} →      (yt , january) HasDays 31
@@ -51,21 +42,21 @@ data _HasDays_ : YearType × Month → ℕ → Set where
   december-days        : ∀ {yt} →     (yt , december) HasDays 31
 
 days : (ytm : YearType × Month) → ∃[ ds ] ytm HasDays ds
-days (yt , mkPos first) = 31 , january-days
-days (yt , mkPos third) = 31 , march-days
-days (yt , mkPos fourth) = 30 , april-days
-days (yt , mkPos fifth) = 31 , may-days
-days (yt , mkPos sixth) = 30 , june-days
-days (yt , mkPos seventh) = 31 , july-days
-days (yt , mkPos eighth) = 31 , august-days
-days (yt , mkPos ninth) = 30 , september-days
-days (yt , mkPos tenth) = 31 , october-days
-days (yt , mkPos eleventh) = 30 , november-days
-days (yt , mkPos twelfth) = 31 , december-days
-days (yt , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
+days (yt , january) = 31 , january-days
+days (yt , march) = 31 , march-days
+days (yt , april) = 30 , april-days
+days (yt , may) = 31 , may-days
+days (yt , june) = 30 , june-days
+days (yt , july) = 31 , july-days
+days (yt , august) = 31 , august-days
+days (yt , september) = 30 , september-days
+days (yt , october) = 31 , october-days
+days (yt , november) = 30 , november-days
+days (yt , december) = 31 , december-days
+days (yt , [ mkPos c@(suc×₁₂ _) ]) with Cursor.width≡acc+rem c
 ...                               | ()
-days (common , mkPos second) = 28 , february-common-days
-days (leap , mkPos second) = 29 , february-leap-days
+days (common , february) = 28 , february-common-days
+days (leap , february) = 29 , february-leap-days
 
 data _HasDayWeight_ : YearType × Month → ℕ → Set where
   january-weight          : ∀ {yt} →  (yt , january) HasDayWeight 0
@@ -92,29 +83,29 @@ data _HasDayWeight_ : YearType × Month → ℕ → Set where
   december-leap-weight  :           (leap , december) HasDayWeight 335
 
 dayWeight : (ytm : YearType × Month) → ∃[ n ] ytm HasDayWeight n
-dayWeight (fst , mkPos first) = 0 , january-weight
-dayWeight (fst , mkPos second) = 31 , february-weight
-dayWeight (common , mkPos third) = 59 , march-common-weight
-dayWeight (common , mkPos fourth) = 90 , april-common-weight
-dayWeight (common , mkPos fifth) = 120 , may-common-weight
-dayWeight (common , mkPos sixth) = 151 , june-common-weight
-dayWeight (common , mkPos seventh) = 181 , july-common-weight
-dayWeight (common , mkPos eighth) = 212 , august-common-weight
-dayWeight (common , mkPos ninth) = 243 , september-common-weight
-dayWeight (common , mkPos tenth) = 273 , october-common-weight
-dayWeight (common , mkPos eleventh) = 304 , november-common-weight
-dayWeight (common , mkPos twelfth) = 334 , december-common-weight
-dayWeight (common , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
+dayWeight (fst , january) = 0 , january-weight
+dayWeight (fst , february) = 31 , february-weight
+dayWeight (common , march) = 59 , march-common-weight
+dayWeight (common , april) = 90 , april-common-weight
+dayWeight (common , may) = 120 , may-common-weight
+dayWeight (common , june) = 151 , june-common-weight
+dayWeight (common , july) = 181 , july-common-weight
+dayWeight (common , august) = 212 , august-common-weight
+dayWeight (common , september) = 243 , september-common-weight
+dayWeight (common , october) = 273 , october-common-weight
+dayWeight (common , november) = 304 , november-common-weight
+dayWeight (common , december) = 334 , december-common-weight
+dayWeight (common , [ mkPos c@(suc×₁₂ _) ]) with Cursor.width≡acc+rem c
 ...                                        | ()
-dayWeight (leap , mkPos third) = 60 , march-leap-weight
-dayWeight (leap , mkPos fourth) = 91 , april-leap-weight
-dayWeight (leap , mkPos fifth) = 121 , may-leap-weight
-dayWeight (leap , mkPos sixth) = 152 , june-leap-weight
-dayWeight (leap , mkPos seventh) = 182 , july-leap-weight
-dayWeight (leap , mkPos eighth) = 213 , august-leap-weight
-dayWeight (leap , mkPos ninth) = 244 , september-leap-weight
-dayWeight (leap , mkPos tenth) = 274 , october-leap-weight
-dayWeight (leap , mkPos eleventh) = 305 , november-leap-weight
-dayWeight (leap , mkPos twelfth) = 335 , december-leap-weight
-dayWeight (leap , mkPos c@(suc×₁₂ _)) with Cursor.width≡acc+rem c
+dayWeight (leap , march) = 60 , march-leap-weight
+dayWeight (leap , april) = 91 , april-leap-weight
+dayWeight (leap , may) = 121 , may-leap-weight
+dayWeight (leap , june) = 152 , june-leap-weight
+dayWeight (leap , july) = 182 , july-leap-weight
+dayWeight (leap , august) = 213 , august-leap-weight
+dayWeight (leap , september) = 244 , september-leap-weight
+dayWeight (leap , october) = 274 , october-leap-weight
+dayWeight (leap , november) = 305 , november-leap-weight
+dayWeight (leap , december) = 335 , december-leap-weight
+dayWeight (leap , [ mkPos c@(suc×₁₂ _) ]) with Cursor.width≡acc+rem c
 ...                                      | ()

@@ -8,7 +8,7 @@ import Gregorianum.Year as Y
 import Gregorianum.Year.Properties as Y
 import Gregorianum.Year.Weight.Base as Y
 import Gregorianum.Year.Weight.Properties as Y
-import Gregorianum.Month as M
+open import Gregorianum.Month as M hiding (_HasDays_)
 import Gregorianum.Month.Properties as M
 import Gregorianum.Year.Properties
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; subst; sym)
@@ -81,26 +81,26 @@ ordinal-unique : ∀ {ym n₁ n₂} → ym HasOrdinal n₁ → ym HasOrdinal n�
 ordinal-unique (has-ordinal Y.has-weight) (has-ordinal Y.has-weight) = refl
 
 suc-ordinal⇒IsSuc : ∀ {ym n} → ym HasOrdinal (suc n) → IsSuc ym
-suc-ordinal⇒IsSuc {year - mkPos cursor} p with Y.isSuc? year
+suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p with Y.isSuc? year
 ... | yes q = sucʸ q
-suc-ordinal⇒IsSuc {year - mkPos cursor} p | no ¬q with Y.¬IsSuc⇒first ¬q
-suc-ordinal⇒IsSuc {(0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first} p | no ¬q | refl with toOrdinal ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first)
-suc-ordinal⇒IsSuc {(0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first} p | no ¬q | refl | n , snd with ordinal-unique p snd
-suc-ordinal⇒IsSuc {(zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first} p | no ¬q | refl | n , has-ordinal Y.has-weight | ()
-suc-ordinal⇒IsSuc {year - mkPos (suc cursor)} p | no _ | refl = sucᵐ
+suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p | no ¬q with Y.¬IsSuc⇒first ¬q
+suc-ordinal⇒IsSuc {(0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]} p | no ¬q | refl with toOrdinal ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ])
+suc-ordinal⇒IsSuc {(0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]} p | no ¬q | refl | n , snd with ordinal-unique p snd
+suc-ordinal⇒IsSuc {(zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]} p | no ¬q | refl | n , has-ordinal Y.has-weight | ()
+suc-ordinal⇒IsSuc {year - [ mkPos (suc cursor) ]} p | no _ | refl = sucᵐ
 
 IsSuc⇒suc-ordinal : ∀ {ym} → IsSuc ym → ∃[ n ] ym HasOrdinal (suc n)
 IsSuc⇒suc-ordinal sucᵐ = _ + 0 * 12 , has-ordinal Y.has-weight
-IsSuc⇒suc-ordinal {year - mkPos first} (sucʸ x) with Y.IsSuc⇒suc-weight x
+IsSuc⇒suc-ordinal {year - [ mkPos first ]} (sucʸ x) with Y.IsSuc⇒suc-weight x
 ... | fst , snd = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (fst * 12))))))))))) , has-ordinal snd
-IsSuc⇒suc-ordinal {year - mkPos (suc c)} (sucʸ x) = _ , has-ordinal Y.has-weight
+IsSuc⇒suc-ordinal {year - [ mkPos (suc c) ]} (sucʸ x) = _ , has-ordinal Y.has-weight
 
-¬IsSuc⇒first : ∀ {ym} → ¬ IsSuc ym → ym ≡ (zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first
+¬IsSuc⇒first : ∀ {ym} → ¬ IsSuc ym → ym ≡ (zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - january
 ¬IsSuc⇒first {y - m} p with Y.isSuc? y
 ¬IsSuc⇒first {y - m} p | yes isSuc = contradiction (sucʸ isSuc) p
 ¬IsSuc⇒first {y - m} p | no ¬isSuc with Y.¬IsSuc⇒first ¬isSuc
-¬IsSuc⇒first {y - mkPos first} p | no ¬isSuc | refl = refl
-¬IsSuc⇒first {y - mkPos (suc cursor)} p | no ¬isSuc | refl = contradiction sucᵐ p
+¬IsSuc⇒first {y - january} p | no ¬isSuc | refl = refl
+¬IsSuc⇒first {y - [ mkPos (suc cursor) ]} p | no ¬isSuc | refl = contradiction sucᵐ p
 
 ¬isSuc-unique : ∀ {d₁ d₂} → ¬ IsSuc d₁ → ¬ IsSuc d₂ → d₁ ≡ d₂
 ¬isSuc-unique ¬isSuc₁ ¬isSuc₂ with ¬IsSuc⇒first ¬isSuc₁ | ¬IsSuc⇒first ¬isSuc₂
@@ -125,11 +125,11 @@ prev-ordinal ym₁⋖ym₂ p with ⋖⇒suc ym₁⋖ym₂
 ⋖-wellFounded : WellFounded _⋖_
 ⋖-wellFounded y = Subrelation.accessible ⋖⇒< (<-WellFounded y)
 
-first-ordinal≡zero : ∀ {n} → ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first) HasOrdinal n → n ≡ 0
+first-ordinal≡zero : ∀ {n} → ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - january) HasOrdinal n → n ≡ 0
 first-ordinal≡zero p with ordinal-unique p (has-ordinal Y.has-weight)
 ... | refl = refl
 
-ordinal≡0⇒first : ∀ {ym} → ym HasOrdinal 0 → ym ≡ ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - mkPos first)
+ordinal≡0⇒first : ∀ {ym} → ym HasOrdinal 0 → ym ≡ ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - january)
 ordinal≡0⇒first {ym} p with isSuc? ym
 ordinal≡0⇒first {ym} p | yes isSuc with IsSuc⇒suc-ordinal isSuc
 ... | fst , snd with ordinal-unique snd p

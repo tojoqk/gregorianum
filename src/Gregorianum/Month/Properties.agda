@@ -68,9 +68,9 @@ day-weight-unique december-leap-weight december-leap-weight = refl
 
 next-month-day-weight : ∀ {acc rem yt ds w}
                       → {c : Cursor 11 acc (suc rem)}
-                      → (yt , mkPos c) HasDays ds
-                      → (yt , mkPos c) HasDayWeight w
-                      → (yt , mkPos (suc c)) HasDayWeight (ds + w)
+                      → (yt , [ mkPos c ]) HasDays ds
+                      → (yt , [ mkPos c ]) HasDayWeight w
+                      → (yt , [ mkPos (suc c) ]) HasDayWeight (ds + w)
 next-month-day-weight january-days january-weight = february-weight
 next-month-day-weight february-common-days february-weight = march-common-weight
 next-month-day-weight february-leap-days february-weight = march-leap-weight

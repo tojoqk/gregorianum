@@ -13,19 +13,19 @@ open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 data _HasPlain_ {width} (d : Day width) : ℕ → Set where
-  plain : d HasPlain (suc (Position.acc d))
+  plain : d HasPlain (suc (Position.acc (Day.position d)))
 
 toPlain : ∀ {width} → (d : Day width) → ∃[ n ] d HasPlain n
-toPlain (mkPos {acc = acc} _) = suc acc , plain
+toPlain ([ mkPos {acc = acc} _ ]) = suc acc , plain
 
 fromPlain? : ∀ {width : ℕ} → (n : ℕ) → Dec (Σ[ d ∈ Day width ] d HasPlain n)
 fromPlain? zero = no λ ()
 fromPlain? {width} (suc n) with n ≤? width
-...                         | yes n≤width = yes (mkPos (fromℕ≤ n≤width) , plain)
+...                         | yes n≤width = yes ([ mkPos (fromℕ≤ n≤width) ] , plain)
 ...                         | no n≰width  = no (h n≰width)
   where
     h : ∀ {width n}
       → ¬ (n ≤ width)
       → ¬ (Σ[ d ∈ Day width ] d HasPlain suc n)
-    h n≰width (mkPos {acc = acc} {rem = rem} c , plain) with Cursor.width≡acc+rem c
+    h n≰width ([ mkPos {acc = acc} {rem = rem} c ] , plain) with Cursor.width≡acc+rem c
     ...                                                    | refl = n≰width (m≤m+n acc rem)

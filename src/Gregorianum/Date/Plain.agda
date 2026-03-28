@@ -5,6 +5,7 @@ open import Gregorianum.Date.Base
 import Gregorianum.Year.Plain as Y
 import Gregorianum.Month.Plain as M
 import Gregorianum.Day.Plain as D
+import Gregorianum.Day.Base as D
 
 open import Gregorianum.YearMonth.Plain.Properties
 
@@ -35,7 +36,7 @@ data _HasPlain_ (date : Date) : (ℕ × ℕ × ℕ) → Set where
 
 toPlain : (date : Date) → ∃[ tri ] date HasPlain tri
 toPlain (ym - day ⟨ _ ⟩) with YM.toPlain ym
-...                         | (y , m) , p = (y , m , suc (Position.toℕ day)) , plain p D.plain
+...                         | (y , m) , p = (y , m , suc (Position.toℕ (D.Day.position day))) , plain p D.plain
 
 fromPlain? : (tri : ℕ × ℕ × ℕ) → Dec (∃[ date ] date HasPlain tri)
 fromPlain? (y , m , d) with YM.fromPlain? (y , m)

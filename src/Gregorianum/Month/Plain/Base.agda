@@ -14,10 +14,10 @@ open import Data.Nat.Properties using (_≤?_; m≤m+n)
 open import Relation.Nullary.Negation using (¬_)
 
 data _HasPlain_ (m : Month) : ℕ → Set where
-  plain : m HasPlain (suc (Position.toℕ m))
+  plain : m HasPlain (suc (Position.toℕ (Month.position m)))
 
 toPlain : (m : Month) → ∃[ n ] m HasPlain n
-toPlain (mkPos {acc = acc} _) = suc acc , plain
+toPlain ([ mkPos {acc = acc} _ ]) = suc acc , plain
 
 private
   pattern suc×₁₃ x = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc x))))))))))))
@@ -39,5 +39,5 @@ fromPlain? 12 = yes (december , plain)
 fromPlain? (suc×₁₃ n) = no h
   where
     h : ¬ (∃[ m ] m HasPlain suc×₁₃ n)
-    h (mkPos c@(suc×₁₃ _) , _) with Cursor.width≡acc+rem c
+    h ([ mkPos c@(suc×₁₃ _) ] , _) with Cursor.width≡acc+rem c
     ...                           | ()
