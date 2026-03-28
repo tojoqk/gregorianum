@@ -2,6 +2,7 @@ module Gregorianum.Examples where
 
 open import Gregorianum.Date
 open import Gregorianum.Date.Step
+open import Gregorianum.Date.Weekday
 open import Data.Product using (_,_; proj₁; proj₂)
 open import Relation.Nullary.Decidable using (from-yes)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
@@ -9,6 +10,10 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 -- Compile-time verified dates via decidable predicates
 _ : Date
 _ = ⟨ 2026 - 3 - 23 ⟩
+
+-- Compile-time verified weekdays via decidable predicates
+_ : ⟨ 2026 - 3 - 23 ⟩ HasWeekday monday
+_ = ⟨ 2026 - 3 - 23 ⟩ ⟨ monday ⟩
 
 -- Leap years are handled automatically; 2024-02-29 is valid
 _ : Date
