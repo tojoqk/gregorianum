@@ -13,7 +13,7 @@ _ = ⟨ 2026 - 3 - 23 ⟩
 
 -- Compile-time verified weekdays via decidable predicates
 _ : ⟨ 2026 - 3 - 23 ⟩ HasWeekday monday
-_ = ⟨ 2026 - 3 - 23 ⟩ ⟨ monday ⟩
+_ = ⟨ 2026 - 3 - 23 ⟩ has-weekday monday
 
 -- Leap years are handled automatically; 2024-02-29 is valid
 _ : Date

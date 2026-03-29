@@ -35,12 +35,12 @@ pattern thursday = [ thursday-fin ]
 pattern friday = [ friday-fin ]
 
 data _HasWeekday_ (d : Date) (w : Weekday) : Set where
-  has-weekday : ∀ n → d HasOrdinal (Fin.toℕ (Weekday.index w) + n * 7) → d HasWeekday w
+  weekday : ∀ n → d HasOrdinal (Fin.toℕ (Weekday.index w) + n * 7) → d HasWeekday w
 
 fromDate : (d : Date) → ∃[ w ] d HasWeekday w
 fromDate d with toOrdinal d
 ... | n , p with n divMod 7
-... | result q r eq = [ r ] , has-weekday q (subst (d HasOrdinal_) eq p)
+... | result q r eq = [ r ] , weekday q (subst (d HasOrdinal_) eq p)
 
 private
   m+n*p-injective : ∀ (p m n m' n' : ℕ)
@@ -69,12 +69,12 @@ weekday? : (d : Date) → (w : Weekday) → Dec (d HasWeekday w)
 weekday? d [ w ] with toOrdinal d
 ... | n , ho with n divMod 7
 ... | result q r eq with r Fin.≟ w
-... | yes refl = yes (has-weekday q (subst (d HasOrdinal_) eq ho))
+... | yes refl = yes (weekday q (subst (d HasOrdinal_) eq ho))
 ... | no ¬p = no h
   where
     h : ¬ (d HasWeekday [ w ])
-    h (has-weekday n' ho') rewrite eq with ordinal-unique ho ho'
+    h (weekday n' ho') rewrite eq with ordinal-unique ho ho'
     ... | eq' = ¬p (toℕ-injective (m+n*p-injective 7 (Fin.toℕ r) q (Fin.toℕ w) n' (toℕ<n r) (toℕ<n w) eq'))
 
-_⟨_⟩ : (d : Date) → (w : Weekday) → {True (weekday? d w)} → d HasWeekday w
-_⟨_⟩ d w {t} = toWitness t
+_has-weekday_ : (d : Date) → (w : Weekday) → {True (weekday? d w)} → d HasWeekday w
+_has-weekday_ d w {t} = toWitness t
