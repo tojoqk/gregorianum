@@ -24,15 +24,15 @@ data _HasYearType_ : Year → YearType → Set where
   common : ∀ {q acc₁₀₀ rem₁₀₀ acc₄ rem₄ acc₁ rem₁}
          → {c₁₀₀ : Cursor 3 acc₁₀₀  rem₁₀₀}
          → {c₄ : Cursor 24 acc₄ rem₄}
-         → {c₁ : Cursor 3 (suc acc₁) rem₁}
-         → (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos c₁) HasYearType common
+         → {c₁ : Cursor 3 acc₁ (suc rem₁)}
+         → (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos (suc c₁)) HasYearType common
   leap₄ : ∀ {q acc₁₀₀ rem₁₀₀ acc₄ rem₄}
         → {c₁₀₀ : Cursor 3 acc₁₀₀ rem₁₀₀}
-        → {c₄ : Cursor 24 (suc acc₄) rem₄}
-        → (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos zero) HasYearType leap
+        → {c₄ : Cursor 24 acc₄ (suc rem₄)}
+        → (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos zero) HasYearType leap
   common₁₀₀ : ∀ {q acc₁₀₀ rem₁₀₀}
-            → {c₁₀₀ : Cursor 3 (suc acc₁₀₀) rem₁₀₀}
-            → (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos zero ×₄+ mkPos zero) HasYearType common
+            → {c₁₀₀ : Cursor 3 acc₁₀₀ (suc rem₁₀₀)}
+            → (q ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos zero ×₄+ mkPos zero) HasYearType common
   leap₄₀₀ : ∀ {q}
           → (q ×₄₀₀+ mkPos zero ×₁₀₀+ mkPos zero ×₄+ mkPos zero) HasYearType leap
 
@@ -60,14 +60,14 @@ _ = twenty-fifth
 
 data IsSuc : Year → Set where
   suc₁ : ∀ {q pos₁₀₀ pos₄ acc₁ rem₁}
-        → {c₁ : Cursor 3 (suc acc₁) rem₁}
-        → IsSuc (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos c₁)
+        → {c₁ : Cursor 3 acc₁ (suc rem₁)}
+        → IsSuc (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc c₁))
   suc₄ : ∀ {q pos₁₀₀ acc₄ rem₄}
-        → {c₄ : Cursor 24 (suc acc₄) rem₄}
-        → IsSuc (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos zero)
+        → {c₄ : Cursor 24 acc₄ (suc rem₄)}
+        → IsSuc (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos zero)
   suc₁₀₀ : ∀ {q acc₁₀₀ rem₁₀₀}
-          → {c₁₀₀ : Cursor 3 (suc acc₁₀₀) rem₁₀₀}
-          → IsSuc (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos zero ×₄+ mkPos zero)
+          → {c₁₀₀ : Cursor 3 acc₁₀₀ (suc rem₁₀₀)}
+          → IsSuc (q ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos zero ×₄+ mkPos zero)
   suc₄₀₀ : ∀ {q}
           → IsSuc ((suc q) ×₄₀₀+ mkPos zero ×₁₀₀+ mkPos zero ×₄+ mkPos zero)
 
