@@ -103,10 +103,10 @@ isSuc? (suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first �
 isSuc? (zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = no λ ()
 
 data _HasOrdinal_ (year : Year) : (n : ℕ) → Set where
-  has-ordinal : year HasOrdinal (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 4 + Position.toℕ (Year.pos₁₀₀ year) * 100 + Year.quadricentennial year * 400)
+  ordinal : year HasOrdinal (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 4 + Position.toℕ (Year.pos₁₀₀ year) * 100 + Year.quadricentennial year * 400)
 
 toOrdinal : (y : Year) → ∃[ n ] y HasOrdinal n
-toOrdinal y = _ , has-ordinal
+toOrdinal y = _ , ordinal
 
 _<_ : Year → Year → Set
 y₁ < y₂ = proj₁ (toOrdinal y₁) ℕ.< proj₁ (toOrdinal y₂)

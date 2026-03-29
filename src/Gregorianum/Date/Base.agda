@@ -2,7 +2,7 @@ module Gregorianum.Date.Base where
 
 open import Gregorianum.Year using (_×₄₀₀+_×₁₀₀+_×₄+_; Year; _HasYearType_; YearType; yearType; leap; common; leap₄₀₀)
 open import Gregorianum.Year.Properties using (common⇒IsSuc)
-open import Gregorianum.Year.Weight.Base using (_HasLeapWeight_; _HasCommonWeight_; has-weight)
+open import Gregorianum.Year.Weight.Base using (_HasLeapWeight_; _HasCommonWeight_; weight)
 open import Gregorianum.Year.Weight.Properties using (IsSuc⇒suc-common-weight)
 open import Gregorianum.YearMonth.Base as YM using (YearMonth; _HasDays_; _-_)
 import Gregorianum.YearMonth.Properties as YM
@@ -71,13 +71,13 @@ prev (ym - [ mkPos first ] ⟨ hasDays ⟩) (sucʸᵐ p)  with YM.prev ym p
     h = stepʸᵐ ym'⋖ym
 
 data _HasOrdinal_ (d : Date) : (n : ℕ) → Set where
-  has-leap-ordinal : ∀ {yl yc ymo}
+  leap-ordinal : ∀ {yl yc ymo}
                    → (Date.year d) HasYearType leap
                    → (Date.year d) HasLeapWeight (suc yl)
                    → (Date.year d) HasCommonWeight yc
                    → (leap , Date.month d) HasDayWeight ymo
                    → d HasOrdinal (Position.toℕ (Day.position (Date.day d)) + ymo + yl * 366 + yc * 365)
-  has-common-ordinal : ∀ {yl yc ymo}
+  common-ordinal : ∀ {yl yc ymo}
                      → {{_ : NonZero yl}}
                      → (Date.year d) HasYearType common
                      → (Date.year d) HasLeapWeight yl
@@ -88,10 +88,10 @@ data _HasOrdinal_ (d : Date) : (n : ℕ) → Set where
 toOrdinal : (d : Date) → ∃[ n ] d HasOrdinal n
 toOrdinal d with yearType (Date.year d)
 toOrdinal d | leap , p with dayWeight (leap , Date.month d)
-toOrdinal d | leap , p | w , q = _ , has-leap-ordinal p has-weight has-weight q
+toOrdinal d | leap , p | w , q = _ , leap-ordinal p weight weight q
 toOrdinal d | common , p with dayWeight (common , Date.month d)
 ... | w , q with IsSuc⇒suc-common-weight (common⇒IsSuc p)
-... | ycw , q' = _ , has-common-ordinal p has-weight q' q
+... | ycw , q' = _ , common-ordinal p weight q' q
 
 _<_ : Date → Date → Set
 d₁ < d₂ = proj₁ (toOrdinal d₁) ℕ.< proj₁ (toOrdinal d₂)

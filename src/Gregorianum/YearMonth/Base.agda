@@ -2,7 +2,7 @@ module Gregorianum.YearMonth.Base where
 
 open import Gregorianum.Year as Y using (Year; YearType; _×₄₀₀+_×₁₀₀+_×₄+_; _HasYearType_)
 import Gregorianum.Year.Properties as Y
-open import Gregorianum.Year.Weight.Base using (_HasWeight_; has-weight)
+open import Gregorianum.Year.Weight.Base using (_HasWeight_; weight)
 open import Gregorianum.Month.Base as M using (Month; [_]; january; december)
 open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; suc¹²)
 open import Gregorianum.Data.Cursor.Position using (mkPos; Position)
@@ -60,12 +60,12 @@ prev (year - [ mkPos first ]) (sucʸ x) = (proj₁ (Y.prev year x) - december) ,
 prev (year - [ mkPos (suc month) ]) (sucʸ x) = (year - [ mkPos month ]) , stepᵐ
 
 data _HasOrdinal_ (ym : YearMonth) : (n : ℕ) → Set where
-  has-ordinal : ∀ {yw}
+  ordinal : ∀ {yw}
              → (YearMonth.year ym) HasWeight (suc yw)
              → ym HasOrdinal (Position.toℕ (Month.position (YearMonth.month ym)) + yw * 12)
 
 toOrdinal : (ym : YearMonth) → ∃[ n ] ym HasOrdinal n
-toOrdinal ym = _ , has-ordinal has-weight
+toOrdinal ym = _ , ordinal weight
 
 _<_ : YearMonth → YearMonth → Set
 ym₁ < ym₂ = proj₁ (toOrdinal ym₁) ℕ.< proj₁ (toOrdinal ym₂)
