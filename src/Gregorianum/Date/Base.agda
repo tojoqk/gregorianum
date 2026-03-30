@@ -31,11 +31,11 @@ record Date : Set where
 pattern _-_⟨_⟩ ym d hasDays = mkDate ym hasDays d
 
 data _⋖_ : Date → Date → Set where
-  stepᵈ : ∀ {ym : YearMonth} {width acc rem}
+  step-day : ∀ {ym : YearMonth} {width acc rem}
         → {hasDays : ym HasDays (suc width)}
         → {c : Cursor width acc (suc rem)}
         → (ym - [ mkPos c ] ⟨ hasDays ⟩) ⋖ (ym - [ mkPos (suc c) ] ⟨ hasDays ⟩)
-  stepʸᵐ : ∀ {ym₁ ym₂ width₁ width₂}
+  step-month : ∀ {ym₁ ym₂ width₁ width₂}
          → {hasDays₁ : ym₁ HasDays (suc width₁)}
          → {hasDays₂ : ym₂ HasDays (suc width₂)}
          → {c : Cursor width₁ width₁ 0}
@@ -43,32 +43,32 @@ data _⋖_ : Date → Date → Set where
          → (ym₁ - [ mkPos c ] ⟨ hasDays₁ ⟩) ⋖ (ym₂ - [ mkPos first ] ⟨ hasDays₂ ⟩)
 
 data IsSuc : Date → Set where
-  sucᵈ : ∀ {acc rem}
+  suc-day : ∀ {acc rem}
        → {c : Cursor 30 (suc acc) rem}
        → IsSuc (((zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]) - [ mkPos c ] ⟨ YM.mkHasDays leap₄₀₀ january-days ⟩ )
-  sucʸᵐ : ∀ {ym width acc rem}
+  suc-month : ∀ {ym width acc rem}
         → {hasDays : ym HasDays (suc width)}
         → {c : Cursor width acc rem}
         → YM.IsSuc ym → IsSuc (ym - [ mkPos c ] ⟨ hasDays ⟩)
 
 next : ∀ (d₁ : Date) → ∃[ d₂ ] d₁ ⋖ d₂
-next (yearMonth - [ mkPos {rem = suc rem } cursor ] ⟨ hasDays ⟩) = (yearMonth - [ mkPos (suc cursor) ] ⟨ hasDays ⟩) , stepᵈ
+next (yearMonth - [ mkPos {rem = suc rem } cursor ] ⟨ hasDays ⟩) = (yearMonth - [ mkPos (suc cursor) ] ⟨ hasDays ⟩) , step-day
 next (yearMonth - [ mkPos {rem = zero} cursor ] ⟨ hasDays ⟩) with YM.next yearMonth
 ... | ym' , ym⋖ym' with YM.days ym'
 ... | suc width , hasDays' = (ym' - [ mkPos first ] ⟨ hasDays' ⟩) , h
   where
     h : (yearMonth - [ mkPos cursor ] ⟨ hasDays ⟩)  ⋖ (ym' - [ mkPos first ] ⟨ hasDays' ⟩)
     h with rem≡0⇒width≡acc cursor
-    ... | refl = stepʸᵐ ym⋖ym'
+    ... | refl = step-month ym⋖ym'
 
 prev : ∀ (d₂ : Date) → IsSuc d₂ → ∃[ d₁ ] d₁ ⋖ d₂
-prev (yearMonth - [ mkPos (suc c) ] ⟨ hasDays ⟩) _ = (yearMonth - [ mkPos c ] ⟨ hasDays ⟩) , stepᵈ
-prev (ym - [ mkPos first ] ⟨ hasDays ⟩) (sucʸᵐ p)  with YM.prev ym p
+prev (yearMonth - [ mkPos (suc c) ] ⟨ hasDays ⟩) _ = (yearMonth - [ mkPos c ] ⟨ hasDays ⟩) , step-day
+prev (ym - [ mkPos first ] ⟨ hasDays ⟩) (suc-month p)  with YM.prev ym p
 ... | ym' , ym'⋖ym with YM.days ym'
 ... | suc ds , hd = (ym' - [ mkPos last ] ⟨ hd ⟩) , h
   where
     h : (ym' - [ mkPos last ] ⟨ hd ⟩) ⋖ (ym - [ mkPos first ] ⟨ hasDays ⟩)
-    h = stepʸᵐ ym'⋖ym
+    h = step-month ym'⋖ym
 
 data _HasOrdinal_ (d : Date) : (n : ℕ) → Set where
   leap-ordinal : ∀ {yl yc ymo}
@@ -98,15 +98,15 @@ d₁ < d₂ = proj₁ (toOrdinal d₁) ℕ.< proj₁ (toOrdinal d₂)
 
 isSuc? : ∀ d → Dec (IsSuc d)
 isSuc? (ym - d ⟨ hasDays ⟩) with YM.isSuc? ym
-... | yes h = yes (sucʸᵐ h)
+... | yes h = yes (suc-month h)
 isSuc? (ym - [ mkPos (suc cursor) ] ⟨ hasDays ⟩) | no ¬h = yes h
   where
     h : IsSuc (ym - [ mkPos (suc cursor) ] ⟨ hasDays ⟩)
     h with YM.¬IsSuc⇒first ¬h
     ... | refl with YM.days-unique hasDays (YM.mkHasDays leap₄₀₀ january-days)
     ... | refl with YM.has-days-irrelevant hasDays (YM.mkHasDays leap₄₀₀ january-days)
-    ... | refl = sucᵈ
+    ... | refl = suc-day
 isSuc? (ym - [ mkPos first ] ⟨ hasDays ⟩) | no ¬h = no h
   where
     h : ¬ IsSuc (ym - [ mkPos first ] ⟨ hasDays ⟩)
-    h (sucʸᵐ x) = ¬h x
+    h (suc-month x) = ¬h x
