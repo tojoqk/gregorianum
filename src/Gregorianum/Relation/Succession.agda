@@ -1,4 +1,4 @@
-module Gregorianum.Relation.Step (A : Set) (_⋖_ : A → A → Set) where
+module Gregorianum.Relation.Succession (A : Set) (_⋖_ : A → A → Set) where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _∸_; <-cmp; s≤s; _≟_)
 open import Relation.Binary.Definitions using (tri<; tri≈; tri>)
@@ -9,7 +9,7 @@ open import Data.Nat.Properties using (+-suc; +-identityʳ)
 open import Relation.Nullary.Negation using (¬_)
 import Induction.WellFounded as WF
 
-record IsStep : Set₁ where
+record IsSuccession : Set₁ where
   field
     IsSuc : A → Set
     isSuc? : (x : A) → Dec (IsSuc x)
@@ -20,8 +20,8 @@ record IsStep : Set₁ where
     prev-unique : ∀ {x y z} → x ⋖ z → y ⋖ z → x ≡ y
     ⋖-wellFounded : WF.WellFounded _⋖_
 
-module Path (isStep : IsStep) where
-  open IsStep isStep
+module Path (isSuccession : IsSuccession) where
+  open IsSuccession isSuccession
 
   data _─[_]→_ (x : A) : ℕ → A → Set where
     ε : x ─[ zero ]→ x

@@ -1,8 +1,8 @@
-module Gregorianum.Date.Step where
+module Gregorianum.YearMonth.Succession where
 
-open import Gregorianum.Date using (Date; _⋖_; IsSuc; isSuc?; next; prev; toOrdinal)
-open import Gregorianum.Date.Properties using (¬isSuc-unique; next-unique; prev-unique; ⋖-wellFounded; ∃prev⇒IsSuc; suc-ordinal⇒IsSuc; prev-ordinal; next-ordinal)
-import Gregorianum.Date.Timeline as T
+open import Gregorianum.YearMonth using (YearMonth; _⋖_; IsSuc; isSuc?; next; prev; toOrdinal)
+open import Gregorianum.YearMonth.Properties using (¬isSuc-unique; next-unique; prev-unique; ⋖-wellFounded; ∃prev⇒IsSuc; suc-ordinal⇒IsSuc; prev-ordinal; next-ordinal)
+import Gregorianum.YearMonth.Timeline as T
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Product using (∃-syntax; _,_)
@@ -10,10 +10,10 @@ open import Relation.Nullary.Decidable using (Dec; yes; no)
 open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Gregorianum.Relation.Step Date _⋖_
+open import Gregorianum.Relation.Succession YearMonth _⋖_
 
-isStep : IsStep
-isStep = record
+isSuccession : IsSuccession
+isSuccession = record
           { IsSuc = IsSuc
           ; isSuc? = isSuc?
           ; ¬isSuc-unique = ¬isSuc-unique
@@ -24,9 +24,9 @@ isStep = record
           ; ⋖-wellFounded = ⋖-wellFounded
           }
 
-open Path isStep public
+open Path isSuccession public
 
-open import Gregorianum.Relation.Path Date _─[_]→_ using (Tri; tri→; tri←; tri≡) public
+open import Gregorianum.Relation.Path YearMonth _─[_]→_ using (Tri; tri→; tri←; tri≡) public
 
 forward : ∀ x n → ∃[ y ] x ─[ n ]→ y
 forward x zero = x , ε

@@ -1,4 +1,4 @@
-module Gregorianum.Year.Step where
+module Gregorianum.Year.Succession where
 
 open import Gregorianum.Year using (Year; _⋖_; IsSuc; isSuc?; next; prev; toOrdinal)
 open import Gregorianum.Year.Properties using (¬isSuc-unique; next-unique; prev-unique; ⋖-wellFounded; ∃prev⇒IsSuc; suc-ordinal⇒IsSuc; prev-ordinal; next-ordinal)
@@ -10,10 +10,10 @@ open import Relation.Nullary.Decidable using (Dec; yes; no)
 open import Relation.Nullary.Negation using (¬_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
-open import Gregorianum.Relation.Step Year _⋖_
+open import Gregorianum.Relation.Succession Year _⋖_
 
-isStep : IsStep
-isStep = record
+isSuccession : IsSuccession
+isSuccession = record
           { IsSuc = IsSuc
           ; isSuc? = isSuc?
           ; ¬isSuc-unique = ¬isSuc-unique
@@ -24,7 +24,7 @@ isStep = record
           ; ⋖-wellFounded = ⋖-wellFounded
           }
 
-open Path isStep public
+open Path isSuccession public
 
 open import Gregorianum.Relation.Path Year _─[_]→_ using (Tri; tri→; tri←; tri≡) public
 

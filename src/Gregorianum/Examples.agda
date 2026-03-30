@@ -1,7 +1,7 @@
 module Gregorianum.Examples where
 
 open import Gregorianum.Date
-open import Gregorianum.Date.Step
+open import Gregorianum.Date.Succession
 open import Gregorianum.Date.Weekday
 open import Data.Product using (_,_; proj₁; proj₂)
 open import Relation.Nullary.Decidable using (from-yes)
