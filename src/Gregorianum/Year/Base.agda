@@ -1,6 +1,6 @@
 module Gregorianum.Year.Base where
 
-open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; fourth; twenty-fifth; suc⁴; suc²⁵)
+open import Gregorianum.Data.Cursor using (Cursor; zero; suc; last; first; fourth; twenty-fifth; suc⁴; suc²⁵)
 open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
 open import Gregorianum.Data.Cursor.Properties using (rem≡0⇒width≡acc)
 
@@ -41,22 +41,16 @@ data _⋖_ : Year → Year → Set where
        → {c₁₀₀ : Cursor 3 acc₁₀₀  rem₁₀₀}
        → {c₄ : Cursor 24 acc₄ rem₄}
        → {c₁ : Cursor 3 acc₁ (suc rem₁)}
-       → (q ×₄₀₀+ (mkPos c₁₀₀) ×₁₀₀+ mkPos c₄  ×₄+ mkPos c₁) ⋖ (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos c₄  ×₄+ mkPos (suc c₁))
+       → (q ×₄₀₀+ (mkPos c₁₀₀) ×₁₀₀+ mkPos c₄ ×₄+ mkPos c₁) ⋖ (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos (suc c₁))
   step₄ : ∀ {q acc₁₀₀ rem₁₀₀ acc₄ rem₄}
        → {c₁₀₀ : Cursor 3 acc₁₀₀ rem₁₀₀}
        → {c₄ : Cursor 24 acc₄ (suc rem₄)}
-       → (q ×₄₀₀+ (mkPos c₁₀₀) ×₁₀₀+ mkPos c₄ ×₄+ mkPos fourth) ⋖ (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos (suc c₄)  ×₄+ mkPos zero)
+       → (q ×₄₀₀+ (mkPos c₁₀₀) ×₁₀₀+ mkPos c₄ ×₄+ mkPos last) ⋖ (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos first)
   step₁₀₀ : ∀ {q acc₁₀₀ rem₁₀₀}
        → {c₁₀₀ : Cursor 3 acc₁₀₀ (suc rem₁₀₀)}
-       → (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos twenty-fifth  ×₄+ mkPos fourth) ⋖ (q ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos zero  ×₄+ mkPos zero)
+       → (q ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos last ×₄+ mkPos last) ⋖ (q ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos first ×₄+ mkPos first)
   step₄₀₀ : ∀ {q}
-       → (q ×₄₀₀+ mkPos fourth ×₁₀₀+ mkPos twenty-fifth ×₄+ mkPos fourth) ⋖ (suc q ×₄₀₀+ mkPos zero ×₁₀₀+ mkPos zero  ×₄+ mkPos zero)
-
-_ : Cursor 3 3 zero
-_ = fourth
-
-_ : Cursor 24 24 zero
-_ = twenty-fifth
+       → (q ×₄₀₀+ mkPos last ×₁₀₀+ mkPos last ×₄+ mkPos last) ⋖ (suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first)
 
 data IsSuc : Year → Set where
   suc₁ : ∀ {q pos₁₀₀ pos₄ acc₁ rem₁}
