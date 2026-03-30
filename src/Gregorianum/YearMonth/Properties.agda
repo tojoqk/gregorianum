@@ -2,7 +2,7 @@ module Gregorianum.YearMonth.Properties where
 
 open import Gregorianum.YearMonth.Base
 
-open import Gregorianum.Year as Y using (common; common₁₀₀)
+open import Gregorianum.Year as Y using (common₁; common₁₀₀)
 open import Gregorianum.Year.Properties as Y using (year-type-unique; has-type-irrelevant)
 open import Gregorianum.Year.Weight.Base using (weight)
 open import Gregorianum.Year.Weight.Properties using (next-weight; IsSuc⇒suc-weight)
@@ -44,10 +44,10 @@ days-unique : ∀ {ym days₁ days₂}
                → days₁ ≡ days₂
 days-unique (mkHasDays _ M.january-days) (mkHasDays _ M.january-days) = refl
 days-unique (mkHasDays _ M.february-common-days) (mkHasDays _ M.february-common-days) = refl
-days-unique (mkHasDays common M.february-common-days) (mkHasDays () M.february-leap-days)
+days-unique (mkHasDays common₁ M.february-common-days) (mkHasDays () M.february-leap-days)
 days-unique (mkHasDays common₁₀₀ M.february-common-days) (mkHasDays () M.february-leap-days)
 days-unique (mkHasDays _ M.february-leap-days) (mkHasDays _ M.february-leap-days) = refl
-days-unique (mkHasDays () M.february-leap-days) (mkHasDays common M.february-common-days)
+days-unique (mkHasDays () M.february-leap-days) (mkHasDays common₁ M.february-common-days)
 days-unique (mkHasDays () M.february-leap-days) (mkHasDays common₁₀₀ M.february-common-days)
 days-unique (mkHasDays _ M.march-days) (mkHasDays _ M.march-days) = refl
 days-unique (mkHasDays _ M.april-days) (mkHasDays _ M.april-days) = refl

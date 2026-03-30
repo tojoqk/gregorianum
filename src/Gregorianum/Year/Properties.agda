@@ -14,13 +14,13 @@ year-type-unique : ∀ {y yt₁ yt₂}
                 → y HasYearType yt₁
                 → y HasYearType yt₂
                 → yt₁ ≡ yt₂
-year-type-unique common common = refl
+year-type-unique common₁ common₁ = refl
 year-type-unique leap₄ leap₄ = refl
 year-type-unique common₁₀₀ common₁₀₀ = refl
 year-type-unique leap₄₀₀ leap₄₀₀ = refl
 
 has-type-irrelevant : ∀ {y yt} → (p q : y HasYearType yt) → p ≡ q
-has-type-irrelevant common common = refl
+has-type-irrelevant common₁ common₁ = refl
 has-type-irrelevant leap₄ leap₄ = refl
 has-type-irrelevant common₁₀₀ common₁₀₀ = refl
 has-type-irrelevant leap₄₀₀ leap₄₀₀ = refl
@@ -29,7 +29,7 @@ prev-unique : ∀ {y₁ y₂ y₃}
                 → y₁ ⋖ y₃
                 → y₂ ⋖ y₃
                 → y₁ ≡ y₂
-prev-unique step step = refl
+prev-unique step₁ step₁ = refl
 prev-unique step₄ step₄ = refl
 prev-unique step₁₀₀ step₁₀₀ = refl
 prev-unique step₄₀₀ step₄₀₀ = refl
@@ -38,13 +38,13 @@ next-unique : ∀ {y₁ y₂ y₃}
                 → y₁ ⋖ y₂
                 → y₁ ⋖ y₃
                 → y₂ ≡ y₃
-next-unique step step = refl
+next-unique step₁ step₁ = refl
 next-unique step₄ step₄ = refl
 next-unique step₁₀₀ step₁₀₀ = refl
 next-unique step₄₀₀ step₄₀₀ = refl
 
 ∃prev⇒IsSuc : ∀ {y₁ y₂ : Year} → y₁ ⋖ y₂ → IsSuc y₂
-∃prev⇒IsSuc step = suc₁
+∃prev⇒IsSuc step₁ = suc₁
 ∃prev⇒IsSuc step₄ = suc₄
 ∃prev⇒IsSuc step₁₀₀ = suc₁₀₀
 ∃prev⇒IsSuc step₄₀₀ = suc₄₀₀
@@ -61,13 +61,13 @@ next-unique step₄₀₀ step₄₀₀ = refl
 ... | refl | refl = refl
 
 next-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasOrdinal n → y₂ HasOrdinal (suc n)
-next-ordinal step ordinal = ordinal
+next-ordinal step₁ ordinal = ordinal
 next-ordinal step₄ ordinal = ordinal
 next-ordinal step₁₀₀ ordinal = ordinal
 next-ordinal step₄₀₀ ordinal = ordinal
 
 prev-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₂ HasOrdinal (suc n) → y₁ HasOrdinal n
-prev-ordinal step ordinal = ordinal
+prev-ordinal step₁ ordinal = ordinal
 prev-ordinal step₄ ordinal = ordinal
 prev-ordinal step₁₀₀ ordinal = ordinal
 prev-ordinal step₄₀₀ ordinal = ordinal
@@ -114,5 +114,5 @@ year-unique {y₁} {y₂} {suc n} p q with prev y₁ (suc-ordinal⇒IsSuc p) | p
 year-unique {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero} ordinal ordinal = refl
 
 common⇒IsSuc : ∀ {y} → y HasYearType common → IsSuc y
-common⇒IsSuc common = suc₁
+common⇒IsSuc common₁ = suc₁
 common⇒IsSuc common₁₀₀ = suc₁₀₀

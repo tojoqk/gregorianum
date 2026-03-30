@@ -1,7 +1,7 @@
 module Gregorianum.Year.Weight.Properties where
 
 open import Gregorianum.Year.Weight.Base using (_HasWeight_; _HasLeapWeight_; _HasCommonWeight_; weight)
-open import Gregorianum.Year.Base using (Year; _×₄₀₀+_×₁₀₀+_×₄+_; _⋖_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; IsSuc; _HasYearType_; leap; common; leap₄; common₁₀₀; leap₄₀₀; step; step₄; step₁₀₀; step₄₀₀)
+open import Gregorianum.Year.Base using (Year; _×₄₀₀+_×₁₀₀+_×₄+_; _⋖_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; IsSuc; _HasYearType_; leap; common; common₁; leap₄; common₁₀₀; leap₄₀₀; step₁; step₄; step₁₀₀; step₄₀₀)
 open import Gregorianum.Data.Cursor using (suc; first)
 open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
 
@@ -12,13 +12,13 @@ open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; trans; module ≡-Reasoning)
 
 next-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₁ HasWeight n → y₂ HasWeight (suc n)
-next-weight step weight = weight
+next-weight step₁ weight = weight
 next-weight step₄ weight = weight
 next-weight step₁₀₀ weight = weight
 next-weight step₄₀₀ weight = weight
 
 prev-weight : ∀ {y₁ y₂ n} → {{_ : NonZero n}} → y₁ ⋖ y₂ → y₂ HasWeight (suc n) → y₁ HasWeight n
-prev-weight step weight = weight
+prev-weight step₁ weight = weight
 prev-weight step₄ weight = weight
 prev-weight step₁₀₀ weight = weight
 prev-weight step₄₀₀ weight = weight
@@ -94,8 +94,8 @@ IsSuc⇒suc-common-weight {(q ×₄₀₀+ mkPos (suc {acc = n} cursor) ×₁₀
 IsSuc⇒suc-common-weight {(suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first)} suc₄₀₀ = _ , weight
 
 next-leap-is-common : ∀ {y₁ y₂} → y₁ ⋖ y₂ → y₁ HasYearType leap → y₂ HasYearType common
-next-leap-is-common step leap₄ = common
-next-leap-is-common step leap₄₀₀ = common
+next-leap-is-common step₁ leap₄ = common₁
+next-leap-is-common step₁ leap₄₀₀ = common₁
 
 next-leap-common-weight : ∀ {y₁ y₂ lw cw}
                              → {{_ : NonZero lw}}
@@ -104,7 +104,7 @@ next-leap-common-weight : ∀ {y₁ y₂ lw cw}
                              → y₁ HasCommonWeight cw
                              → (y₂ HasYearType leap × y₂ HasLeapWeight (suc lw) × y₂ HasCommonWeight cw)
                              ⊎ (y₂ HasYearType common × y₂ HasLeapWeight lw × y₂ HasCommonWeight (suc cw))
-next-leap-common-weight step weight weight = inj₂ (common , weight , weight)
+next-leap-common-weight step₁ weight weight = inj₂ (common₁ , weight , weight)
 next-leap-common-weight step₄ weight weight = inj₁ (leap₄ , weight , weight)
 next-leap-common-weight step₁₀₀ weight weight = inj₂ (common₁₀₀ , weight , weight)
 next-leap-common-weight step₄₀₀ weight weight = inj₁ (leap₄₀₀ , weight , weight)

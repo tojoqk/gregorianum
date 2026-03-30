@@ -2,7 +2,7 @@ module Gregorianum.Year.Plain.Properties where
 
 open import Gregorianum.Year.Plain.Base using (_HasPlain_; plain)
 
-open import Gregorianum.Year.Base using (_⋖_; IsSuc; _×₄₀₀+_×₁₀₀+_×₄+_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; prev; step; step₄; step₁₀₀; step₄₀₀)
+open import Gregorianum.Year.Base using (_⋖_; IsSuc; _×₄₀₀+_×₁₀₀+_×₄+_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; prev; step₁; step₄; step₁₀₀; step₄₀₀)
 open import Gregorianum.Year.Properties hiding (year-unique)
 open import Gregorianum.Data.Cursor using (zero; suc; first)
 open import Gregorianum.Data.Cursor.Position using (mkPos)
@@ -11,13 +11,13 @@ open import Data.Product using (_,_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 
 next-plain : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasPlain n → y₂ HasPlain (suc n)
-next-plain step plain = plain
+next-plain step₁ plain = plain
 next-plain step₄ plain = plain
 next-plain step₁₀₀ plain = plain
 next-plain step₄₀₀ plain = plain
 
 prev-plain : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₂ HasPlain (suc n) → y₁ HasPlain n
-prev-plain step plain = plain
+prev-plain step₁ plain = plain
 prev-plain step₄ plain = plain
 prev-plain step₁₀₀ plain = plain
 prev-plain step₄₀₀ plain = plain
