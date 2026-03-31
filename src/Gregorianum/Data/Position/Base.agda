@@ -1,6 +1,6 @@
-module Gregorianum.Data.Cursor.Position.Base where
+module Gregorianum.Data.Position.Base where
 
-open import Gregorianum.Data.Cursor.Base using (Cursor; fromℕ≤; zero)
+open import Gregorianum.Data.Cursor.Base as C using (Cursor; fromℕ≤; zero)
 open import Gregorianum.Data.Cursor.Properties using (acc≤width)
 
 open import Data.Nat as ℕ using (ℕ; zero; suc; z≤n; s≤s)

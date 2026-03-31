@@ -2,7 +2,7 @@ module Gregorianum.Month.Properties where
 
 open import Gregorianum.Month.Base
 open import Gregorianum.Data.Cursor.Base
-open import Gregorianum.Data.Cursor.Position.Base
+open import Gregorianum.Data.Position
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)

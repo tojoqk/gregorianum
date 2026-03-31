@@ -3,7 +3,7 @@ module Gregorianum.Year.Properties where
 open import Gregorianum.Year.Base
 
 open import Gregorianum.Data.Cursor using (suc; first)
-open import Gregorianum.Data.Cursor.Position using (mkPos)
+open import Gregorianum.Data.Position using (mkPos)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties using (≤-refl)

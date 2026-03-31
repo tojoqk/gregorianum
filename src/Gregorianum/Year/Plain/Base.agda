@@ -2,8 +2,8 @@ module Gregorianum.Year.Plain.Base where
 
 open import Gregorianum.Year.Base using (Year; _×₄₀₀+_×₁₀₀+_×₄+_)
 
-open import Gregorianum.Data.Cursor.Position using (Position; fromFin)
-open import Gregorianum.Data.Cursor.Position.Properties using (toℕ∘fromFin≡toℕ)
+open import Gregorianum.Data.Position using (Position; fromFin)
+open import Gregorianum.Data.Position.Properties using (toℕ∘fromFin≡toℕ)
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Product using (∃-syntax; _,_)

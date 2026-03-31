@@ -8,7 +8,7 @@ open import Gregorianum.Year.Weight.Base using (weight)
 open import Gregorianum.Year.Weight.Properties using (next-weight; IsSuc⇒suc-weight)
 open import Gregorianum.Month as M hiding (_HasDays_)
 open import Gregorianum.Data.Cursor using (zero; suc; first)
-open import Gregorianum.Data.Cursor.Position using (mkPos)
+open import Gregorianum.Data.Position using (mkPos)
 import Gregorianum.Month.Properties as M
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)

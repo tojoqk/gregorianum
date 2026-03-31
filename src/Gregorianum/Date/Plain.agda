@@ -7,7 +7,7 @@ open import Gregorianum.Day.Plain using () renaming (_HasPlain_ to _DayHasPlain_
 open import Gregorianum.YearMonth.Base using (days)
 open import Gregorianum.YearMonth.Plain using () renaming (_HasPlain_ to _YmHasPlain_; toPlain to ymToPlain; fromPlain? to ymFromPlain?)
 open import Gregorianum.YearMonth.Properties using (days-unique)
-open import Gregorianum.Data.Cursor.Position using (Position)
+open import Gregorianum.Data.Position using (Position)
 open import Data.Nat using (ℕ; suc)
 open import Data.Product using (∃-syntax; _×_; _,_; proj₁)
 open import Relation.Nullary.Decidable using (Dec; yes; no; True; toWitness)

@@ -3,7 +3,7 @@ module Gregorianum.Month.Plain.Base where
 open import Gregorianum.Month.Base
 
 open import Gregorianum.Data.Cursor using (suc)
-open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
+open import Gregorianum.Data.Position using (Position; mkPos)
 open import Gregorianum.Data.Cursor.Properties using (width≡acc+rem)
 
 open import Data.Nat using (ℕ; zero; suc)

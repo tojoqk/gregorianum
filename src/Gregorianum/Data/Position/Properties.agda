@@ -1,6 +1,6 @@
-module Gregorianum.Data.Cursor.Position.Properties where
+module Gregorianum.Data.Position.Properties where
 
-open import Gregorianum.Data.Cursor.Position.Base
+open import Gregorianum.Data.Position.Base
 
 open import Data.Nat using (ℕ; suc)
 open import Data.Fin using (Fin; zero; suc; toℕ)

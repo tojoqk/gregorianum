@@ -4,7 +4,7 @@ open import Gregorianum.Year using (YearType; common; leap)
 open import Data.Nat using (ℕ; _+_)
 
 open import Gregorianum.Data.Cursor
-open import Gregorianum.Data.Cursor.Position
+open import Gregorianum.Data.Position
 open import Gregorianum.Data.Cursor.Properties as Cursor
 open import Data.Product using (∃-syntax; _×_; _,_)
 
@@ -12,6 +12,19 @@ record Month : Set where
   constructor [_]
   field
     position : Position 11
+
+private
+  pattern second = suc first
+  pattern third = suc second
+  pattern fourth = suc third
+  pattern fifth = suc fourth
+  pattern sixth = suc fifth
+  pattern seventh = suc sixth
+  pattern eighth = suc seventh
+  pattern ninth = suc eighth
+  pattern tenth = suc ninth
+  pattern eleventh = suc tenth
+  pattern twelfth = suc eleventh
 
 pattern january = [ mkPos first ]
 pattern february = [ mkPos second ]
@@ -40,6 +53,10 @@ data _HasDays_ : YearType × Month → ℕ → Set where
   october-days         : ∀ {yt} →      (yt , october) HasDays 31
   november-days        : ∀ {yt} →     (yt , november) HasDays 30
   december-days        : ∀ {yt} →     (yt , december) HasDays 31
+
+private
+  pattern suc⁴ x = suc (suc (suc (suc x)))
+  pattern suc¹² x = suc⁴ (suc⁴ (suc⁴ x))
 
 days : (ytm : YearType × Month) → ∃[ ds ] ytm HasDays ds
 days (yt , january) = 31 , january-days

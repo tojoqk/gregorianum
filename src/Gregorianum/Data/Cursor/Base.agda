@@ -6,6 +6,8 @@ data Cursor (width : ℕ) : ℕ → ℕ → Set where
   zero : Cursor width 0 width
   suc : ∀ {acc rem} → Cursor width acc (suc rem) → Cursor width (suc acc) rem
 
+pattern first = zero
+
 inject-left : ∀ {width acc rem} → Cursor width acc rem → Cursor (suc width) (suc acc) rem
 inject-left zero = suc zero
 inject-left (suc x) = suc (inject-left x)

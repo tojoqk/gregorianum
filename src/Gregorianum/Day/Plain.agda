@@ -2,7 +2,7 @@ module Gregorianum.Day.Plain where
 
 open import Gregorianum.Day.Base using (Day; [_])
 open import Gregorianum.Data.Cursor using (fromℕ≤)
-open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
+open import Gregorianum.Data.Position using (Position; mkPos)
 open import Gregorianum.Data.Cursor.Properties using (width≡acc+rem)
 open import Data.Nat using (ℕ; zero; suc; _≤_)
 open import Data.Nat.Properties using (_≤?_; m≤m+n)

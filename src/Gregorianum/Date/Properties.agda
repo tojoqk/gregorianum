@@ -12,7 +12,7 @@ open import Gregorianum.Month.Base using (january-weight; january; january-days;
 open import Gregorianum.YearMonth.Properties as YM using (days-unique; has-days-irrelevant)
 open import Gregorianum.Month.Properties using (next-month-day-weight; day-weight-unique)
 open import Gregorianum.Data.Cursor using (suc; first)
-open import Gregorianum.Data.Cursor.Position using (mkPos)
+open import Gregorianum.Data.Position using (mkPos)
 open import Gregorianum.Data.Cursor.Properties using () renaming (unique to cursor-unique)
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_)

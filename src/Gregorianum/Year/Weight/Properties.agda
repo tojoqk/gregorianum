@@ -3,7 +3,7 @@ module Gregorianum.Year.Weight.Properties where
 open import Gregorianum.Year.Weight.Base using (_HasWeight_; _HasLeapWeight_; _HasCommonWeight_; weight)
 open import Gregorianum.Year.Base using (Year; _×₄₀₀+_×₁₀₀+_×₄+_; _⋖_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; IsSuc; _HasYearType_; leap; common; common₁; leap₄; common₁₀₀; leap₄₀₀; step₁; step₄; step₁₀₀; step₄₀₀)
 open import Gregorianum.Data.Cursor using (suc; first)
-open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
+open import Gregorianum.Data.Position using (Position; mkPos)
 
 open import Data.Nat using (ℕ; suc; zero; NonZero; _+_; _*_)
 open import Data.Nat.Properties using (+-assoc; +-comm; *-suc; *-distribˡ-+)

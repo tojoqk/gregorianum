@@ -1,7 +1,7 @@
 module Gregorianum.Year.Base where
 
-open import Gregorianum.Data.Cursor using (Cursor; zero; suc; last; first; fourth; twenty-fifth; suc⁴; suc²⁵)
-open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
+open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; last)
+open import Gregorianum.Data.Position using (Position; mkPos)
 open import Gregorianum.Data.Cursor.Properties using (rem≡0⇒width≡acc)
 
 open import Data.Nat as ℕ using (ℕ; suc; zero; NonZero; _+_; _*_)
@@ -72,6 +72,13 @@ yearType (_ ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos c₄ ×₄+ mkPos (
 yearType (_ ×₄₀₀+ mkPos c₁₀₀ ×₁₀₀+ mkPos (suc c₄) ×₄+ mkPos first) = leap , leap₄
 yearType (_ ×₄₀₀+ mkPos (suc c₁₀₀) ×₁₀₀+ mkPos first ×₄+ mkPos first) = common , common₁₀₀
 yearType (_ ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = leap , leap₄₀₀
+
+private
+  pattern suc⁴ x = suc (suc (suc (suc x)))
+  pattern suc⁵ x = suc (suc⁴ x)
+  pattern suc²⁵ x = suc⁵ (suc⁵ (suc⁵ (suc⁵ (suc⁵ x))))
+  pattern fourth = (suc (suc (suc zero)))
+  pattern twenty-fifth = suc⁴ (suc⁵ (suc⁵ (suc⁵ (suc⁵ zero))))
 
 next : ∀ y₁ → ∃[ y₂ ] y₁ ⋖ y₂
 next (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos {rem = suc rem} c₁) = (q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc c₁)) , step₁

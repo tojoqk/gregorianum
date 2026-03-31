@@ -9,7 +9,7 @@ import Gregorianum.YearMonth.Properties as YM
 open import Gregorianum.Month using ([_]; january; january-days; _HasDayWeight_; dayWeight)
 open import Gregorianum.Day using (Day; [_])
 open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; last)
-open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
+open import Gregorianum.Data.Position using (Position; mkPos)
 open import Gregorianum.Data.Cursor.Properties using (rem≡0⇒width≡acc)
 
 open import Data.Nat as ℕ using (ℕ; zero; suc; _+_; _*_; NonZero)

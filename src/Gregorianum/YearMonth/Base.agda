@@ -4,8 +4,8 @@ open import Gregorianum.Year as Y using (Year; year-first; YearType; _×₄₀�
 import Gregorianum.Year.Properties as Y
 open import Gregorianum.Year.Weight.Base using (_HasWeight_; weight)
 open import Gregorianum.Month.Base as M using (Month; [_]; january; december)
-open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; suc¹²)
-open import Gregorianum.Data.Cursor.Position using (mkPos; Position)
+open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first)
+open import Gregorianum.Data.Position using (mkPos; Position)
 open import Gregorianum.Data.Cursor.Properties using (rem≡0⇒width≡acc)
 
 open import Data.Nat as ℕ using (ℕ; zero; suc; _+_; _*_; NonZero)
@@ -48,6 +48,10 @@ days : ∀ ym → ∃[ ds ] ym HasDays ds
 days (ym - m) with Y.yearType ym
 ...              | yt , pʸᵗ with M.days (yt , m)
 ...                            | ds , pᵈ = ds , mkHasDays pʸᵗ pᵈ
+
+private
+  pattern suc⁴ x = suc (suc (suc (suc x)))
+  pattern suc¹² x = suc⁴ (suc⁴ (suc⁴ x))
 
 next : ∀ ym₁ → ∃[ ym₂ ] ym₁ ⋖ ym₂
 next (year - [ mkPos {rem = suc rem} cursor ]) = (year - [ mkPos (suc cursor) ]) , step-month
