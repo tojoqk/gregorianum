@@ -1,6 +1,6 @@
 module Gregorianum.Data.Position.Base where
 
-open import Gregorianum.Data.Cursor.Base as C using (Cursor; fromℕ≤; zero)
+open import Gregorianum.Data.Cursor.Base as C using (Cursor; fromℕ≤; first)
 open import Gregorianum.Data.Cursor.Properties using (acc≤width)
 
 open import Data.Nat as ℕ using (ℕ; zero; suc; z≤n; s≤s)
@@ -16,7 +16,7 @@ record Position (width : ℕ): Set where
   toℕ = acc
 
 fromFin : ∀ {width} → Fin (suc width) → Position width
-fromFin Fin.zero = mkPos zero
+fromFin Fin.zero = mkPos first
 fromFin (Fin.suc n) = mkPos (fromℕ≤ (toℕ<n n))
 
 toFin : ∀ {width} → Position width → Fin (suc width)

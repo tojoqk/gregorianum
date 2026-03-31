@@ -9,18 +9,18 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong)
 unique : ∀ {width acc rem}
        → (c₁ c₂ : Cursor width acc rem)
        → c₁ ≡ c₂
-unique {acc = zero} zero zero = refl
+unique {acc = zero} first first = refl
 unique {acc = suc _} (suc c₁) (suc c₂) = cong suc (unique c₁ c₂)
 
 width≡acc+rem : ∀ {width acc rem} → Cursor width acc rem → width ≡ acc + rem
-width≡acc+rem zero = refl
+width≡acc+rem first = refl
 width≡acc+rem {rem = rem} (suc c) with width≡acc+rem c
 ...                                  | refl = +-suc _ rem
 
 acc≡0⇒width≡rem : ∀ {width rem}
                 → Cursor width 0 rem
                 → width ≡ rem
-acc≡0⇒width≡rem zero = refl
+acc≡0⇒width≡rem first = refl
 
 rem≡0⇒width≡acc : ∀ {width acc}
                 → Cursor width acc 0

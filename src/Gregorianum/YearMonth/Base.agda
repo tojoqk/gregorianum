@@ -4,7 +4,7 @@ open import Gregorianum.Year as Y using (Year; year-first; YearType; _′_″_�
 import Gregorianum.Year.Properties as Y
 open import Gregorianum.Year.Weight.Base using (_HasWeight_; weight)
 open import Gregorianum.Month.Base as M using (Month; [_]; january; december)
-open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first)
+open import Gregorianum.Data.Cursor using (Cursor; first; suc)
 open import Gregorianum.Data.Position using (mkPos; Position)
 open import Gregorianum.Data.Cursor.Properties using (rem≡0⇒width≡acc)
 
