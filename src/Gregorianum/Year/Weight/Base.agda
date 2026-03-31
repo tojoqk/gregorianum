@@ -1,6 +1,6 @@
 module Gregorianum.Year.Weight.Base where
 
-open import Gregorianum.Year.Base using (Year; _×₄₀₀+_×₁₀₀+_×₄+_)
+open import Gregorianum.Year.Base using (Year; _′_″_‴_)
 
 open import Gregorianum.Data.Position using (Position)
 open import Data.Nat as ℕ using (ℕ; suc; zero; NonZero; _+_; _*_)
@@ -10,7 +10,7 @@ data _HasWeight_ (year : Year) : (n : ℕ) → {{NonZero n}} → Set where
   weight : year HasWeight (1 + Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 4 + Position.toℕ (Year.pos₁₀₀ year) * 100 + Year.quadricentennial year * 400)
 
 toWeight : (y : Year) → ∃[ n ] y HasWeight (suc n)
-toWeight (q ×₄₀₀+ y₁₀₀ ×₁₀₀+ y₄ ×₄+ y₁) = _ , weight
+toWeight (q ′ y₁₀₀ ″ y₄ ‴ y₁) = _ , weight
 
 data _HasLeapWeight_ (year : Year) : (n : ℕ) → {{NonZero n}} → Set where
   weight : year HasLeapWeight (suc (Position.toℕ (Year.pos₄ year)) + Position.toℕ (Year.pos₁₀₀ year) * 24 + Year.quadricentennial year * 97)

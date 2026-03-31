@@ -2,7 +2,7 @@ module Gregorianum.Year.Plain.Properties where
 
 open import Gregorianum.Year.Plain.Base using (_HasPlain_; plain)
 
-open import Gregorianum.Year.Base using (year-first; _⋖_; IsSuc; _×₄₀₀+_×₁₀₀+_×₄+_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; prev; step₁; step₄; step₁₀₀; step₄₀₀)
+open import Gregorianum.Year.Base using (year-first; _⋖_; IsSuc; _′_″_‴_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; prev; step₁; step₄; step₁₀₀; step₄₀₀)
 open import Gregorianum.Year.Properties hiding (year-unique)
 open import Gregorianum.Data.Cursor using (zero; suc; first)
 open import Gregorianum.Data.Position using (mkPos)
@@ -23,10 +23,10 @@ prev-plain step₁₀₀ plain = plain
 prev-plain step₄₀₀ plain = plain
 
 suc-plain-IsSuc : ∀ {y n} → y HasPlain (suc n) → IsSuc y
-suc-plain-IsSuc {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)} p = suc₁
-suc-plain-IsSuc {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} p = suc₄
-suc-plain-IsSuc {q ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} p = suc₁₀₀
-suc-plain-IsSuc {suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} p = suc₄₀₀
+suc-plain-IsSuc {q ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc cursor)} p = suc₁
+suc-plain-IsSuc {q ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} p = suc₄
+suc-plain-IsSuc {q ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} p = suc₁₀₀
+suc-plain-IsSuc {suc q ′ mkPos first ″ mkPos first ‴ mkPos first} p = suc₄₀₀
 
 year-unique : ∀ {y₁ y₂ n} → y₁ HasPlain n → y₂ HasPlain n → y₁ ≡ y₂
 year-unique {y₁} {y₂} {ℕ.suc n} p q with prev y₁ (suc-plain-IsSuc p) | prev y₂ (suc-plain-IsSuc q)

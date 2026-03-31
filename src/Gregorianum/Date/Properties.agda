@@ -4,7 +4,7 @@ open import Gregorianum.Date.Base
 
 open import Gregorianum.Day.Base using (Day; [_])
 open import Gregorianum.YearMonth.Base as YM using (step-year; step-month; _-_; mkHasDays)
-open import Gregorianum.Year.Base using (leap; common; common₁; leap₄₀₀; leap₄; common₁₀₀; _×₄₀₀+_×₁₀₀+_×₄+_)
+open import Gregorianum.Year.Base using (leap; common; common₁; leap₄₀₀; leap₄; common₁₀₀; _′_″_‴_)
 open import Gregorianum.Year.Properties using (year-type-unique)
 open import Gregorianum.Year.Weight.Base using () renaming (weight to year-weight)
 open import Gregorianum.Year.Weight.Properties using (next-leap-is-common; next-leap-common-weight; leap-weight-unique; common-weight-unique)

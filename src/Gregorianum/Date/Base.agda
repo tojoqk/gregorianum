@@ -1,6 +1,6 @@
 module Gregorianum.Date.Base where
 
-open import Gregorianum.Year using (_×₄₀₀+_×₁₀₀+_×₄+_; Year; _HasYearType_; YearType; yearType; leap; common; leap₄₀₀)
+open import Gregorianum.Year using (_′_″_‴_; Year; _HasYearType_; YearType; yearType; leap; common; leap₄₀₀)
 open import Gregorianum.Year.Properties using (common⇒IsSuc)
 open import Gregorianum.Year.Weight.Base using (_HasLeapWeight_; _HasCommonWeight_; weight)
 open import Gregorianum.Year.Weight.Properties using (IsSuc⇒suc-common-weight)

@@ -50,10 +50,10 @@ next-unique step₄₀₀ step₄₀₀ = refl
 ∃prev⇒IsSuc step₄₀₀ = suc₄₀₀
 
 ¬IsSuc⇒first : ∀ {y} → ¬ (IsSuc y) → y ≡ year-first
-¬IsSuc⇒first {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)} ¬isSuc = contradiction suc₁ ¬isSuc
-¬IsSuc⇒first {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} ¬isSuc = contradiction suc₄ ¬isSuc
-¬IsSuc⇒first {q ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = contradiction suc₁₀₀ ¬isSuc
-¬IsSuc⇒first {suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = contradiction suc₄₀₀ ¬isSuc
+¬IsSuc⇒first {q ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc cursor)} ¬isSuc = contradiction suc₁ ¬isSuc
+¬IsSuc⇒first {q ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} ¬isSuc = contradiction suc₄ ¬isSuc
+¬IsSuc⇒first {q ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} ¬isSuc = contradiction suc₁₀₀ ¬isSuc
+¬IsSuc⇒first {suc q ′ mkPos first ″ mkPos first ‴ mkPos first} ¬isSuc = contradiction suc₄₀₀ ¬isSuc
 ¬IsSuc⇒first {year-first} ¬isSuc = refl
 
 ¬isSuc-unique : ∀ {d₁ d₂} → ¬ IsSuc d₁ → ¬ IsSuc d₂ → d₁ ≡ d₂
@@ -73,10 +73,10 @@ prev-ordinal step₁₀₀ ordinal = ordinal
 prev-ordinal step₄₀₀ ordinal = ordinal
 
 suc-ordinal⇒IsSuc : ∀ {y n} → y HasOrdinal (suc n) → IsSuc y
-suc-ordinal⇒IsSuc {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos cursor ×₄+ mkPos (suc cursor₁)} {n = _} ordinal = suc₁
-suc-ordinal⇒IsSuc {quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} {n = _} ordinal = suc₄
-suc-ordinal⇒IsSuc {quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} ordinal = suc₁₀₀
-suc-ordinal⇒IsSuc {suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {n = _} ordinal = suc₄₀₀
+suc-ordinal⇒IsSuc {quadricentennial ′ pos₁₀₀ ″ mkPos cursor ‴ mkPos (suc cursor₁)} {n = _} ordinal = suc₁
+suc-ordinal⇒IsSuc {quadricentennial ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} {n = _} ordinal = suc₄
+suc-ordinal⇒IsSuc {quadricentennial ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} {n = _} ordinal = suc₁₀₀
+suc-ordinal⇒IsSuc {suc quadricentennial ′ mkPos first ″ mkPos first ‴ mkPos first} {n = _} ordinal = suc₄₀₀
 
 IsSuc⇒suc-ordinal : ∀ {y} → IsSuc y → ∃[ n ] y HasOrdinal (suc n)
 IsSuc⇒suc-ordinal suc₁ = _ , ordinal

@@ -1,6 +1,6 @@
 module Gregorianum.YearMonth.Base where
 
-open import Gregorianum.Year as Y using (Year; year-first; YearType; _×₄₀₀+_×₁₀₀+_×₄+_; _HasYearType_)
+open import Gregorianum.Year as Y using (Year; year-first; YearType; _′_″_‴_; _HasYearType_)
 import Gregorianum.Year.Properties as Y
 open import Gregorianum.Year.Weight.Base using (_HasWeight_; weight)
 open import Gregorianum.Month.Base as M using (Month; [_]; january; december)

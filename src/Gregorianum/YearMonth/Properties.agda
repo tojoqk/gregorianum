@@ -84,7 +84,7 @@ suc-ordinal⇒IsSuc : ∀ {ym n} → ym HasOrdinal (suc n) → IsSuc ym
 suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p with Y.isSuc? year
 ... | yes q = suc-year q
 suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p | no ¬q with Y.¬IsSuc⇒first ¬q
-suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl with toOrdinal ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ])
+suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl with toOrdinal ((0 Y.′ mkPos first ″ mkPos first ‴ mkPos first) - [ mkPos first ])
 suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , snd with ordinal-unique p snd
 suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , ordinal weight | ()
 suc-ordinal⇒IsSuc {year - [ mkPos (suc cursor) ]} p | no _ | refl = suc-month
@@ -95,7 +95,7 @@ IsSuc⇒suc-ordinal {year - [ mkPos first ]} (suc-year x) with IsSuc⇒suc-weigh
 ... | fst , snd = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (fst * 12))))))))))) , ordinal snd
 IsSuc⇒suc-ordinal {year - [ mkPos (suc c) ]} (suc-year x) = _ , ordinal weight
 
-¬IsSuc⇒first : ∀ {ym} → ¬ IsSuc ym → ym ≡ (zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - january
+¬IsSuc⇒first : ∀ {ym} → ¬ IsSuc ym → ym ≡ (zero Y.′ mkPos first ″ mkPos first ‴ mkPos first) - january
 ¬IsSuc⇒first {y - m} p with Y.isSuc? y
 ¬IsSuc⇒first {y - m} p | yes isSuc = contradiction (suc-year isSuc) p
 ¬IsSuc⇒first {y - m} p | no ¬isSuc with Y.¬IsSuc⇒first ¬isSuc
