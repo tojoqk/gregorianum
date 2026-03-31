@@ -84,9 +84,9 @@ suc-ordinal⇒IsSuc : ∀ {ym n} → ym HasOrdinal (suc n) → IsSuc ym
 suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p with Y.isSuc? year
 ... | yes q = suc-year q
 suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p | no ¬q with Y.¬IsSuc⇒first ¬q
-suc-ordinal⇒IsSuc {(0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]} p | no ¬q | refl with toOrdinal ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ])
-suc-ordinal⇒IsSuc {(0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]} p | no ¬q | refl | n , snd with ordinal-unique p snd
-suc-ordinal⇒IsSuc {(zero Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]} p | no ¬q | refl | n , ordinal weight | ()
+suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl with toOrdinal ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ])
+suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , snd with ordinal-unique p snd
+suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , ordinal weight | ()
 suc-ordinal⇒IsSuc {year - [ mkPos (suc cursor) ]} p | no _ | refl = suc-month
 
 IsSuc⇒suc-ordinal : ∀ {ym} → IsSuc ym → ∃[ n ] ym HasOrdinal (suc n)
@@ -125,11 +125,11 @@ prev-ordinal ym₁⋖ym₂ p with ⋖⇒suc ym₁⋖ym₂
 ⋖-wellFounded : WellFounded _⋖_
 ⋖-wellFounded y = Subrelation.accessible ⋖⇒< (<-WellFounded y)
 
-first-ordinal≡zero : ∀ {n} → ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - january) HasOrdinal n → n ≡ 0
+first-ordinal≡zero : ∀ {n} → year-month-first HasOrdinal n → n ≡ 0
 first-ordinal≡zero p with ordinal-unique p (ordinal weight)
 ... | refl = refl
 
-ordinal≡0⇒first : ∀ {ym} → ym HasOrdinal 0 → ym ≡ ((0 Y.×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - january)
+ordinal≡0⇒first : ∀ {ym} → ym HasOrdinal 0 → ym ≡ year-month-first
 ordinal≡0⇒first {ym} p with isSuc? ym
 ordinal≡0⇒first {ym} p | yes isSuc with IsSuc⇒suc-ordinal isSuc
 ... | fst , snd with ordinal-unique snd p

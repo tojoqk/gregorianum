@@ -20,6 +20,8 @@ record Year : Set where
     pos₄   : Position 24
     pos₁   : Position 3
 
+pattern year-first = zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first
+
 data _HasYearType_ : Year → YearType → Set where
   common₁ : ∀ {q acc₁₀₀ rem₁₀₀ acc₄ rem₄ acc₁ rem₁}
           → {c₁₀₀ : Cursor 3 acc₁₀₀  rem₁₀₀}
@@ -94,7 +96,7 @@ isSuc? (quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mk
 isSuc? (quadricentennial ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first) = yes suc₄
 isSuc? (quadricentennial ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first) = yes suc₁₀₀
 isSuc? (suc quadricentennial ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = yes suc₄₀₀
-isSuc? (zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) = no λ ()
+isSuc? year-first = no λ ()
 
 data _HasOrdinal_ (year : Year) : (n : ℕ) → Set where
   ordinal : year HasOrdinal (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 4 + Position.toℕ (Year.pos₁₀₀ year) * 100 + Year.quadricentennial year * 400)

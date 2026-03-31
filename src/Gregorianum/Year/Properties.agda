@@ -49,12 +49,12 @@ next-unique step₄₀₀ step₄₀₀ = refl
 ∃prev⇒IsSuc step₁₀₀ = suc₁₀₀
 ∃prev⇒IsSuc step₄₀₀ = suc₄₀₀
 
-¬IsSuc⇒first : ∀ {y} → ¬ (IsSuc y) → y ≡ (zero ×₄₀₀+ (mkPos first) ×₁₀₀+ (mkPos first) ×₄+ (mkPos first))
+¬IsSuc⇒first : ∀ {y} → ¬ (IsSuc y) → y ≡ year-first
 ¬IsSuc⇒first {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ pos₄ ×₄+ mkPos (suc cursor)} ¬isSuc = contradiction suc₁ ¬isSuc
 ¬IsSuc⇒first {q ×₄₀₀+ pos₁₀₀ ×₁₀₀+ mkPos (suc cursor) ×₄+ mkPos first} ¬isSuc = contradiction suc₄ ¬isSuc
 ¬IsSuc⇒first {q ×₄₀₀+ mkPos (suc cursor) ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = contradiction suc₁₀₀ ¬isSuc
 ¬IsSuc⇒first {suc q ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = contradiction suc₄₀₀ ¬isSuc
-¬IsSuc⇒first {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} ¬isSuc = refl
+¬IsSuc⇒first {year-first} ¬isSuc = refl
 
 ¬isSuc-unique : ∀ {d₁ d₂} → ¬ IsSuc d₁ → ¬ IsSuc d₂ → d₁ ≡ d₂
 ¬isSuc-unique ¬isSuc₁ ¬isSuc₂ with ¬IsSuc⇒first ¬isSuc₁ | ¬IsSuc⇒first ¬isSuc₂
@@ -111,7 +111,7 @@ year-unique : ∀ {y₁ y₂ n} → y₁ HasOrdinal n → y₂ HasOrdinal n → 
 year-unique {y₁} {y₂} {suc n} p q with prev y₁ (suc-ordinal⇒IsSuc p) | prev y₂ (suc-ordinal⇒IsSuc q)
 ... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique {y₁'} {y₂'} (prev-ordinal y₁'⋖y₁ p) (prev-ordinal y₂'⋖y₂ q)
 ... | refl = next-unique y₁'⋖y₁ y₂'⋖y₂
-year-unique {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {zero} ordinal ordinal = refl
+year-unique {year-first} {year-first} {zero} ordinal ordinal = refl
 
 common⇒IsSuc : ∀ {y} → y HasYearType common → IsSuc y
 common⇒IsSuc common₁ = suc₁

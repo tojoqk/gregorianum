@@ -2,7 +2,7 @@ module Gregorianum.Year.Plain.Properties where
 
 open import Gregorianum.Year.Plain.Base using (_HasPlain_; plain)
 
-open import Gregorianum.Year.Base using (_⋖_; IsSuc; _×₄₀₀+_×₁₀₀+_×₄+_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; prev; step₁; step₄; step₁₀₀; step₄₀₀)
+open import Gregorianum.Year.Base using (year-first; _⋖_; IsSuc; _×₄₀₀+_×₁₀₀+_×₄+_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; prev; step₁; step₄; step₁₀₀; step₄₀₀)
 open import Gregorianum.Year.Properties hiding (year-unique)
 open import Gregorianum.Data.Cursor using (zero; suc; first)
 open import Gregorianum.Data.Cursor.Position using (mkPos)
@@ -32,4 +32,4 @@ year-unique : ∀ {y₁ y₂ n} → y₁ HasPlain n → y₂ HasPlain n → y₁
 year-unique {y₁} {y₂} {ℕ.suc n} p q with prev y₁ (suc-plain-IsSuc p) | prev y₂ (suc-plain-IsSuc q)
 ... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique {y₁'} {y₂'} {n} (prev-plain y₁'⋖y₁ p) (prev-plain y₂'⋖y₂ q)
 ... | refl = next-unique y₁'⋖y₁ y₂'⋖y₂
-year-unique {ℕ.zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {ℕ.zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first} {ℕ.zero} plain plain = refl
+year-unique {year-first} {year-first} {ℕ.zero} plain plain = refl

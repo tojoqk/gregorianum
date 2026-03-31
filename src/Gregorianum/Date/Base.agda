@@ -4,9 +4,9 @@ open import Gregorianum.Year using (_×₄₀₀+_×₁₀₀+_×₄+_; Year; _H
 open import Gregorianum.Year.Properties using (common⇒IsSuc)
 open import Gregorianum.Year.Weight.Base using (_HasLeapWeight_; _HasCommonWeight_; weight)
 open import Gregorianum.Year.Weight.Properties using (IsSuc⇒suc-common-weight)
-open import Gregorianum.YearMonth.Base as YM using (YearMonth; _HasDays_; _-_)
+open import Gregorianum.YearMonth.Base as YM using (YearMonth; year-month-first; _HasDays_; _-_; mkHasDays)
 import Gregorianum.YearMonth.Properties as YM
-open import Gregorianum.Month using ([_]; january-days; _HasDayWeight_; dayWeight)
+open import Gregorianum.Month using ([_]; january; january-days; _HasDayWeight_; dayWeight)
 open import Gregorianum.Day using (Day; [_])
 open import Gregorianum.Data.Cursor using (Cursor; zero; suc; first; last)
 open import Gregorianum.Data.Cursor.Position using (Position; mkPos)
@@ -29,6 +29,7 @@ record Date : Set where
   open YearMonth yearMonth public
 
 pattern _-_⟨_⟩ ym d hasDays = mkDate ym hasDays d
+pattern date-first = year-month-first - [ mkPos first ] ⟨ mkHasDays leap₄₀₀ january-days ⟩
 
 data _⋖_ : Date → Date → Set where
   step-day : ∀ {ym : YearMonth} {width acc rem}
@@ -45,7 +46,7 @@ data _⋖_ : Date → Date → Set where
 data IsSuc : Date → Set where
   suc-day : ∀ {acc rem}
        → {c : Cursor 30 (suc acc) rem}
-       → IsSuc (((zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]) - [ mkPos c ] ⟨ YM.mkHasDays leap₄₀₀ january-days ⟩ )
+       → IsSuc (year-month-first - [ mkPos c ] ⟨ YM.mkHasDays leap₄₀₀ january-days ⟩)
   suc-month : ∀ {ym width acc rem}
         → {hasDays : ym HasDays (suc width)}
         → {c : Cursor width acc rem}

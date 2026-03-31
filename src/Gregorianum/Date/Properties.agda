@@ -101,9 +101,6 @@ ordinal-unique (common-ordinal common₁₀₀ _ _ _) (leap-ordinal () _ _ _)
 ⋖-wellFounded : WellFounded _⋖_
 ⋖-wellFounded d = Subrelation.accessible ⋖⇒< (<-WellFounded d)
 
-private
-  pattern date-first = ((zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - january) - [ mkPos first ] ⟨ mkHasDays leap₄₀₀ january-days ⟩
-
 IsSuc⇒suc-ordinal : ∀ {d} → IsSuc d → ∃[ n ] d HasOrdinal (suc n)
 IsSuc⇒suc-ordinal {d} isSuc with prev d isSuc
 ... | d' , d'⋖d with toOrdinal d'

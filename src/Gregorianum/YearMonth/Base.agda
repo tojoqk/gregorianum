@@ -1,6 +1,6 @@
 module Gregorianum.YearMonth.Base where
 
-open import Gregorianum.Year as Y using (Year; YearType; _×₄₀₀+_×₁₀₀+_×₄+_; _HasYearType_)
+open import Gregorianum.Year as Y using (Year; year-first; YearType; _×₄₀₀+_×₁₀₀+_×₄+_; _HasYearType_)
 import Gregorianum.Year.Properties as Y
 open import Gregorianum.Year.Weight.Base using (_HasWeight_; weight)
 open import Gregorianum.Month.Base as M using (Month; [_]; january; december)
@@ -19,12 +19,14 @@ record YearMonth : Set where
     year : Year
     month : Month
 
+pattern year-month-first = year-first - [ mkPos first ]
+
 data _⋖_ : YearMonth → YearMonth → Set where
   step-month : ∀ {y acc rem} → {c : Cursor 11 acc (suc rem)} → (y - [ mkPos c ]) ⋖ (y - [ mkPos (suc c) ])
   step-year : ∀ {y₁ y₂} → y₁ Y.⋖ y₂ → (y₁ - december) ⋖ (y₂ - january)
 
 data IsSuc : YearMonth → Set where
-  suc-month : ∀ {acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuc ((zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos c ])
+  suc-month : ∀ {acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuc (year-first - [ mkPos c ])
   suc-year : ∀ {ym} → Y.IsSuc (YearMonth.year ym) → IsSuc ym
 
 
@@ -32,8 +34,8 @@ isSuc? : (ym : YearMonth) → Dec (IsSuc ym)
 isSuc? (year - month) with Y.isSuc? year
 ... | yes p = yes (suc-year p)
 isSuc? (year - month) | no p with Y.¬IsSuc⇒first p
-isSuc? ((zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos first ]) | no ¬p | refl = no λ { (suc-year p) → ¬p p}
-isSuc? ((zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos (suc _) ]) | no _ | refl = yes suc-month
+isSuc? year-month-first | no ¬p | refl = no λ { (suc-year p) → ¬p p}
+isSuc? (Y.year-first - [ mkPos (suc _) ]) | no _ | refl = yes suc-month
 
 record _HasDays_ (ym : YearMonth) (days : ℕ) : Set where
   constructor mkHasDays
@@ -55,7 +57,7 @@ next (year - [ mkPos {rem = zero} c₁₂@(suc¹² _) ]) with rem≡0⇒width≡
 ...                                                         | ()
 
 prev : ∀ ym₂ → IsSuc ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
-prev (_ - [ mkPos (suc c) ]) suc-month = ((zero ×₄₀₀+ mkPos first ×₁₀₀+ mkPos first ×₄+ mkPos first) - [ mkPos c ]) , step-month
+prev (_ - [ mkPos (suc c) ]) suc-month = (year-first - [ mkPos c ]) , step-month
 prev (year - [ mkPos first ]) (suc-year x) = (proj₁ (Y.prev year x) - december) , step-year (proj₂ (Y.prev year x))
 prev (year - [ mkPos (suc month) ]) (suc-year x) = (year - [ mkPos month ]) , step-month
 
