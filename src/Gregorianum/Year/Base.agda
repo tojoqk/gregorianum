@@ -114,3 +114,58 @@ toOrdinal y = _ , ordinal
 
 _<_ : Year → Year → Set
 y₁ < y₂ = proj₁ (toOrdinal y₁) ℕ.< proj₁ (toOrdinal y₂)
+
+module _ where
+  open import Gregorianum.Data.Position using (fromFin)
+  open import Gregorianum.Data.Position.Properties using (toℕ∘fromFin≡toℕ)
+  open import Data.Nat.DivMod using (_divMod_; result)
+  open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; cong; subst; module ≡-Reasoning)
+  open import Data.Fin as Fin using (Fin)
+  open import Data.Fin.Properties using (toℕ<n; toℕ-fromℕ<)
+  open import Data.Nat using (_<?_)
+  open import Data.Nat.Properties using (m+n≤o⇒n≤o; +-suc; *-cancelʳ-<)
+  open import Relation.Nullary.Negation using (contradiction)
+
+  fromOrdinal : (n : ℕ) → ∃[ y ] y HasOrdinal n
+  fromOrdinal n with n divMod 400
+  ... | result q₄₀₀ r₄₀₀ p₄₀₀ with (Fin.toℕ r₄₀₀) divMod 100
+  ... | result q₁₀₀ r₁₀₀ p₁₀₀ with (Fin.toℕ r₁₀₀) divMod 4
+  ... | result q₄ r₄ p₄ with q₁₀₀ <? 4 | q₄ <? 25
+  ... | yes q₁₀₀<4 | yes q₄<25 = (q₄₀₀ ′ fromFin (Fin.fromℕ< q₁₀₀<4) ″ fromFin (Fin.fromℕ< q₄<25) ‴ fromFin r₄) , h
+    where
+      h : (q₄₀₀ ′ fromFin (Fin.fromℕ< q₁₀₀<4) ″ fromFin (Fin.fromℕ< q₄<25) ‴ fromFin r₄) HasOrdinal n
+      h = subst ((q₄₀₀ ′ fromFin (Fin.fromℕ< q₁₀₀<4) ″ fromFin (Fin.fromℕ< q₄<25) ‴ fromFin r₄) HasOrdinal_) eq ordinal
+        where
+          open ≡-Reasoning
+          eq : Position.toℕ (fromFin r₄) + Position.toℕ (fromFin (Fin.fromℕ< q₄<25)) * 4 + Position.toℕ (fromFin (Fin.fromℕ< q₁₀₀<4)) * 100 + q₄₀₀ * 400 ≡ n
+          eq = begin
+                 Position.toℕ (fromFin r₄) + Position.toℕ (fromFin (Fin.fromℕ< q₄<25)) * 4 + Position.toℕ (fromFin (Fin.fromℕ< q₁₀₀<4)) * 100 + q₄₀₀ * 400
+               ≡⟨ cong (λ e → (e + _) + _ + _) (toℕ∘fromFin≡toℕ r₄) ⟩
+                 Fin.toℕ r₄ + Position.toℕ (fromFin (Fin.fromℕ< q₄<25)) * 4 + Position.toℕ (fromFin (Fin.fromℕ< q₁₀₀<4)) * 100 + q₄₀₀ * 400
+               ≡⟨ cong (λ e → (Fin.toℕ r₄ + e * 4) + Position.toℕ (fromFin (Fin.fromℕ< q₁₀₀<4)) * 100 + q₄₀₀ * 400) (toℕ∘fromFin≡toℕ (Fin.fromℕ< q₄<25)) ⟩
+                 Fin.toℕ r₄ + Fin.toℕ (Fin.fromℕ< q₄<25) * 4 + Position.toℕ (fromFin (Fin.fromℕ< q₁₀₀<4)) * 100 + q₄₀₀ * 400
+               ≡⟨ cong (λ e → (Fin.toℕ r₄ + Fin.toℕ (Fin.fromℕ< q₄<25) * 4) + e * 100 + q₄₀₀ * 400) (toℕ∘fromFin≡toℕ (Fin.fromℕ< q₁₀₀<4)) ⟩
+                 Fin.toℕ r₄ + Fin.toℕ (Fin.fromℕ< q₄<25) * 4 + Fin.toℕ (Fin.fromℕ< q₁₀₀<4) * 100 + q₄₀₀ * 400
+               ≡⟨ cong (λ e → (Fin.toℕ r₄ + e * 4) + _ + _) (toℕ-fromℕ< q₄<25) ⟩
+                 Fin.toℕ r₄ + q₄ * 4 + Fin.toℕ (Fin.fromℕ< q₁₀₀<4) * 100 + q₄₀₀ * 400
+               ≡⟨ cong (λ e → (Fin.toℕ r₄ + q₄ * 4) + e * 100 + _) (toℕ-fromℕ< q₁₀₀<4) ⟩
+                 Fin.toℕ r₄ + q₄ * 4 + q₁₀₀ * 100 + q₄₀₀ * 400
+               ≡⟨ cong (λ e → e + q₁₀₀ * 100 + q₄₀₀ * 400) (sym p₄) ⟩
+                 Fin.toℕ r₁₀₀ + q₁₀₀ * 100 + q₄₀₀ * 400
+               ≡⟨ cong (λ e → e + q₄₀₀ * 400) (sym p₁₀₀) ⟩
+                 Fin.toℕ r₄₀₀ + q₄₀₀ * 400
+               ≡⟨ sym p₄₀₀ ⟩
+                 n
+               ∎
+  ... | no q₁₀₀≮4  | _ = contradiction q₁₀₀<4 q₁₀₀≮4
+    where
+      q₁₀₀<4 : q₁₀₀ ℕ.< 4
+      q₁₀₀<4 = *-cancelʳ-< 100 q₁₀₀ 4 (m+n≤o⇒n≤o (Fin.toℕ r₁₀₀) (subst (ℕ._≤ 400)
+                                                 (sym (+-suc (Fin.toℕ r₁₀₀) (q₁₀₀ * 100)))
+                                                 (subst (ℕ._< 400) p₁₀₀ (toℕ<n r₄₀₀))))
+  ... | yes _      | no q₄≮25 = contradiction q₄<25 q₄≮25
+    where
+      q₄<25 : q₄ ℕ.< 25
+      q₄<25 = *-cancelʳ-< 4 q₄ 25 (m+n≤o⇒n≤o (Fin.toℕ r₄) (subst (ℕ._≤ 100)
+                                             (sym (+-suc (Fin.toℕ r₄) (q₄ * 4)))
+                                             (subst (ℕ._< 100) p₄ (toℕ<n r₁₀₀))))
