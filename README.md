@@ -22,6 +22,7 @@ To handle the complexities of Gregorian leap year rules, a `Year` is defined not
 
 ```agda
 record Year : Set where
+  constructor _′_″_‴_
   field
     quadricentennial : ℕ        -- Count of 400-year cycles
     pos₁₀₀ : Position 3         -- 100-year position (0-3)
