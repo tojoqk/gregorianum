@@ -77,7 +77,8 @@ module Path (isTimeline : IsTimeline) where
                   ; trans = trans
                   ; split = split }
 
-  open import Gregorianum.Relation.Path A _─[_]→_ using (IsLinear; Tri; tri≡; tri←; tri→)
+  open import Gregorianum.Relation.Path A _─[_]→_ using (IsLinear)
+  open import Gregorianum.Relation.Path A _─[_]→_ using (Tri; tri≡; tri←; tri→) public
 
   uniqueˡ : ∀ {x y z n} → x ─[ n ]→ z → y ─[ n ]→ z → x ≡ y
   uniqueˡ {n = n} ⟨ s₁ , e₁ ⟩ ⟨ s₂ , e₂ ⟩ with ordinal-unique e₁ e₂

@@ -30,8 +30,6 @@ isTimeline = record
 
 open Path isTimeline public
 
-open import Gregorianum.Relation.Path Date _─[_]→_ using (Tri; tri→; tri←; tri≡) public
-
 forward : ∀ d₁ n → ∃[ d₂ ] d₁ ─[ n ]→ d₂
 forward d₁ n = let (_ , ho₁) = toOrdinal d₁ in
                let (d₂ , ho₂) = shift d₁ n ho₁
