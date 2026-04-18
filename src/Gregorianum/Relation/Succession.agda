@@ -230,11 +230,11 @@ module IsoToTimeline (isSuccession : IsSuccession) (isTimeline : T.IsTimeline) (
   toTimeline (x→y' ▸ y'⋖y) with toTimeline x→y'
   ... | TP.⟨ start , end' ⟩ = TP.⟨ start , next-ordinal y'⋖y end' ⟩
 
-  from∘to : ∀ {x y n} → (p : x ─[ n ]→ y) → fromTimeline (toTimeline p) ≡ p
-  from∘to p = irrelevant (fromTimeline (toTimeline p)) p
+  fromTimeline∘toTimeline : ∀ {x y n} → (p : x ─[ n ]→ y) → fromTimeline (toTimeline p) ≡ p
+  fromTimeline∘toTimeline p = irrelevant (fromTimeline (toTimeline p)) p
 
-  to∘from : ∀ {x y n} → (p : x TP.─[ n ]→ y) → toTimeline (fromTimeline p) ≡ p
-  to∘from p = TP.irrelevant (toTimeline (fromTimeline p)) p
+  toTimeline∘fromTimeline : ∀ {x y n} → (p : x TP.─[ n ]→ y) → toTimeline (fromTimeline p) ≡ p
+  toTimeline∘fromTimeline p = TP.irrelevant (toTimeline (fromTimeline p)) p
 
   compare : ∀ x y → Tri x y
   compare x y with TP.compare x y
