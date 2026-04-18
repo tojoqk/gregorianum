@@ -30,23 +30,3 @@ isTimeline = record
               }
 
 open Path isTimeline public
-
-forward : ∀ ym₁ n → ∃[ ym₂ ] ym₁ ─[ n ]→ ym₂
-forward ym₁ n = let (_ , ho₁) = toOrdinal ym₁ in
-                let (ym₂ , ho₂) = shift ym₁ n ho₁
-                in ym₂ , ⟨ ho₁ , ho₂ ⟩
-
-backward? : ∀ d₂ n → Dec (∃[ d₁ ] d₁ ─[ n ]→ d₂)
-backward? d₂ zero = let (_ , ho) = toOrdinal d₂ in yes (d₂ , ⟨ ho , ho ⟩)
-backward? d₂ (suc n) with isSuc? d₂
-... | yes isSuc with prev d₂ isSuc
-... | d₂' , d₂'⋖d₂ with backward? d₂' n
-... | yes (d₁ , ⟨ ho₁ , ho₂' ⟩) = yes (d₁ , ⟨ ho₁ , next-ordinal d₂'⋖d₂ ho₂' ⟩)
-... | no ¬p = no h
-  where
-    h : ¬ (∃[ d₁ ] d₁ ─[ suc n ]→ d₂)
-    h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬p (d₁ , ⟨ ho₁ , prev-ordinal d₂'⋖d₂ ho₂ ⟩)
-backward? d₂ (suc n) | no ¬isSuc = no h
-  where
-    h : ¬ (∃[ d₁ ] d₁ ─[ suc n ]→ d₂)
-    h (d₁ , ⟨ ho₁ , ho₂ ⟩) = ¬isSuc (suc-ordinal⇒IsSuc ho₂)
