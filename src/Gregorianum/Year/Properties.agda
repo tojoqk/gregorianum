@@ -43,6 +43,12 @@ next-unique step₄ step₄ = refl
 next-unique step₁₀₀ step₁₀₀ = refl
 next-unique step₄₀₀ step₄₀₀ = refl
 
+⋖-irrelevant : ∀ {y₁ y₂} → (p₁ p₂ : y₁ ⋖ y₂) → p₁ ≡ p₂
+⋖-irrelevant step₁ step₁ = refl
+⋖-irrelevant step₄ step₄ = refl
+⋖-irrelevant step₁₀₀ step₁₀₀ = refl
+⋖-irrelevant step₄₀₀ step₄₀₀ = refl
+
 ∃prev⇒IsSuc : ∀ {y₁ y₂ : Year} → y₁ ⋖ y₂ → IsSuc y₂
 ∃prev⇒IsSuc step₁ = suc₁
 ∃prev⇒IsSuc step₄ = suc₄
@@ -116,3 +122,6 @@ year-unique {year-first} {year-first} {zero} ordinal ordinal = refl
 common⇒IsSuc : ∀ {y} → y HasYearType common → IsSuc y
 common⇒IsSuc common₁ = suc₁
 common⇒IsSuc common₁₀₀ = suc₁₀₀
+
+has-ordinal-irrelevant : ∀ {y n} → (p₁ p₂ : y HasOrdinal n) → p₁ ≡ p₂
+has-ordinal-irrelevant ordinal ordinal = refl

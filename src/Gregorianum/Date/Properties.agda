@@ -7,7 +7,7 @@ open import Gregorianum.YearMonth.Base as YM using (step-year; step-month; _-_; 
 open import Gregorianum.Year.Base using (leap; common; common₁; leap₄₀₀; leap₄; common₁₀₀; _′_″_‴_)
 open import Gregorianum.Year.Properties using (year-type-unique)
 open import Gregorianum.Year.Weight.Base using () renaming (weight to year-weight)
-open import Gregorianum.Year.Weight.Properties using (next-leap-is-common; next-leap-common-weight; leap-weight-unique; common-weight-unique)
+open import Gregorianum.Year.Weight.Properties using (next-leap-is-common; next-leap-common-weight; leap-weight-unique; common-weight-unique; has-leap-weight-irrelevant)
 open import Gregorianum.Month.Base using (january-weight; january; january-days; december-days; december-leap-weight; december-common-weight; [_])
 open import Gregorianum.YearMonth.Properties as YM using (days-unique; has-days-irrelevant)
 open import Gregorianum.Month.Properties using (next-month-day-weight; day-weight-unique)
@@ -15,7 +15,7 @@ open import Gregorianum.Data.Cursor using (suc; first)
 open import Gregorianum.Data.Position using (mkPos)
 open import Gregorianum.Data.Cursor.Properties using () renaming (unique to cursor-unique)
 
-open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _≟_)
 open import Data.Nat.Properties using (+-comm; ≤-refl)
 open import Data.Nat.Induction using (<-wellFounded-fast)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
@@ -26,6 +26,11 @@ open import Relation.Binary.PropositionalEquality using (_≡_; refl; cong; subs
 open import Relation.Nullary.Decidable using (Dec; yes; no)
 open import Relation.Nullary.Negation using (¬_; contradiction)
 import Relation.Binary.Construct.On as On
+
+⋖-irrelevant : ∀ {d₁ d₂} → (p₁ p₂ : d₁ ⋖ d₂) → p₁ ≡ p₂
+⋖-irrelevant step-day step-day = refl
+⋖-irrelevant (step-month p₁) (step-month p₂) with YM.⋖-irrelevant p₁ p₂
+... | refl = refl
 
 next-unique : ∀ {d₁ d₂ d₃ : Date}
                 → d₁ ⋖ d₂
@@ -154,3 +159,61 @@ date-unique {d₁} {d₂} {suc n} ho₁ ho₂ with suc-ordinal⇒IsSuc ho₁ | s
 ... | ho₁' | ho₂' with date-unique ho₁' ho₂'
 ... | refl with next-unique d₁'⋖d₁ d₂'⋖d₂
 ... | refl = refl
+
+module _ where
+  open import Relation.Binary.HeterogeneousEquality using (_≅_; refl; ≅-to-≡)
+  open import Gregorianum.Month.Base
+
+  private
+    has-ordinal-irrelevant' : ∀ {d n₁ n₂} → (p₁ : d HasOrdinal n₁) → (p₂ : d HasOrdinal n₂) → n₁ ≡ n₂ → p₁ ≅ p₂
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight january-weight) (leap-ordinal leap₄ year-weight year-weight january-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight february-weight) (leap-ordinal leap₄ year-weight year-weight february-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight march-leap-weight) (leap-ordinal leap₄ year-weight year-weight march-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight april-leap-weight) (leap-ordinal leap₄ year-weight year-weight april-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight may-leap-weight) (leap-ordinal leap₄ year-weight year-weight may-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight june-leap-weight) (leap-ordinal leap₄ year-weight year-weight june-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight july-leap-weight) (leap-ordinal leap₄ year-weight year-weight july-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight august-leap-weight) (leap-ordinal leap₄ year-weight year-weight august-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight september-leap-weight) (leap-ordinal leap₄ year-weight year-weight september-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight october-leap-weight) (leap-ordinal leap₄ year-weight year-weight october-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight november-leap-weight) (leap-ordinal leap₄ year-weight year-weight november-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄ year-weight year-weight december-leap-weight) (leap-ordinal leap₄ year-weight year-weight december-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight january-weight) (leap-ordinal leap₄₀₀ year-weight year-weight january-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight february-weight) (leap-ordinal leap₄₀₀ year-weight year-weight february-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight march-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight march-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight april-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight april-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight may-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight may-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight june-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight june-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight july-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight july-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight august-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight august-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight september-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight september-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight october-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight october-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight november-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight november-leap-weight) refl = refl
+    has-ordinal-irrelevant' (leap-ordinal leap₄₀₀ year-weight year-weight december-leap-weight) (leap-ordinal leap₄₀₀ year-weight year-weight december-leap-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight january-weight) (common-ordinal common₁ year-weight year-weight january-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight february-weight) (common-ordinal common₁ year-weight year-weight february-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight march-common-weight) (common-ordinal common₁ year-weight year-weight march-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight april-common-weight) (common-ordinal common₁ year-weight year-weight april-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight may-common-weight) (common-ordinal common₁ year-weight year-weight may-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight june-common-weight) (common-ordinal common₁ year-weight year-weight june-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight july-common-weight) (common-ordinal common₁ year-weight year-weight july-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight august-common-weight) (common-ordinal common₁ year-weight year-weight august-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight september-common-weight) (common-ordinal common₁ year-weight year-weight september-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight october-common-weight) (common-ordinal common₁ year-weight year-weight october-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight november-common-weight) (common-ordinal common₁ year-weight year-weight november-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁ year-weight year-weight december-common-weight) (common-ordinal common₁ year-weight year-weight december-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight january-weight) (common-ordinal common₁₀₀ year-weight year-weight january-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight february-weight) (common-ordinal common₁₀₀ year-weight year-weight february-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight march-common-weight) (common-ordinal common₁₀₀ year-weight year-weight march-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight april-common-weight) (common-ordinal common₁₀₀ year-weight year-weight april-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight may-common-weight) (common-ordinal common₁₀₀ year-weight year-weight may-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight june-common-weight) (common-ordinal common₁₀₀ year-weight year-weight june-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight july-common-weight) (common-ordinal common₁₀₀ year-weight year-weight july-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight august-common-weight) (common-ordinal common₁₀₀ year-weight year-weight august-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight september-common-weight) (common-ordinal common₁₀₀ year-weight year-weight september-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight october-common-weight) (common-ordinal common₁₀₀ year-weight year-weight october-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight november-common-weight) (common-ordinal common₁₀₀ year-weight year-weight november-common-weight) refl = refl
+    has-ordinal-irrelevant' (common-ordinal common₁₀₀ year-weight year-weight december-common-weight) (common-ordinal common₁₀₀ year-weight year-weight december-common-weight) refl = refl
+
+  has-ordinal-irrelevant : ∀ {d n} → (p₁ p₂ : d HasOrdinal n) → p₁ ≡ p₂
+  has-ordinal-irrelevant p₁ p₂ = ≅-to-≡ (has-ordinal-irrelevant' p₁ p₂ refl)

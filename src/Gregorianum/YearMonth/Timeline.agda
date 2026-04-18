@@ -3,7 +3,7 @@ module Gregorianum.YearMonth.Timeline where
 open import Gregorianum.YearMonth.Base
   using (YearMonth; _HasOrdinal_; toOrdinal; next; isSuc?; prev)
 open import Gregorianum.YearMonth.Properties
-  using (year-month-unique; next-ordinal; prev-ordinal; suc-ordinal⇒IsSuc; ordinal-unique)
+  using (year-month-unique; next-ordinal; prev-ordinal; suc-ordinal⇒IsSuc; ordinal-unique; has-ordinal-irrelevant)
 
 open import Gregorianum.Relation.Timeline YearMonth using (IsTimeline; module Path)
 
@@ -26,6 +26,7 @@ isTimeline = record
               ; unique = year-month-unique
               ; ordinal-unique = ordinal-unique
               ; shift = shift
+              ; has-ordinal-irrelevant = has-ordinal-irrelevant
               }
 
 open Path isTimeline public

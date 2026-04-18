@@ -19,6 +19,8 @@ record IsSuccession : Set₁ where
     next-unique : ∀ {x y z} → x ⋖ y → x ⋖ z → y ≡ z
     prev-unique : ∀ {x y z} → x ⋖ z → y ⋖ z → x ≡ y
     ⋖-wellFounded : WF.WellFounded _⋖_
+    ∃prev⇒IsSuc : ∀ {x y} → x ⋖ y → IsSuc y
+    ⋖-irrelevant : ∀ {d₁ d₂} → (p₁ p₂ : d₁ ⋖ d₂) → p₁ ≡ p₂
 
 module Path (isSuccession : IsSuccession) where
   open IsSuccession isSuccession
@@ -27,7 +29,7 @@ module Path (isSuccession : IsSuccession) where
     ε : x ─[ zero ]→ x
     _▸_ : ∀ {y z n} → x ─[ n ]→ y → y ⋖ z → x ─[ suc n ]→ z
 
-  open import Gregorianum.Relation.Path A _─[_]→_
+  open import Gregorianum.Relation.Path A _─[_]→_ using (IsPath)
 
   _◂_ : ∀ {x y z n}
         → x ⋖ y
@@ -79,6 +81,9 @@ module Path (isSuccession : IsSuccession) where
 
   isPath : IsPath
   isPath = record { identity = identity ; identity⁻¹ = identity⁻¹ ; trans = trans ; split = split }
+
+  open import Gregorianum.Relation.Path A _─[_]→_ using (IsLinear)
+  open import Gregorianum.Relation.Path A _─[_]→_ using (Tri; tri≡; tri←; tri→) public
 
   _▸⁻¹_ : ∀ {x y z n}
           → x ─[ suc n ]→ z
@@ -175,3 +180,69 @@ module Path (isSuccession : IsSuccession) where
               ; acyclic = acyclic
               ; total = total
               }
+
+  forward : ∀ x n → ∃[ y ] x ─[ n ]→ y
+  forward x zero = x , ε
+  forward x (suc n) = let (y' , x→y') = forward x n in
+                      let (y , x⋖y)  = next y' in y , (x→y' ▸ x⋖y)
+
+  backward? : ∀ y n → Dec (∃[ x ] x ─[ n ]→ y)
+  backward? y zero = yes (y , ε)
+  backward? y (suc n) with isSuc? y
+  backward? y (suc n) | yes isSuc with prev y isSuc
+  ... | y' , y'⋖y with backward? y' n
+  ... | yes (x , x→y) = yes (x , (x→y ▸ y'⋖y))
+  ... | no ¬p = no λ {(x , x→y) → ¬p (x , (x→y ▸⁻¹ y'⋖y))}
+  backward? y (suc n) | no ¬isSuc = no λ { (_ , (_ ▸ y'⋖y)) → ¬isSuc (∃prev⇒IsSuc y'⋖y)}
+
+  irrelevant : ∀ {x y n} → (p₁ p₂ : x ─[ n ]→ y) → p₁ ≡ p₂
+  irrelevant ε ε = refl
+  irrelevant (p₁ ▸ x) (p₂ ▸ x₁) with uniqueʳ p₁ p₂
+  ... | refl with irrelevant p₁ p₂ | ⋖-irrelevant x x₁
+  ... | refl | refl = refl
+
+import Gregorianum.Relation.Timeline A as T
+
+record IsIsoToTimeline (isSuccession : IsSuccession) (isTimeline : T.IsTimeline) : Set where
+  open IsSuccession isSuccession
+  open T.IsTimeline isTimeline using (_HasOrdinal_)
+  field
+    suc-ordinal⇒IsSuc : ∀ {d n} → d HasOrdinal (suc n) → IsSuc d
+    prev-ordinal : ∀ {d₁ d₂ n} → d₁ ⋖ d₂ → d₂ HasOrdinal (suc n) → d₁ HasOrdinal n
+    next-ordinal : ∀ {d₁ d₂ n} → d₁ ⋖ d₂ → d₁ HasOrdinal n → d₂ HasOrdinal (suc n)
+
+module IsoToTimeline (isSuccession : IsSuccession) (isTimeline : T.IsTimeline) (isIsoToTimeline : IsIsoToTimeline isSuccession isTimeline) where
+  open IsSuccession isSuccession
+  open Path isSuccession
+  module TP = T.Path isTimeline
+  open IsIsoToTimeline isIsoToTimeline
+
+  fromTimeline : ∀ {x y n} → x TP.─[ n ]→ y → x ─[ n ]→ y
+  fromTimeline {n = zero} x→y with TP.identity⁻¹ x→y
+  ... | refl = ε
+  fromTimeline {y = y} {n = suc n} TP.⟨ start , end ⟩ with prev y (suc-ordinal⇒IsSuc end)
+  ... | y' , y'⋖y with prev-ordinal y'⋖y end
+  ... | ho with fromTimeline TP.⟨ start , ho ⟩
+  ... | x→y' = x→y' ▸ y'⋖y
+
+  toTimeline : ∀ {x y n} → x ─[ n ]→ y → x TP.─[ n ]→ y
+  toTimeline ε = TP.identity refl
+  toTimeline (x→y' ▸ y'⋖y) with toTimeline x→y'
+  ... | TP.⟨ start , end' ⟩ = TP.⟨ start , next-ordinal y'⋖y end' ⟩
+
+  from∘to : ∀ {x y n} → (p : x ─[ n ]→ y) → fromTimeline (toTimeline p) ≡ p
+  from∘to p = irrelevant (fromTimeline (toTimeline p)) p
+
+  to∘from : ∀ {x y n} → (p : x TP.─[ n ]→ y) → toTimeline (fromTimeline p) ≡ p
+  to∘from p = TP.irrelevant (toTimeline (fromTimeline p)) p
+
+  compare : ∀ x y → Tri x y
+  compare x y with TP.compare x y
+  ... | TP.tri≡ x₁ = tri≡ x₁
+  ... | TP.tri→ n x→y = tri→ n (fromTimeline x→y)
+  ... | TP.tri← n y→x = tri← n (fromTimeline y→x)
+
+  _─[_]→?_ : ∀ x n y → Dec (x ─[ n ]→ y)
+  x ─[ n ]→? y with x TP.─[ n ]→? y
+  ... | yes x→y = yes (fromTimeline x→y)
+  ... | no ¬p = no λ {x→y → ¬p (toTimeline x→y)}

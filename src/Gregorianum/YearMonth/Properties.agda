@@ -22,6 +22,11 @@ open import Relation.Nullary.Negation using (¬_; contradiction)
 import Relation.Binary.Construct.On as On
 open import Function using (_∘_)
 
+⋖-irrelevant : ∀ {ym₁ ym₂} → (p₁ p₂ : ym₁ ⋖ ym₂) → p₁ ≡ p₂
+⋖-irrelevant step-month step-month = refl
+⋖-irrelevant (step-year p₁) (step-year p₂) with Y.⋖-irrelevant p₁ p₂
+... | refl = refl
+
 next-unique : ∀ {ym₁ ym₂ ym₃}
                      → ym₁ ⋖ ym₂
                      → ym₁ ⋖ ym₃
@@ -145,3 +150,13 @@ year-month-unique {ym₁} {ym₂} {suc n} p q with prev ym₁ (suc-ordinal⇒IsS
 ... | p' | q' with year-month-unique p' q'
 ... | refl with next-unique ym₁'⋖ym₁ ym₂'⋖ym₂
 ... | refl = refl
+
+module _ where
+  open import Relation.Binary.HeterogeneousEquality using (_≅_; refl; ≅-to-≡)
+
+  private
+    has-ordinal-irrelevant' : ∀ {ym n₁ n₂} → (p₁ : ym HasOrdinal n₁) → (p₂ : ym HasOrdinal n₂) → n₁ ≡ n₂ → p₁ ≅ p₂
+    has-ordinal-irrelevant' (ordinal weight) (ordinal weight) refl = refl
+
+  has-ordinal-irrelevant : ∀ {ym n} → (p₁ p₂ : ym HasOrdinal n) → p₁ ≡ p₂
+  has-ordinal-irrelevant p₁ p₂ = ≅-to-≡ (has-ordinal-irrelevant' p₁ p₂ refl)

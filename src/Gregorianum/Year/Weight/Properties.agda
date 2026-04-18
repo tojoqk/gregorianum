@@ -108,3 +108,6 @@ next-leap-common-weight step₁ weight weight = inj₂ (common₁ , weight , wei
 next-leap-common-weight step₄ weight weight = inj₁ (leap₄ , weight , weight)
 next-leap-common-weight step₁₀₀ weight weight = inj₂ (common₁₀₀ , weight , weight)
 next-leap-common-weight step₄₀₀ weight weight = inj₁ (leap₄₀₀ , weight , weight)
+
+has-leap-weight-irrelevant : ∀ {y lw} → {{_ : NonZero lw}} → (p₁ p₂ : y HasLeapWeight lw) → p₁ ≡ p₂
+has-leap-weight-irrelevant weight weight = refl

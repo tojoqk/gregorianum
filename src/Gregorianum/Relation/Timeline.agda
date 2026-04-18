@@ -15,6 +15,7 @@ record IsTimeline : Set₁ where
     unique : ∀ {x y n} → x HasOrdinal n → y HasOrdinal n → x ≡ y
     ordinal-unique : ∀ {x n₁ n₂} → x HasOrdinal n₁ → x HasOrdinal n₂ → n₁ ≡ n₂
     shift : ∀ {n} → (x : A) → (k : ℕ) → x HasOrdinal n → ∃[ y ] y HasOrdinal (k + n)
+    has-ordinal-irrelevant : ∀ {x n} → (p₁ p₂ : x HasOrdinal n) → p₁ ≡ p₂
 
 module Path (isTimeline : IsTimeline) where
   open IsTimeline isTimeline
@@ -119,6 +120,11 @@ module Path (isTimeline : IsTimeline) where
               ; acyclic = acyclic
               ; total = total
               }
+
+  irrelevant : ∀ {x y n} → (p₁ p₂ : x ─[ n ]→ y) → p₁ ≡ p₂
+  irrelevant ⟨ s₁ , e₁ ⟩ ⟨ s₂ , e₂ ⟩ with ordinal-unique s₁ s₂ | ordinal-unique e₁ e₂
+  ... | refl | refl with has-ordinal-irrelevant s₁ s₂ | has-ordinal-irrelevant e₁ e₂
+  ... | refl | refl = refl
 
   _─[_]→?_ : ∀ x n y → Dec (x ─[ n ]→ y)
   x ─[ n ]→? y with compare x y
