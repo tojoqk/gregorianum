@@ -74,16 +74,16 @@ has-days-irrelevant (mkHasDays hasYearType₁ hasDays₁) (mkHasDays hasYearType
 <-WellFounded ym = On.accessible (proj₁ ∘ toOrdinal) (ℕ.<-wellFounded-fast (proj₁ (toOrdinal ym)))
 
 next-ordinal : ∀ {ym₁ ym₂ n} → ym₁ ⋖ ym₂ → ym₁ HasOrdinal n → ym₂ HasOrdinal (suc n)
-next-ordinal (step-year {y₁} {y₂} y₁⋖y₂) (ordinal weight) with next-weight y₁⋖y₂ weight
+next-ordinal (step-year {y₁} {y₂} y₁⋖y₂) (ordinal Y.ordinal) with Y.next-ordinal y₁⋖y₂ Y.ordinal
 ...                                                                         | h = ordinal h
-next-ordinal (step-month {y} {ac} {rm} {c}) (ordinal {n} weight) = ordinal weight
+next-ordinal (step-month {y} {ac} {rm} {c}) (ordinal {n} Y.ordinal) = ordinal Y.ordinal
 
 ⋖⇒suc : ∀ {ym₁ ym₂} → ym₁ ⋖ ym₂ → ∃[ n ] (ym₁ HasOrdinal n) × (ym₂ HasOrdinal (suc n))
-⋖⇒suc ym₁⋖ym₂ with next-ordinal ym₁⋖ym₂ (ordinal weight)
-... | h = _ , ((ordinal weight) , h)
+⋖⇒suc ym₁⋖ym₂ with next-ordinal ym₁⋖ym₂ (ordinal Y.ordinal)
+... | h = _ , ((ordinal Y.ordinal) , h)
 
 ordinal-unique : ∀ {ym n₁ n₂} → ym HasOrdinal n₁ → ym HasOrdinal n₂ → n₁ ≡ n₂
-ordinal-unique (ordinal weight) (ordinal weight) = refl
+ordinal-unique (ordinal Y.ordinal) (ordinal Y.ordinal) = refl
 
 suc-ordinal⇒IsSuc : ∀ {ym n} → ym HasOrdinal (suc n) → IsSuc ym
 suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p with Y.isSuc? year
@@ -91,14 +91,14 @@ suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p with Y.isSuc? year
 suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p | no ¬q with Y.¬IsSuc⇒first ¬q
 suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl with toOrdinal ((0 Y.′ mkPos first ″ mkPos first ‴ mkPos first) - [ mkPos first ])
 suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , snd with ordinal-unique p snd
-suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , ordinal weight | ()
+suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , ordinal Y.ordinal | ()
 suc-ordinal⇒IsSuc {year - [ mkPos (suc cursor) ]} p | no _ | refl = suc-month
 
 IsSuc⇒suc-ordinal : ∀ {ym} → IsSuc ym → ∃[ n ] ym HasOrdinal (suc n)
-IsSuc⇒suc-ordinal suc-month = _ + 0 * 12 , ordinal weight
-IsSuc⇒suc-ordinal {year - [ mkPos first ]} (suc-year x) with IsSuc⇒suc-weight x
+IsSuc⇒suc-ordinal suc-month = _ + 0 * 12 , ordinal Y.ordinal
+IsSuc⇒suc-ordinal {year - [ mkPos first ]} (suc-year x) with Y.IsSuc⇒suc-ordinal x
 ... | fst , snd = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (fst * 12))))))))))) , ordinal snd
-IsSuc⇒suc-ordinal {year - [ mkPos (suc c) ]} (suc-year x) = _ , ordinal weight
+IsSuc⇒suc-ordinal {year - [ mkPos (suc c) ]} (suc-year x) = _ , ordinal Y.ordinal
 
 ¬IsSuc⇒first : ∀ {ym} → ¬ IsSuc ym → ym ≡ (zero Y.′ mkPos first ″ mkPos first ‴ mkPos first) - january
 ¬IsSuc⇒first {y - m} p with Y.isSuc? y
@@ -124,14 +124,14 @@ prev-ordinal ym₁⋖ym₂ p with ⋖⇒suc ym₁⋖ym₂
 
 ⋖⇒< : ∀ {ym₁ ym₂} → ym₁ ⋖ ym₂ → ym₁ < ym₂
 ⋖⇒< {ym₁} {ym₂} p with ⋖⇒suc p | toOrdinal ym₁ | toOrdinal ym₂
-... | n , ep₁ , ep₂ | n₁ , ordinal _ | n₂ , ordinal _ with ordinal-unique ep₁ (ordinal weight) | ordinal-unique ep₂ (ordinal weight)
+... | n , ep₁ , ep₂ | n₁ , ordinal _ | n₂ , ordinal _ with ordinal-unique ep₁ (ordinal Y.ordinal) | ordinal-unique ep₂ (ordinal Y.ordinal)
 ... | eq₁ | eq₂ rewrite sym eq₁ | sym eq₂ = ≤-refl
 
 ⋖-wellFounded : WellFounded _⋖_
 ⋖-wellFounded y = Subrelation.accessible ⋖⇒< (<-WellFounded y)
 
 first-ordinal≡zero : ∀ {n} → year-month-first HasOrdinal n → n ≡ 0
-first-ordinal≡zero p with ordinal-unique p (ordinal weight)
+first-ordinal≡zero p with ordinal-unique p (ordinal Y.ordinal)
 ... | refl = refl
 
 ordinal≡0⇒first : ∀ {ym} → ym HasOrdinal 0 → ym ≡ year-month-first
@@ -156,7 +156,7 @@ module _ where
 
   private
     has-ordinal-irrelevant' : ∀ {ym n₁ n₂} → (p₁ : ym HasOrdinal n₁) → (p₂ : ym HasOrdinal n₂) → n₁ ≡ n₂ → p₁ ≅ p₂
-    has-ordinal-irrelevant' (ordinal weight) (ordinal weight) refl = refl
+    has-ordinal-irrelevant' (ordinal Y.ordinal) (ordinal Y.ordinal) refl = refl
 
   has-ordinal-irrelevant : ∀ {ym n} → (p₁ p₂ : ym HasOrdinal n) → p₁ ≡ p₂
   has-ordinal-irrelevant p₁ p₂ = ≅-to-≡ (has-ordinal-irrelevant' p₁ p₂ refl)
