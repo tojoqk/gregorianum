@@ -8,6 +8,7 @@ open import Relation.Binary.PropositionalEquality as Eq using (_≡_; refl; sym;
 open import Data.Nat.Properties using (+-suc; +-identityʳ)
 open import Relation.Nullary.Negation using (¬_)
 import Induction.WellFounded as WF
+open import Function using (_↔_)
 
 record IsSuccession : Set₁ where
   field
@@ -230,11 +231,13 @@ module IsoToTimeline (isSuccession : IsSuccession) (isTimeline : T.IsTimeline) (
   toTimeline (x→y' ▸ y'⋖y) with toTimeline x→y'
   ... | TP.⟨ start , end' ⟩ = TP.⟨ start , next-ordinal y'⋖y end' ⟩
 
-  fromTimeline∘toTimeline : ∀ {x y n} → (p : x ─[ n ]→ y) → fromTimeline (toTimeline p) ≡ p
-  fromTimeline∘toTimeline p = irrelevant (fromTimeline (toTimeline p)) p
-
-  toTimeline∘fromTimeline : ∀ {x y n} → (p : x TP.─[ n ]→ y) → toTimeline (fromTimeline p) ≡ p
-  toTimeline∘fromTimeline p = TP.irrelevant (toTimeline (fromTimeline p)) p
+  iso : ∀ {x y n} → x ─[ n ]→ y ↔ x TP.─[ n ]→ y
+  iso = record
+          { to = toTimeline
+          ; from = fromTimeline
+          ; to-cong = λ { refl → refl}
+          ; from-cong = λ { refl → refl}
+          ; inverse = (λ _ → TP.irrelevant _ _) , (λ _ → irrelevant _ _) }
 
   compare : ∀ x y → Tri x y
   compare x y with TP.compare x y
