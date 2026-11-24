@@ -1,9 +1,9 @@
 module Gregorianum.DateHour.Timeline where
 
 open import Gregorianum.DateHour.Base
-  using (DateHour; _HasOrdinal_; toOrdinal; next; isSuc?; prev)
+  using (DateHour; _HasOrdinal_; toOrdinal; next)
 open import Gregorianum.DateHour.Properties
-  using (date-hour-unique; next-ordinal; prev-ordinal; suc-ordinal⇒IsSuc; ordinal-unique; has-ordinal-irrelevant)
+  using (date-hour-unique; next-ordinal; prev-ordinal; ordinal-unique; has-ordinal-irrelevant)
 
 open import Gregorianum.Relation.Timeline DateHour using (IsTimeline; module Path)
 

@@ -12,15 +12,12 @@ open import Function using (_↔_)
 
 record IsSuccession : Set₁ where
   field
-    IsSuc : A → Set
-    isSuc? : (x : A) → Dec (IsSuc x)
-    ¬isSuc-unique : ∀ {x y} → ¬ IsSuc x → ¬ IsSuc y → x ≡ y
+    ¬∃prev-unique : ∀ {x y} → ¬ (∃[ x′ ] x′ ⋖ x) → ¬ (∃[ y′ ] y′ ⋖ y) → x ≡ y
     next : (x : A) → ∃[ y ] x ⋖ y
-    prev : (y : A) → IsSuc y → ∃[ x ] x ⋖ y
+    prev? : (x : A) → Dec (∃[ x′ ] x′ ⋖ x)
     next-unique : ∀ {x y z} → x ⋖ y → x ⋖ z → y ≡ z
     prev-unique : ∀ {x y z} → x ⋖ z → y ⋖ z → x ≡ y
     ⋖-wellFounded : WF.WellFounded _⋖_
-    ∃prev⇒IsSuc : ∀ {x y} → x ⋖ y → IsSuc y
     ⋖-irrelevant : ∀ {d₁ d₂} → (p₁ p₂ : d₁ ⋖ d₂) → p₁ ≡ p₂
 
 module Path (isSuccession : IsSuccession) where
@@ -142,29 +139,25 @@ module Path (isSuccession : IsSuccession) where
   ... | refl = refl
 
   private
-    bridge' : ∀ x y → ¬ IsSuc x → WF.Acc _⋖_ y → ∃[ n ] x ─[ n ]→ y
-    bridge' x y ¬isSuc _ with isSuc? y
-    bridge' x y ¬isSuc (WF.acc rs) | yes isSuc' with prev y isSuc'
-    ... | y' , y'⋖y with bridge' x y' ¬isSuc (rs y'⋖y)
+    bridge' : ∀ x y → ¬ (∃[ x′ ] x′ ⋖ x) → WF.Acc _⋖_ y → ∃[ n ] x ─[ n ]→ y
+    bridge' x y ¬∃prev _ with prev? y
+    bridge' x y ¬∃prev (WF.acc rs) | yes (y' , y'⋖y) with bridge' x y' ¬∃prev (rs y'⋖y)
     ... | n , x→y = suc n , (x→y ▸ y'⋖y)
-    bridge' x y ¬isSuc _ | no ¬isSuc' with ¬isSuc-unique ¬isSuc ¬isSuc'
+    bridge' x y ¬∃prev _ | no ¬∃prev' with ¬∃prev-unique ¬∃prev ¬∃prev'
     ... | refl = 0 , ε
 
-    bridge : ∀ x y → ¬ IsSuc x → ∃[ n ] x ─[ n ]→ y
-    bridge x y ¬isSuc = bridge' x y ¬isSuc (⋖-wellFounded y)
+    bridge : ∀ x y → ¬ (∃[ x′ ] x′ ⋖ x) → ∃[ n ] x ─[ n ]→ y
+    bridge x y ¬∃prev = bridge' x y ¬∃prev (⋖-wellFounded y)
 
     total' : ∀ x y → WF.Acc _⋖_ y → Tri x y
-    total' x y _ with isSuc? x | isSuc? y
-    total' x y _ | no ¬isSuc₁ | no ¬isSuc₂ with ¬isSuc-unique ¬isSuc₁ ¬isSuc₂
+    total' x y _ with prev? x | prev? y
+    total' x y _ | no ¬∃prev₁ | no ¬∃prev₂ with ¬∃prev-unique ¬∃prev₁ ¬∃prev₂
     ... | eq = tri≡ eq
-    total' x y _ | yes isSuc₁ | no ¬isSuc₂ with prev x isSuc₁
-    ... | x' , x'⋖x with bridge y x' ¬isSuc₂
+    total' x y _ | yes (x' , x'⋖x) | no ¬∃prev₂ with bridge y x' ¬∃prev₂
     ... | n , y→x' = tri← n (y→x' ▸ x'⋖x)
-    total' x y _ | no ¬isSuc₁ | yes isSuc₂ with prev y isSuc₂
-    ... | y' , y'⋖y with bridge x y' ¬isSuc₁
+    total' x y _ | no ¬∃prev₁ | yes (y' , y'⋖y) with bridge x y' ¬∃prev₁
     ... | n , x→y' = tri→ n (x→y' ▸ y'⋖y)
-    total' x y (WF.acc rs) | yes isSuc₁ | yes isSuc₂ with prev x isSuc₁ | prev y isSuc₂
-    ... | x' , x'⋖x | y' , y'⋖y with total' x' y' (rs y'⋖y)
+    total' x y (WF.acc rs) | yes (x' , x'⋖x) | yes (y' , y'⋖y) with total' x' y' (rs y'⋖y)
     ... | tri≡ refl = tri≡ (next-unique x'⋖x y'⋖y)
     ... | tri→ n x'→y' = tri→ n (x'→y' >>⟨ x'⋖x , y'⋖y ⟩)
     ... | tri← n y'→x' = tri← n (y'→x' >>⟨ y'⋖y , x'⋖x ⟩)
@@ -189,12 +182,11 @@ module Path (isSuccession : IsSuccession) where
 
   backward? : ∀ y n → Dec (∃[ x ] x ─[ n ]→ y)
   backward? y zero = yes (y , ε)
-  backward? y (suc n) with isSuc? y
-  backward? y (suc n) | yes isSuc with prev y isSuc
-  ... | y' , y'⋖y with backward? y' n
+  backward? y (suc n) with prev? y
+  backward? y (suc n) | yes (y' , y'⋖y) with backward? y' n
   ... | yes (x , x→y) = yes (x , (x→y ▸ y'⋖y))
   ... | no ¬p = no λ {(x , x→y) → ¬p (x , (x→y ▸⁻¹ y'⋖y))}
-  backward? y (suc n) | no ¬isSuc = no λ { (_ , (_ ▸ y'⋖y)) → ¬isSuc (∃prev⇒IsSuc y'⋖y)}
+  backward? y (suc n) | no ¬∃prev = no λ { (_ , (_ ▸ y'⋖y)) → ¬∃prev (_ , y'⋖y) }
 
   irrelevant : ∀ {x y n} → (p₁ p₂ : x ─[ n ]→ y) → p₁ ≡ p₂
   irrelevant ε ε = refl
@@ -208,7 +200,7 @@ record IsIsoToTimeline (isSuccession : IsSuccession) (isTimeline : T.IsTimeline)
   open IsSuccession isSuccession
   open T.IsTimeline isTimeline using (_HasOrdinal_)
   field
-    suc-ordinal⇒IsSuc : ∀ {d n} → d HasOrdinal (suc n) → IsSuc d
+    suc-ordinal⇒∃prev : ∀ {d n} → d HasOrdinal (suc n) → ∃[ d′ ] d′ ⋖ d
     prev-ordinal : ∀ {d₁ d₂ n} → d₁ ⋖ d₂ → d₂ HasOrdinal (suc n) → d₁ HasOrdinal n
     next-ordinal : ∀ {d₁ d₂ n} → d₁ ⋖ d₂ → d₁ HasOrdinal n → d₂ HasOrdinal (suc n)
 
@@ -221,7 +213,7 @@ module IsoToTimeline (isSuccession : IsSuccession) (isTimeline : T.IsTimeline) (
   fromTimeline : ∀ {x y n} → x TP.─[ n ]→ y → x ─[ n ]→ y
   fromTimeline {n = zero} x→y with TP.identity⁻¹ x→y
   ... | refl = ε
-  fromTimeline {y = y} {n = suc n} TP.⟨ start , end ⟩ with prev y (suc-ordinal⇒IsSuc end)
+  fromTimeline {y = y} {n = suc n} TP.⟨ start , end ⟩ with suc-ordinal⇒∃prev end
   ... | y' , y'⋖y with prev-ordinal y'⋖y end
   ... | ho with fromTimeline TP.⟨ start , ho ⟩
   ... | x→y' = x→y' ▸ y'⋖y

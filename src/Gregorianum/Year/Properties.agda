@@ -49,22 +49,15 @@ next-unique step₄₀₀ step₄₀₀ = refl
 ⋖-irrelevant step₁₀₀ step₁₀₀ = refl
 ⋖-irrelevant step₄₀₀ step₄₀₀ = refl
 
-∃prev⇒IsSuc : ∀ {y₁ y₂ : Year} → y₁ ⋖ y₂ → IsSuc y₂
-∃prev⇒IsSuc step₁ = suc₁
-∃prev⇒IsSuc step₄ = suc₄
-∃prev⇒IsSuc step₁₀₀ = suc₁₀₀
-∃prev⇒IsSuc step₄₀₀ = suc₄₀₀
+¬∃prev⇒first : ∀ {y} → ¬ (∃[ y′ ] y′ ⋖ y) → y ≡ year-first
+¬∃prev⇒first {q ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc cursor)} p = contradiction (_ , step₁) p
+¬∃prev⇒first {q ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} p = contradiction (_ , step₄) p
+¬∃prev⇒first {q ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} p = contradiction (_ , step₁₀₀) p
+¬∃prev⇒first {suc q ′ mkPos first ″ mkPos first ‴ mkPos first} p = contradiction (_ , step₄₀₀) p
+¬∃prev⇒first {year-first} p = refl
 
-¬IsSuc⇒first : ∀ {y} → ¬ (IsSuc y) → y ≡ year-first
-¬IsSuc⇒first {q ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc cursor)} ¬isSuc = contradiction suc₁ ¬isSuc
-¬IsSuc⇒first {q ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} ¬isSuc = contradiction suc₄ ¬isSuc
-¬IsSuc⇒first {q ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} ¬isSuc = contradiction suc₁₀₀ ¬isSuc
-¬IsSuc⇒first {suc q ′ mkPos first ″ mkPos first ‴ mkPos first} ¬isSuc = contradiction suc₄₀₀ ¬isSuc
-¬IsSuc⇒first {year-first} ¬isSuc = refl
-
-¬isSuc-unique : ∀ {d₁ d₂} → ¬ IsSuc d₁ → ¬ IsSuc d₂ → d₁ ≡ d₂
-¬isSuc-unique ¬isSuc₁ ¬isSuc₂ with ¬IsSuc⇒first ¬isSuc₁ | ¬IsSuc⇒first ¬isSuc₂
-... | refl | refl = refl
+¬∃prev-unique : ∀ {y₁ y₂} → ¬ (∃[ y′ ] y′ ⋖ y₁) → ¬ (∃[ y′ ] y′ ⋖ y₂) → y₁ ≡ y₂
+¬∃prev-unique {y₁} {y₂} p₁ p₂ rewrite ¬∃prev⇒first p₁ | ¬∃prev⇒first p₂ = refl
 
 next-ordinal : ∀ {y₁ y₂ n} → y₁ ⋖ y₂ → y₁ HasOrdinal n → y₂ HasOrdinal (suc n)
 next-ordinal step₁ ordinal = ordinal
@@ -78,17 +71,17 @@ prev-ordinal step₄ ordinal = ordinal
 prev-ordinal step₁₀₀ ordinal = ordinal
 prev-ordinal step₄₀₀ ordinal = ordinal
 
-suc-ordinal⇒IsSuc : ∀ {y n} → y HasOrdinal (suc n) → IsSuc y
-suc-ordinal⇒IsSuc {quadricentennial ′ pos₁₀₀ ″ mkPos cursor ‴ mkPos (suc cursor₁)} {n = _} ordinal = suc₁
-suc-ordinal⇒IsSuc {quadricentennial ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} {n = _} ordinal = suc₄
-suc-ordinal⇒IsSuc {quadricentennial ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} {n = _} ordinal = suc₁₀₀
-suc-ordinal⇒IsSuc {suc quadricentennial ′ mkPos first ″ mkPos first ‴ mkPos first} {n = _} ordinal = suc₄₀₀
+suc-ordinal⇒∃prev : ∀ {y n} → y HasOrdinal (suc n) → ∃[ y′ ] y′ ⋖ y
+suc-ordinal⇒∃prev {quadricentennial ′ pos₁₀₀ ″ mkPos cursor ‴ mkPos (suc cursor₁)} {n = _} ordinal = _ , step₁
+suc-ordinal⇒∃prev {quadricentennial ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} {n = _} ordinal = _ , step₄
+suc-ordinal⇒∃prev {quadricentennial ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} {n = _} ordinal = _ , step₁₀₀
+suc-ordinal⇒∃prev {suc quadricentennial ′ mkPos first ″ mkPos first ‴ mkPos first} {n = _} ordinal = _ , step₄₀₀
 
-IsSuc⇒suc-ordinal : ∀ {y} → IsSuc y → ∃[ n ] y HasOrdinal (suc n)
-IsSuc⇒suc-ordinal suc₁ = _ , ordinal
-IsSuc⇒suc-ordinal suc₄ = _ , ordinal
-IsSuc⇒suc-ordinal suc₁₀₀ = _ , ordinal
-IsSuc⇒suc-ordinal suc₄₀₀ = _ , ordinal
+∃prev⇒suc-ordinal : ∀ {y} → ∃[ y′ ] y′ ⋖ y → ∃[ n ] y HasOrdinal (suc n)
+∃prev⇒suc-ordinal (_ , step₁) = _ , ordinal
+∃prev⇒suc-ordinal (_ , step₄) = _ , ordinal
+∃prev⇒suc-ordinal (_ , step₁₀₀) = _ , ordinal
+∃prev⇒suc-ordinal (_ , step₄₀₀) = _ , ordinal
 
 import Data.Nat.Induction as ℕ
 open import Induction.WellFounded
@@ -114,14 +107,14 @@ ordinal-unique ordinal ordinal = refl
 ⋖-wellFounded y = Subrelation.accessible ⋖⇒< (<-WellFounded y)
 
 year-unique : ∀ {y₁ y₂ n} → y₁ HasOrdinal n → y₂ HasOrdinal n → y₁ ≡ y₂
-year-unique {y₁} {y₂} {suc n} p q with prev y₁ (suc-ordinal⇒IsSuc p) | prev y₂ (suc-ordinal⇒IsSuc q)
+year-unique {y₁} {y₂} {suc n} p q with suc-ordinal⇒∃prev p | suc-ordinal⇒∃prev q
 ... | y₁' , y₁'⋖y₁ | y₂' , y₂'⋖y₂ with year-unique {y₁'} {y₂'} (prev-ordinal y₁'⋖y₁ p) (prev-ordinal y₂'⋖y₂ q)
 ... | refl = next-unique y₁'⋖y₁ y₂'⋖y₂
 year-unique {year-first} {year-first} {zero} ordinal ordinal = refl
 
-common⇒IsSuc : ∀ {y} → y HasYearType common → IsSuc y
-common⇒IsSuc common₁ = suc₁
-common⇒IsSuc common₁₀₀ = suc₁₀₀
+common⇒∃prev : ∀ {y} → y HasYearType common → ∃[ y′ ] y′ ⋖ y
+common⇒∃prev common₁ = _ , step₁
+common⇒∃prev common₁₀₀ = _ , step₁₀₀
 
 has-ordinal-irrelevant : ∀ {y n} → (p₁ p₂ : y HasOrdinal n) → p₁ ≡ p₂
 has-ordinal-irrelevant ordinal ordinal = refl

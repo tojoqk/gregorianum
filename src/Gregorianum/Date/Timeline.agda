@@ -1,9 +1,9 @@
 module Gregorianum.Date.Timeline where
 
 open import Gregorianum.Date.Base
-  using (Date; _HasOrdinal_; toOrdinal; next; isSuc?; prev)
+  using (Date; _HasOrdinal_; toOrdinal; next)
 open import Gregorianum.Date.Properties
-  using (date-unique; next-ordinal; prev-ordinal; suc-ordinal⇒IsSuc; ordinal-unique; has-ordinal-irrelevant)
+  using (date-unique; next-ordinal; prev-ordinal; ordinal-unique; has-ordinal-irrelevant)
 
 open import Gregorianum.Relation.Timeline Date using (IsTimeline; module Path)
 

@@ -1,7 +1,7 @@
 module Gregorianum.Date.Succession where
 
-open import Gregorianum.Date using (Date; _⋖_; IsSuc; isSuc?; next; prev; toOrdinal)
-open import Gregorianum.Date.Properties using (¬isSuc-unique; next-unique; prev-unique; ⋖-wellFounded; ∃prev⇒IsSuc; suc-ordinal⇒IsSuc; prev-ordinal; next-ordinal; ⋖-irrelevant)
+open import Gregorianum.Date using (Date; _⋖_; next; prev?; toOrdinal)
+open import Gregorianum.Date.Properties using (¬∃prev-unique; suc-ordinal⇒∃prev; next-unique; prev-unique; ⋖-wellFounded; prev-ordinal; next-ordinal; ⋖-irrelevant)
 import Gregorianum.Date.Timeline as T
 
 open import Data.Nat using (ℕ; zero; suc; _+_)
@@ -14,15 +14,12 @@ open import Gregorianum.Relation.Succession Date _⋖_
 
 isSuccession : IsSuccession
 isSuccession = record
-          { IsSuc = IsSuc
-          ; isSuc? = isSuc?
-          ; ¬isSuc-unique = ¬isSuc-unique
-          ; next = next
-          ; prev = prev
+          { next = next
+          ; prev? = prev?
+          ; ¬∃prev-unique = ¬∃prev-unique
           ; next-unique = next-unique
           ; prev-unique = prev-unique
           ; ⋖-wellFounded = ⋖-wellFounded
-          ; ∃prev⇒IsSuc = ∃prev⇒IsSuc
           ; ⋖-irrelevant = ⋖-irrelevant
           }
 
@@ -32,7 +29,7 @@ open import Gregorianum.Date.Timeline using (isTimeline)
 
 isIsoToTimeline : IsIsoToTimeline isSuccession isTimeline
 isIsoToTimeline = record
-                   { suc-ordinal⇒IsSuc = suc-ordinal⇒IsSuc
+                   { suc-ordinal⇒∃prev = suc-ordinal⇒∃prev
                    ; prev-ordinal = prev-ordinal
                    ; next-ordinal = next-ordinal
                    }

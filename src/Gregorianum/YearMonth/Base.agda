@@ -24,18 +24,6 @@ data _⋖_ : YearMonth → YearMonth → Set where
   step-month : ∀ {y acc rem} → {c : Cursor 11 acc (suc rem)} → (y - [ mkPos c ]) ⋖ (y - [ mkPos (suc c) ])
   step-year : ∀ {y₁ y₂} → y₁ Y.⋖ y₂ → (y₁ - december) ⋖ (y₂ - january)
 
-data IsSuc : YearMonth → Set where
-  suc-month : ∀ {acc rem} → {c : Cursor 11 (suc acc) rem} → IsSuc (year-first - [ mkPos c ])
-  suc-year : ∀ {ym} → Y.IsSuc (YearMonth.year ym) → IsSuc ym
-
-
-isSuc? : (ym : YearMonth) → Dec (IsSuc ym)
-isSuc? (year - month) with Y.isSuc? year
-... | yes p = yes (suc-year p)
-isSuc? (year - month) | no p with Y.¬IsSuc⇒first p
-isSuc? year-month-first | no ¬p | refl = no λ { (suc-year p) → ¬p p}
-isSuc? (Y.year-first - [ mkPos (suc _) ]) | no _ | refl = yes suc-month
-
 record _HasDays_ (ym : YearMonth) (days : ℕ) : Set where
   constructor mkHasDays
   field
@@ -59,10 +47,11 @@ next (year - december) with Y.next year
 next (year - [ mkPos {rem = zero} c₁₂@(suc¹² _) ]) with rem≡0⇒width≡acc c₁₂
 ...                                                         | ()
 
-prev : ∀ ym₂ → IsSuc ym₂ → ∃[ ym₁ ] ym₁ ⋖ ym₂
-prev (_ - [ mkPos (suc c) ]) suc-month = (year-first - [ mkPos c ]) , step-month
-prev (year - [ mkPos first ]) (suc-year x) = (proj₁ (Y.prev year x) - december) , step-year (proj₂ (Y.prev year x))
-prev (year - [ mkPos (suc month) ]) (suc-year x) = (year - [ mkPos month ]) , step-month
+prev? : (ym : YearMonth) → Dec (∃[ ym′ ] ym′ ⋖ ym)
+prev? (y - january) with Y.prev? y
+... | yes (y′ , y′⋖y) = yes ((y′ - december) , step-year y′⋖y)
+... | no ¬p  = no λ { (y′ , step-year y′⋖y) → ¬p (YearMonth.year y′ , y′⋖y) }
+prev? (y - [ mkPos (suc c) ]) = yes ((y - [ mkPos c ]) , step-month)
 
 data _HasOrdinal_ (ym : YearMonth) : (n : ℕ) → Set where
   ordinal : ∀ {yo}

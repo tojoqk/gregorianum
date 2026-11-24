@@ -5,7 +5,7 @@ open import Gregorianum.YearMonth.Base
 open import Gregorianum.Year as Y using (common₁; common₁₀₀)
 open import Gregorianum.Year.Properties as Y using (year-type-unique; has-type-irrelevant)
 open import Gregorianum.Year.Weight.Base using (weight)
-open import Gregorianum.Year.Weight.Properties using (next-weight; IsSuc⇒suc-weight)
+open import Gregorianum.Year.Weight.Properties using (next-weight)
 open import Gregorianum.Month as M hiding (_HasDays_)
 open import Gregorianum.Data.Cursor using (first; suc)
 open import Gregorianum.Data.Position using (mkPos)
@@ -85,37 +85,32 @@ next-ordinal (step-month {y} {ac} {rm} {c}) (ordinal {n} Y.ordinal) = ordinal Y.
 ordinal-unique : ∀ {ym n₁ n₂} → ym HasOrdinal n₁ → ym HasOrdinal n₂ → n₁ ≡ n₂
 ordinal-unique (ordinal Y.ordinal) (ordinal Y.ordinal) = refl
 
-suc-ordinal⇒IsSuc : ∀ {ym n} → ym HasOrdinal (suc n) → IsSuc ym
-suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p with Y.isSuc? year
-... | yes q = suc-year q
-suc-ordinal⇒IsSuc {year - [ mkPos cursor ]} p | no ¬q with Y.¬IsSuc⇒first ¬q
-suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl with toOrdinal ((0 Y.′ mkPos first ″ mkPos first ‴ mkPos first) - [ mkPos first ])
-suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , snd with ordinal-unique p snd
-suc-ordinal⇒IsSuc {year-month-first} p | no ¬q | refl | n , ordinal Y.ordinal | ()
-suc-ordinal⇒IsSuc {year - [ mkPos (suc cursor) ]} p | no _ | refl = suc-month
+¬∃prev⇒first : ∀ {ym} → ¬ (∃[ ym′ ] ym′ ⋖ ym) → ym ≡ (zero Y.′ mkPos first ″ mkPos first ‴ mkPos first) - january
+¬∃prev⇒first {y - january} ¬∃prev with Y.prev? y
+... | yes (y′ , y′⋖y) = contradiction ((y′ - december) , step-year y′⋖y) ¬∃prev
+... | no y-¬∃prev with Y.¬∃prev⇒first y-¬∃prev
+... | refl = refl
+¬∃prev⇒first {y - [ mkPos (suc c) ]} ¬∃prev = contradiction ((y - [ mkPos c ]) , step-month) ¬∃prev
 
-IsSuc⇒suc-ordinal : ∀ {ym} → IsSuc ym → ∃[ n ] ym HasOrdinal (suc n)
-IsSuc⇒suc-ordinal suc-month = _ + 0 * 12 , ordinal Y.ordinal
-IsSuc⇒suc-ordinal {year - [ mkPos first ]} (suc-year x) with Y.IsSuc⇒suc-ordinal x
-... | fst , snd = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (fst * 12))))))))))) , ordinal snd
-IsSuc⇒suc-ordinal {year - [ mkPos (suc c) ]} (suc-year x) = _ , ordinal Y.ordinal
+first-ordinal≡zero : ∀ {n} → year-month-first HasOrdinal n → n ≡ 0
+first-ordinal≡zero p with ordinal-unique p (ordinal Y.ordinal)
+... | refl = refl
 
-¬IsSuc⇒first : ∀ {ym} → ¬ IsSuc ym → ym ≡ (zero Y.′ mkPos first ″ mkPos first ‴ mkPos first) - january
-¬IsSuc⇒first {y - m} p with Y.isSuc? y
-¬IsSuc⇒first {y - m} p | yes isSuc = contradiction (suc-year isSuc) p
-¬IsSuc⇒first {y - m} p | no ¬isSuc with Y.¬IsSuc⇒first ¬isSuc
-¬IsSuc⇒first {y - january} p | no ¬isSuc | refl = refl
-¬IsSuc⇒first {y - [ mkPos (suc cursor) ]} p | no ¬isSuc | refl = contradiction suc-month p
+suc-ordinal⇒∃prev : ∀ {ym n} → ym HasOrdinal (suc n) → ∃[ ym′ ] ym′ ⋖ ym
+suc-ordinal⇒∃prev {ym} p with prev? ym
+... | yes (ym′ , ym′⋖ym) = ym′ , ym′⋖ym
+... | no ¬∃prev with ¬∃prev⇒first ¬∃prev
+... | refl with first-ordinal≡zero p
+... | ()
 
-¬isSuc-unique : ∀ {d₁ d₂} → ¬ IsSuc d₁ → ¬ IsSuc d₂ → d₁ ≡ d₂
-¬isSuc-unique ¬isSuc₁ ¬isSuc₂ with ¬IsSuc⇒first ¬isSuc₁ | ¬IsSuc⇒first ¬isSuc₂
+∃prev⇒suc-ordinal : ∀ {ym} → ∃[ ym′ ] ym′ ⋖ ym → ∃[ n ] ym HasOrdinal (suc n)
+∃prev⇒suc-ordinal (_ , step-month) = _ , ordinal Y.ordinal
+∃prev⇒suc-ordinal (ym′ , step-year y′⋖y) with Y.∃prev⇒suc-ordinal (_ , y′⋖y)
+... | _ , ho = _ , ordinal ho
+
+¬∃prev-unique : ∀ {d₁ d₂} → ¬ (∃[ d′ ] d′ ⋖ d₁) → ¬ (∃[ d′ ] d′ ⋖ d₂) → d₁ ≡ d₂
+¬∃prev-unique ¬∃prev₁ ¬∃prev₂ with ¬∃prev⇒first ¬∃prev₁ | ¬∃prev⇒first ¬∃prev₂
 ... | refl | refl = refl
-
-∃prev⇒IsSuc : ∀ {ym₁ ym₂ : YearMonth} → ym₁ ⋖ ym₂ → IsSuc ym₂
-∃prev⇒IsSuc {_} {year - month} d with Y.isSuc? year
-... | yes p = suc-year p
-... | no p with Y.¬IsSuc⇒first p
-∃prev⇒IsSuc {_} {year - month} step-month | no p | refl = suc-month
 
 prev-ordinal : ∀ {ym₁ ym₂ n} → ym₁ ⋖ ym₂ → ym₂ HasOrdinal (suc n) → ym₁ HasOrdinal n
 prev-ordinal ym₁⋖ym₂ p with ⋖⇒suc ym₁⋖ym₂
@@ -130,26 +125,21 @@ prev-ordinal ym₁⋖ym₂ p with ⋖⇒suc ym₁⋖ym₂
 ⋖-wellFounded : WellFounded _⋖_
 ⋖-wellFounded y = Subrelation.accessible ⋖⇒< (<-WellFounded y)
 
-first-ordinal≡zero : ∀ {n} → year-month-first HasOrdinal n → n ≡ 0
-first-ordinal≡zero p with ordinal-unique p (ordinal Y.ordinal)
-... | refl = refl
-
 ordinal≡0⇒first : ∀ {ym} → ym HasOrdinal 0 → ym ≡ year-month-first
-ordinal≡0⇒first {ym} p with isSuc? ym
-ordinal≡0⇒first {ym} p | yes isSuc with IsSuc⇒suc-ordinal isSuc
+ordinal≡0⇒first {ym} p with prev? ym
+ordinal≡0⇒first {ym} p | yes isSuc with ∃prev⇒suc-ordinal isSuc
 ... | fst , snd with ordinal-unique snd p
 ... | ()
-ordinal≡0⇒first {ym} p | no q with ¬IsSuc⇒first q
+ordinal≡0⇒first {ym} p | no q with ¬∃prev⇒first q
 ordinal≡0⇒first {ym} p | no q | refl = refl
 
 year-month-unique : ∀ {ym₁ ym₂ n} → ym₁ HasOrdinal n → ym₂ HasOrdinal n → ym₁ ≡ ym₂
-year-month-unique {ym₁} {ym₂} {zero} p q with ordinal≡0⇒first p | ordinal≡0⇒first q
-... | refl | refl = refl
-year-month-unique {ym₁} {ym₂} {suc n} p q with prev ym₁ (suc-ordinal⇒IsSuc p) | prev ym₂ (suc-ordinal⇒IsSuc q)
-... | ym₁' , ym₁'⋖ym₁ | ym₂ , ym₂'⋖ym₂ with prev-ordinal ym₁'⋖ym₁ p | prev-ordinal ym₂'⋖ym₂ q
-... | p' | q' with year-month-unique p' q'
-... | refl with next-unique ym₁'⋖ym₁ ym₂'⋖ym₂
-... | refl = refl
+year-month-unique {ym₁} {ym₂} {zero} p q rewrite ordinal≡0⇒first p | ordinal≡0⇒first q = refl
+year-month-unique {ym₁} {ym₂} {suc n} p q with suc-ordinal⇒∃prev p | suc-ordinal⇒∃prev q
+... | ym₁′ , ym₁′⋖ym₁ | ym₂′ , ym₂′⋖ym₂ with ⋖⇒suc ym₁′⋖ym₁ | ⋖⇒suc ym₂′⋖ym₂
+... | n₁′ , h₁′ , h₁ | n₂′ , h₂′ , h₂ with ordinal-unique h₁ p | ordinal-unique h₂ q
+... | refl | refl with year-month-unique h₁′ h₂′
+... | refl = next-unique ym₁′⋖ym₁ ym₂′⋖ym₂
 
 module _ where
   open import Relation.Binary.HeterogeneousEquality using (_≅_; refl; ≅-to-≡)

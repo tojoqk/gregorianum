@@ -1,9 +1,9 @@
 module Gregorianum.YearMonth.Timeline where
 
 open import Gregorianum.YearMonth.Base
-  using (YearMonth; _HasOrdinal_; toOrdinal; next; isSuc?; prev)
+  using (YearMonth; _HasOrdinal_; toOrdinal; next)
 open import Gregorianum.YearMonth.Properties
-  using (year-month-unique; next-ordinal; prev-ordinal; suc-ordinal⇒IsSuc; ordinal-unique; has-ordinal-irrelevant)
+  using (year-month-unique; next-ordinal; prev-ordinal; ordinal-unique; has-ordinal-irrelevant)
 
 open import Gregorianum.Relation.Timeline YearMonth using (IsTimeline; module Path)
 

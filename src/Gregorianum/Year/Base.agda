@@ -55,19 +55,6 @@ data _⋖_ : Year → Year → Set where
   step₄₀₀ : ∀ {q}
        → (q ′ mkPos last ″ mkPos last ‴ mkPos last) ⋖ (suc q ′ mkPos first ″ mkPos first ‴ mkPos first)
 
-data IsSuc : Year → Set where
-  suc₁ : ∀ {q pos₁₀₀ pos₄ acc₁ rem₁}
-        → {c₁ : Cursor 3 acc₁ (suc rem₁)}
-        → IsSuc (q ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc c₁))
-  suc₄ : ∀ {q pos₁₀₀ acc₄ rem₄}
-        → {c₄ : Cursor 24 acc₄ (suc rem₄)}
-        → IsSuc (q ′ pos₁₀₀ ″ mkPos (suc c₄) ‴ mkPos first)
-  suc₁₀₀ : ∀ {q acc₁₀₀ rem₁₀₀}
-          → {c₁₀₀ : Cursor 3 acc₁₀₀ (suc rem₁₀₀)}
-          → IsSuc (q ′ mkPos (suc c₁₀₀) ″ mkPos first ‴ mkPos first)
-  suc₄₀₀ : ∀ {q}
-          → IsSuc ((suc q) ′ mkPos first ″ mkPos first ‴ mkPos first)
-
 yearType : (y : Year) → ∃[ yt ] y HasYearType yt
 yearType (_ ′ mkPos c₁₀₀ ″ mkPos c₄ ‴ mkPos (suc c₁)) = common , common₁
 yearType (_ ′ mkPos c₁₀₀ ″ mkPos (suc c₄) ‴ mkPos first) = leap , leap₄
@@ -93,18 +80,12 @@ next (q ′ mkPos { rem = zero } c₁₀₀@(suc⁴ _) ″ mkPos {rem = zero} tw
 ...                                                                                                                           | ()
 next (q ′ mkPos { rem = zero } fourth ″ mkPos {rem = zero} twenty-fifth ‴ mkPos {rem = zero} fourth) = (suc q ′ mkPos first ″ mkPos first ‴ mkPos first) , step₄₀₀
 
-prev : ∀ y₂ → IsSuc y₂ → ∃[ y₁ ] y₁ ⋖ y₂
-prev (q ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc c₁)) suc₁ = (q ′ pos₁₀₀ ″ pos₄ ‴ mkPos c₁) , step₁
-prev (q ′ pos₁₀₀ ″ mkPos (suc c₄) ‴ mkPos first) suc₄ = (q ′ pos₁₀₀ ″ mkPos c₄ ‴ mkPos fourth) , step₄
-prev (q ′ mkPos (suc c₁₀₀) ″ mkPos first ‴ mkPos first) suc₁₀₀ = (q ′ mkPos c₁₀₀ ″ mkPos twenty-fifth ‴ mkPos fourth) , step₁₀₀
-prev (suc q ′ mkPos first ″ mkPos first ‴ mkPos first) suc₄₀₀ = (q ′ mkPos fourth ″ mkPos twenty-fifth ‴ mkPos fourth) , step₄₀₀
-
-isSuc? : (y : Year) → Dec (IsSuc y)
-isSuc? (quadricentennial ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc cursor)) = yes suc₁
-isSuc? (quadricentennial ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first) = yes suc₄
-isSuc? (quadricentennial ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first) = yes suc₁₀₀
-isSuc? (suc quadricentennial ′ mkPos first ″ mkPos first ‴ mkPos first) = yes suc₄₀₀
-isSuc? year-first = no λ ()
+prev? : ∀ y₂ → Dec (∃[ y₁ ] y₁ ⋖ y₂)
+prev? (quadricentennial ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc cursor)) = yes (((quadricentennial ′ pos₁₀₀ ″ pos₄ ‴ mkPos cursor)) , step₁)
+prev? (quadricentennial ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first) = yes ((quadricentennial ′ pos₁₀₀ ″ mkPos cursor ‴ mkPos last) , step₄)
+prev? (quadricentennial ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first) = yes ((quadricentennial ′ mkPos cursor ″ mkPos last ‴ mkPos last) , step₁₀₀)
+prev? (suc quadricentennial ′ mkPos first ″ mkPos first ‴ mkPos first) = yes ((quadricentennial ′ mkPos last ″ mkPos last ‴ mkPos last) , step₄₀₀)
+prev? year-first = no λ ()
 
 data _HasOrdinal_ (year : Year) : (n : ℕ) → Set where
   ordinal : year HasOrdinal (Position.toℕ (Year.pos₁ year) + Position.toℕ (Year.pos₄ year) * 4 + Position.toℕ (Year.pos₁₀₀ year) * 100 + Year.quadricentennial year * 400)

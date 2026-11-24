@@ -2,7 +2,7 @@ module Gregorianum.DateHour.Properties where
 
 open import Gregorianum.DateHour.Base
 
-open import Gregorianum.Data.Cursor using (Cursor; first; suc)
+open import Gregorianum.Data.Cursor using (Cursor; first; last; suc)
 open import Gregorianum.Hour using (Hour; [_])
 open import Gregorianum.Data.Position as Position using (Position; mkPos)
 open import Gregorianum.Year as Y using (leap₄₀₀)
@@ -78,62 +78,49 @@ private
 ⋖-wellFounded : WellFounded _⋖_
 ⋖-wellFounded dh = Subrelation.accessible ⋖⇒< (<-WellFounded dh)
 
--- first⇒ordinal≡0 : date-first HasOrdinal 0
--- first⇒ordinal≡0 = leap-ordinal leap₄₀₀ year-weight year-weight january-weight
+∃prev⇒suc-ordinal : ∀ {dh} → ∃[ dh′ ] dh′ ⋖ dh → ∃[ n ] dh HasOrdinal (suc n)
+∃prev⇒suc-ordinal (dh′ , h) with toOrdinal dh′
+... | n′ , ho′ = n′ , (next-ordinal h ho′)
 
-IsSuc⇒suc-ordinal : ∀ {dh} → IsSuc dh → ∃[ n ] dh HasOrdinal (suc n)
-IsSuc⇒suc-ordinal suc-hour = _ + zero * 24 , ordinal (leap-ordinal leap₄₀₀ weight weight january-weight)
-IsSuc⇒suc-ordinal {dh} (suc-date isSuc) with D.IsSuc⇒suc-ordinal isSuc
-... | n , dho = suc²³ (n * 24) + Position.toℕ (Hour.position (DateHour.hour dh)) , subst (dh HasOrdinal_) (+-comm (Position.toℕ (Hour.position (DateHour.hour dh))) (suc²⁴ (n * 24))) (ordinal dho)
+suc-ordinal⇒∃prev : ∀ {dh n} → dh HasOrdinal (suc n) → ∃[ dh′ ] dh′ ⋖ dh
+suc-ordinal⇒∃prev {date at [ mkPos first ]} {n} ho with D.prev? date
+... | yes (date , ∃prev) = (date at [ mkPos last ]) , step-date ∃prev
+... | no ¬∃prev with D.¬∃prev⇒first ¬∃prev
+... | refl with ordinal-unique ho (ordinal (leap-ordinal leap₄₀₀ weight weight january-weight))
+... | ()
+suc-ordinal⇒∃prev {date at [ mkPos (suc c) ]} {n} p = (date at [ mkPos c ]) , step-hour
 
-¬IsSuc⇒first : ∀ {dh} → ¬ IsSuc dh → dh ≡ date-hour-first
-¬IsSuc⇒first {d at h} ¬isSuc with D.isSuc? d
-... | yes isSuc' = contradiction (suc-date isSuc') ¬isSuc
-... | no ¬isSuc' with D.¬IsSuc⇒first ¬isSuc'
-¬IsSuc⇒first {d at [ mkPos first ]} _ | no ¬isSuc' | refl = refl
-¬IsSuc⇒first {d at [ mkPos (suc cursor) ]} ¬isSuc | no ¬isSuc' | refl = contradiction suc-hour ¬isSuc
-
-¬isSuc-unique : ∀ {dh₁ dh₂} → ¬ IsSuc dh₁ → ¬ IsSuc dh₂ → dh₁ ≡ dh₂
-¬isSuc-unique ¬isSuc₁ ¬isSuc₂ with ¬IsSuc⇒first ¬isSuc₁ | ¬IsSuc⇒first ¬isSuc₂
-... | refl | refl = refl
-
-∃prev⇒IsSuc : ∀ {dh₁ dh₂} → dh₁ ⋖ dh₂ → IsSuc dh₂
-∃prev⇒IsSuc {_} {d at h} dh₁⋖dh₂ with D.isSuc? d
-... | yes isSuc' = suc-date isSuc'
-... | no ¬isSuc' with D.¬IsSuc⇒first ¬isSuc'
-∃prev⇒IsSuc {_} {d at h} step-hour | no ¬isSuc' | refl = suc-hour
-∃prev⇒IsSuc {_} {d at h} (step-date d₁⋖d₂) | no ¬isSuc' | refl = contradiction (D.∃prev⇒IsSuc d₁⋖d₂) ¬isSuc'
+¬∃prev⇒first : ∀ {dh} → ¬ (∃[ dh′ ] dh′ ⋖ dh) → dh ≡ D.date-first at [ mkPos first ]
+¬∃prev⇒first {date at [ mkPos first ]} ¬∃prev with D.prev? date
+... | yes (d , p) = contradiction ((d at [ mkPos last ]) , step-date p) ¬∃prev
+... | no ¬p with D.¬∃prev⇒first ¬p
+... | refl = refl
+¬∃prev⇒first {date at [ mkPos (suc cursor) ]} ¬∃prev = contradiction ((date at [ mkPos cursor ]) , step-hour) ¬∃prev
 
 ordinal≡0⇒first : ∀ {dh} → dh HasOrdinal 0 → dh ≡ date-hour-first
-ordinal≡0⇒first {dh} ho with isSuc? dh
-ordinal≡0⇒first ho | yes isSuc with IsSuc⇒suc-ordinal isSuc
-... | _ , ho' with ordinal-unique ho ho'
+ordinal≡0⇒first {dh} ho with prev? dh
+ordinal≡0⇒first {dh} ho | yes ∃prev with ∃prev⇒suc-ordinal ∃prev
+ordinal≡0⇒first {dh} ho | yes _ | n , ho′ with ordinal-unique ho ho′
 ... | ()
-ordinal≡0⇒first ho | no ¬isSuc with ¬IsSuc⇒first ¬isSuc
+ordinal≡0⇒first {dh} ho | no ¬∃prev with ¬∃prev⇒first ¬∃prev
 ... | refl = refl
-
-suc-ordinal⇒IsSuc : ∀ {dh n} → dh HasOrdinal (suc n) → IsSuc dh
-suc-ordinal⇒IsSuc {d at h} ho with D.isSuc? d
-... | yes isSuc' = suc-date isSuc'
-... | no ¬isSuc' with D.¬IsSuc⇒first ¬isSuc'
-suc-ordinal⇒IsSuc {D.date-first at [ mkPos first ]} ho | no _ | refl with ordinal-unique ho (ordinal (leap-ordinal leap₄₀₀ weight weight january-weight))
-... | ()
-suc-ordinal⇒IsSuc {d at [ mkPos (suc cursor) ]} ho | no _ | refl = suc-hour
 
 prev-ordinal : ∀ {dh₁ dh₂ n} → dh₁ ⋖ dh₂ → dh₂ HasOrdinal (suc n) → dh₁ HasOrdinal n
 prev-ordinal dh₁⋖dh₂ ho with ⋖⇒suc dh₁⋖dh₂
 ... | _ , ho₁ , ho₂ with ordinal-unique ho ho₂
 ... | refl = ho₁
 
+¬∃prev-unique : ∀ {dh₁ dh₂} → ¬ (∃[ dh₁′ ] dh₁′ ⋖ dh₁) → ¬ (∃[ dh₂′ ] dh₂′ ⋖ dh₂) → dh₁ ≡ dh₂
+¬∃prev-unique ¬∃prev₁ ¬∃prev₂ with ¬∃prev⇒first ¬∃prev₁ | ¬∃prev⇒first ¬∃prev₂
+... | refl | refl = refl
+
 date-hour-unique : ∀ {dh₁ dh₂ n} → dh₁ HasOrdinal n → dh₂ HasOrdinal n → dh₁ ≡ dh₂
 date-hour-unique {dh₁} {dh₂} {zero} ho₁ ho₂ with ordinal≡0⇒first ho₁ | ordinal≡0⇒first ho₂
 ... | refl | refl = refl
-date-hour-unique {dh₁} {dh₂} {suc n} ho₁ ho₂ with suc-ordinal⇒IsSuc ho₁ | suc-ordinal⇒IsSuc ho₂
-... | isSuc₁ | isSuc₂ with prev dh₁ isSuc₁ | prev dh₂ isSuc₂
-... | dh₁' , dh₁'⋖dh₁ | dh₂' , dh₂'⋖dh₂ with prev-ordinal dh₁'⋖dh₁ ho₁ | prev-ordinal dh₂'⋖dh₂ ho₂
-... | ho₁' | ho₂' with date-hour-unique ho₁' ho₂'
-... | refl with next-unique dh₁'⋖dh₁ dh₂'⋖dh₂
-... | refl = refl
+date-hour-unique {dh₁} {dh₂} {suc n} ho₁ ho₂ with suc-ordinal⇒∃prev ho₁ | suc-ordinal⇒∃prev ho₂
+... | dh₁′ , dh₁′⋖dh₁ | dh₂′ , dh₂′⋖dh₂ with prev-ordinal dh₁′⋖dh₁ ho₁ | prev-ordinal dh₂′⋖dh₂ ho₂
+... | ho₁′ | ho₂′ with date-hour-unique ho₁′ ho₂′
+... | refl = next-unique dh₁′⋖dh₁ dh₂′⋖dh₂
 
 module _ where
   open import Relation.Binary.HeterogeneousEquality using (_≅_; refl; ≅-to-≡)

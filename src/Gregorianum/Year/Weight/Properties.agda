@@ -1,7 +1,7 @@
 module Gregorianum.Year.Weight.Properties where
 
 open import Gregorianum.Year.Weight.Base using (_HasWeight_; _HasLeapWeight_; _HasCommonWeight_; weight)
-open import Gregorianum.Year.Base using (Year; _′_″_‴_; _⋖_; suc₁; suc₄; suc₁₀₀; suc₄₀₀; IsSuc; _HasYearType_; leap; common; common₁; leap₄; common₁₀₀; leap₄₀₀; step₁; step₄; step₁₀₀; step₄₀₀)
+open import Gregorianum.Year.Base using (Year; _′_″_‴_; _⋖_; _HasYearType_; leap; common; common₁; leap₄; common₁₀₀; leap₄₀₀; step₁; step₄; step₁₀₀; step₄₀₀)
 open import Gregorianum.Data.Cursor using (suc; first)
 open import Gregorianum.Data.Position using (Position; mkPos)
 
@@ -23,17 +23,17 @@ prev-weight step₄ weight = weight
 prev-weight step₁₀₀ weight = weight
 prev-weight step₄₀₀ weight = weight
 
-suc-weight-IsSuc : ∀ {y n} → {{_ : NonZero n}} → y HasWeight (suc n) → IsSuc y
-suc-weight-IsSuc {quadricentennial ′ pos₁₀₀ ″ mkPos cursor ‴ mkPos (suc cursor₁)} {n = _} weight = suc₁
-suc-weight-IsSuc {quadricentennial ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} {n = _} weight = suc₄
-suc-weight-IsSuc {quadricentennial ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} {n = _} weight = suc₁₀₀
-suc-weight-IsSuc {suc quadricentennial ′ mkPos first ″ mkPos first ‴ mkPos first} {n = _} weight = suc₄₀₀
+suc-weight-∃prev : ∀ {y n} → {{_ : NonZero n}} → y HasWeight (suc n) → ∃[ y′ ] y′ ⋖ y
+suc-weight-∃prev {quadricentennial ′ pos₁₀₀ ″ mkPos cursor ‴ mkPos (suc cursor₁)} {n = _} weight = _ , step₁
+suc-weight-∃prev {quadricentennial ′ pos₁₀₀ ″ mkPos (suc cursor) ‴ mkPos first} {n = _} weight = _ , step₄
+suc-weight-∃prev {quadricentennial ′ mkPos (suc cursor) ″ mkPos first ‴ mkPos first} {n = _} weight = _ , step₁₀₀
+suc-weight-∃prev {suc quadricentennial ′ mkPos first ″ mkPos first ‴ mkPos first} {n = _} weight = _ , step₄₀₀
 
-IsSuc⇒suc-weight : ∀ {y} → IsSuc y → ∃[ n ] y HasWeight (suc (suc n))
-IsSuc⇒suc-weight suc₁ = _ , weight
-IsSuc⇒suc-weight suc₄ = _ , weight
-IsSuc⇒suc-weight suc₁₀₀ = _ , weight
-IsSuc⇒suc-weight suc₄₀₀ = _ , weight
+∃prev⇒suc-weight : ∀ {y} → ∃[ y′ ] y′ ⋖ y → ∃[ n ] y HasWeight (suc (suc n))
+∃prev⇒suc-weight (_ , step₁) = _ , weight
+∃prev⇒suc-weight (_ , step₄) = _ , weight
+∃prev⇒suc-weight (_ , step₁₀₀) = _ , weight
+∃prev⇒suc-weight (_ , step₄₀₀) = _ , weight
 
 weight-unique : ∀ {y n₁ n₂} → {{_ : NonZero n₁}} → {{_ : NonZero n₂}} → y HasWeight n₁ → y HasWeight n₂ → n₁ ≡ n₂
 weight-unique weight weight = refl
@@ -87,11 +87,11 @@ weight≡leap+common {y} weight weight weight =
   ∎))
   where open ≡-Reasoning
 
-IsSuc⇒suc-common-weight : ∀ {y} → IsSuc y → ∃[ n ] y HasCommonWeight (suc n)
-IsSuc⇒suc-common-weight {(q ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc cursor))} suc₁ = _ , weight
-IsSuc⇒suc-common-weight {(q ′ mkPos {acc = c} _ ″ mkPos (suc {acc = b} cursor) ‴ mkPos first)} suc₄ = _ , weight
-IsSuc⇒suc-common-weight {(q ′ mkPos (suc {acc = n} cursor) ″ mkPos first ‴ mkPos first)} suc₁₀₀ = _ , weight
-IsSuc⇒suc-common-weight {(suc q ′ mkPos first ″ mkPos first ‴ mkPos first)} suc₄₀₀ = _ , weight
+∃prev⇒suc-common-weight : ∀ {y} → ∃[ y′ ] y′ ⋖ y → ∃[ n ] y HasCommonWeight (suc n)
+∃prev⇒suc-common-weight {(q ′ pos₁₀₀ ″ pos₄ ‴ mkPos (suc cursor))} (_ , step₁) = _ , weight
+∃prev⇒suc-common-weight {(q ′ mkPos {acc = c} _ ″ mkPos (suc {acc = b} cursor) ‴ mkPos first)} (_ , step₄) = _ , weight
+∃prev⇒suc-common-weight {(q ′ mkPos (suc {acc = n} cursor) ″ mkPos first ‴ mkPos first)} (_ , step₁₀₀) = _ , weight
+∃prev⇒suc-common-weight {(suc q ′ mkPos first ″ mkPos first ‴ mkPos first)} (_ , step₄₀₀) = _ , weight
 
 next-leap-is-common : ∀ {y₁ y₂} → y₁ ⋖ y₂ → y₁ HasYearType leap → y₂ HasYearType common
 next-leap-is-common step₁ leap₄ = common₁
